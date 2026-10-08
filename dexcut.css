@@ -1,0 +1,163 @@
+/* DEX//CUT visual system. Presentation only: original FFmpeg functions remain untouched. */
+:root{
+ --bg:#111113;--bg2:#161416;--panel:#201b1c;--panel2:#282122;--panel3:#302627;
+ --ink:#f2e5c9;--muted:#c9bdac;--faint:#a99b88;
+ --line:#51403c;--line2:#70544d;--red:#e33434;--red2:#b92727;--redSoft:rgba(227,52,52,.16);
+ --green:#98dcb2;--amber:#eac184;--radius:13px;
+ --shadow:0 24px 70px rgba(0,0,0,.55);
+}
+body{background:#111113;color:var(--ink)}
+body::before{background:radial-gradient(ellipse at 80% 5%,rgba(227,52,52,.14),transparent 33rem),linear-gradient(180deg,#151214,#0b0a0d)}
+body::after{opacity:.11;background-size:42px 42px}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+button:not(:disabled){cursor:pointer}
+.app{width:min(1130px,100%);padding-bottom:calc(34px + var(--safe-bottom))}
+.topbar{padding:9px 2px 15px;border-bottom:1px solid var(--line);margin-bottom:15px}
+.brand{font-size:clamp(20px,2.8vw,28px);font-weight:1000;letter-spacing:-.055em;gap:10px;line-height:1}
+.brand .brandmark{display:none}
+.brandIcon{width:46px;height:46px;border-radius:10px;background:#282021;border:1px solid #67413e;overflow:hidden}
+.brandWord{display:block;white-space:nowrap}
+.brandSlash,.footer strong span{color:var(--red)}
+.brandWord small{display:block;color:#ccb6a4;font-size:8px;letter-spacing:.19em;margin-top:5px;font-weight:800}
+.topActions{gap:8px}
+.localchip{border-color:#5e4541;color:#eadbca;background:#292021;font-size:10px}
+.localchip::before{background:var(--red);box-shadow:0 0 0 4px rgba(227,52,52,.09)}
+.installBtn{border-color:#82433e;background:#35201f;color:#f7e8dc;min-height:44px;border-radius:10px}
+.installBtn:hover{background:#4e2926}
+.hero{position:relative;isolation:isolate;min-height:342px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(210px,.85fr);align-items:end;gap:8px;padding:clamp(20px,3.5vw,38px);margin:0 0 15px;border:1px solid #715148;border-radius:17px;overflow:hidden;background:#141214}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:url("./assets/dexcut-poster.webp") center/cover no-repeat;opacity:.19}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#171314 0%,rgba(23,19,20,.96) 34%,rgba(23,19,20,.45) 100%),radial-gradient(ellipse at 90% 85%,rgba(226,52,52,.23),transparent 56%)}
+.heroCopy{min-width:0;align-self:center;z-index:2}
+.eyebrow,.heroEyebrow{color:#eaa6a0;font-size:10px;font-weight:900;letter-spacing:.17em;margin-bottom:11px;text-transform:uppercase}
+.hero h1{font-family:Impact,"Arial Narrow","Franklin Gothic Heavy",sans-serif;font-weight:900;font-size:clamp(36px,5.7vw,75px);line-height:.97;letter-spacing:-.016em;max-width:none;margin:0 0 14px}
+.hero h1 span{display:block;white-space:nowrap}
+.hero .heroTag{color:#ec4a47;font-size:clamp(11px,1.35vw,15px);letter-spacing:.14em;font-weight:950;text-transform:uppercase;margin:0 0 12px}
+.hero .heroDescription{font-size:14px;color:#ebdecd;line-height:1.55;max-width:470px}
+.heroStats{gap:6px;margin-top:16px}
+.heroStat{background:rgba(0,0,0,.43);border-color:#745149;color:#e9d8c6;letter-spacing:.06em;border-radius:6px;font-size:9px}
+.dexVerdict{display:flex;align-items:center;gap:10px;margin-top:18px;background:rgba(10,9,11,.8);border-left:3px solid var(--red);border-radius:4px 9px 9px 4px;padding:10px 12px;color:var(--ink);font-size:12px}
+.dexSignal{font:900 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#ee7770;white-space:nowrap}
+.coreVisual{display:flex!important;align-items:end;justify-content:center;width:100%;min-height:235px;height:100%;position:relative;overflow:visible}
+.coreVisual .coreRing,.coreVisual .coreCenter,.coreVisual .corePulse{display:none}
+.dexHalo{position:absolute;inset:17% 0 6%;background:radial-gradient(ellipse at center,rgba(227,52,52,.34),transparent 70%);filter:blur(12px)}
+.dexCaption{position:absolute;bottom:0;z-index:3;text-align:center;font-size:9px;letter-spacing:.12em;color:#dfb1a4;font-weight:900;text-shadow:0 3px 6px #000}
+.dexAsset{display:block;aspect-ratio:1;background-image:url("./assets/dexcut-atlas.avif");background-repeat:no-repeat;background-size:300% 357.5%;background-position:0 0;flex:none}
+.dexAsset.dexIdle{background-position:0 0}
+.dexAsset.dexProcessing{background-position:50% 0}
+.dexAsset.dexError{background-position:0 38.835%}
+.dexAsset.dexExhausted{background-position:50% 38.835%}
+.brandIcon.dexAsset{background-color:#241e20}
+.coreVisual #dexMascot{width:min(100%,310px);height:auto;max-height:none;aspect-ratio:1;position:relative;z-index:2;filter:drop-shadow(0 16px 28px rgba(0,0,0,.5))}
+.deviceGate{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:15px;border:1px solid #74413d;border-radius:13px;padding:18px;margin-bottom:25px;background:linear-gradient(115deg,#2a1d1e,#181618 83%)}
+.deviceGateMark{display:grid;place-items:center;width:46px;height:46px;border-radius:10px;font-size:24px;color:#f2e5c9;border:1px solid #884540;background:#3d2422}
+.deviceGateCopy h2{font-size:18px;letter-spacing:.015em;margin:2px 0 5px}
+.deviceGateCopy p{font-size:12px;margin:0;color:var(--muted);line-height:1.55;max-width:590px}
+.deviceGate .step{color:#f0aca5;margin:0}
+.deviceGateAction{min-height:52px;padding:10px 15px;background:var(--red);color:#fff;border:1px solid #e86b62;border-radius:10px;font-size:12px;font-weight:900;letter-spacing:.055em;white-space:nowrap}
+.deviceGateAction:hover{background:#c83230}
+.deviceGateAction span{font-size:16px;margin-left:5px}
+.panel{background:linear-gradient(160deg,#241f20,#171518);border-color:#56423e;box-shadow:0 1px 0 rgba(255,255,255,.035) inset}
+.step{color:#e2a39e}
+.filePanel{margin-bottom:24px;padding:18px}
+.filepick{border-color:#6f534b;background:#171416;border-radius:10px;min-height:164px}
+.filepick:hover{border-color:#dc6c61;background:#221a1b}
+.filepick .fileicon{background:#402421;color:var(--ink);border-radius:9px}
+.filepick strong{letter-spacing:.08em;font-size:17px}
+.filepick span{max-width:400px;color:#cbbbab}
+.filepick input{z-index:2}
+.libraryHead h2{font-family:Impact,"Arial Narrow",sans-serif;font-weight:900;letter-spacing:.01em;font-size:clamp(27px,3.3vw,36px)}
+.libraryHead p{color:var(--muted)}
+.toolCount{background:#292122;border-color:#57413d;color:var(--ink)}
+.searchWrap input{background:#1b1819;border-color:#5b4540;color:var(--ink);border-radius:9px}
+.chip{border-radius:9px;background:#211b1c;border-color:#56443f;color:#e1d1c1;min-height:44px}
+.chip.active{background:var(--red);border-color:var(--red);color:white}
+.jobs{gap:11px}
+.job{border-radius:11px;background:linear-gradient(150deg,#292223,#181517);border-color:#55423e;min-height:154px}
+.job:hover{border-color:#d35c51;background:#302223}
+.job .icon{background:#462724;border:1px solid #69403b;border-radius:9px;color:#efdfc8}
+.job strong{color:#f2e5c9}
+.job span{color:#c9b9a8}
+.job .tag{color:#d9968b}
+.job.unavailable{opacity:.56}
+.resultHub{border-left:3px solid var(--red)}
+.successPill{background:#223328;border-color:#577d5e;color:#bce9c7}
+.actionPrimary,.sheetRun,.sheetResultActions .primary,.verifyRun{background:var(--red);color:white}
+.toolSheet,.installSheet{background:linear-gradient(#272021,#161416);border-color:#695047;border-radius:18px}
+.sheetBrand{display:flex;align-items:center;gap:11px;margin-bottom:12px;color:#e9a29a;font-size:10px;letter-spacing:.13em;font-weight:900}
+.sheetBrand .dexAsset{width:58px;height:58px;background-color:#292022;border:1px solid #744c42;border-radius:10px}
+.sheetBrand b{display:block;margin-top:4px;color:#eee0cf;font-size:12px;letter-spacing:0}
+.processDex{float:right;width:76px;height:76px;max-width:30%;margin:-3px 0 7px 11px}
+.resultHeadline .dexAsset{width:62px;height:62px;border-radius:9px;background-color:#292124;border:1px solid #744c42}
+.installSteps li,.verifyEntry{background:#241e20;border-color:#5a4540}
+.verifySheet .installAppIcon{display:block;width:58px;height:58px}
+.verifyEntry .pass{color:#bce9c7}.verifyEntry .fail{color:#ff9a91}
+.footer{font-size:11px;color:#c6b7a6;border-top:1px solid #52413d;margin-top:25px}
+.footer strong{font-size:15px;color:var(--ink)}.footer small{display:block;margin-top:6px;font-size:9px;letter-spacing:.12em;color:#a99887}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+@media(max-width:800px){
+ .hero{grid-template-columns:1fr 185px;min-height:310px;padding:23px}
+ .hero h1{font-size:clamp(37px,5.5vw,61px)}
+ .deviceGate{grid-template-columns:1fr}
+ .deviceGateMark{display:none}
+ .deviceGateAction{width:100%}
+}
+@media(max-width:580px){
+ .brandIcon{width:38px;height:38px}
+ .brand{font-size:21px}
+ .brandWord small{font-size:7px}
+ .hero{grid-template-columns:minmax(0,1fr) 110px;gap:3px;padding:19px 14px 15px;min-height:0}
+ .hero h1{font-size:clamp(29px,7.5vw,43px)}
+ .hero h1 span{white-space:normal}
+ .hero .heroTag{font-size:10px;letter-spacing:.09em}
+ .hero .heroDescription{font-size:12px;line-height:1.45}
+ .heroStats{gap:5px}.heroStat{font-size:8px;padding:6px 7px}
+ .coreVisual{min-height:162px;align-self:center}
+ .coreVisual #dexMascot{width:100%;min-width:100px}
+ .dexCaption{display:none}
+ .dexVerdict{font-size:11px;gap:6px;padding:8px}
+ .dexSignal{font-size:9px}
+ .deviceGate{padding:14px}
+ .deviceGateCopy h2{font-size:16px}
+ .job{min-height:144px}
+}
+@media(max-width:385px){
+ .hero{grid-template-columns:minmax(0,1fr) 92px;padding:16px 10px}
+ .hero h1{font-size:clamp(27px,7.5vw,35px)}
+ .hero .heroDescription{font-size:11px}
+ .heroStat{font-size:7px}
+ .brandWord small{font-size:6px}
+}
+@media(prefers-reduced-motion:reduce){
+ .dexAsset,.dexHalo,.hero{animation:none!important;transition:none!important}
+ .processCard::before{animation:none!important}
+}
+
+/* Mobile art direction: a readable headline and a dominant Dexter, never ghosted lettering. */
+.hero::before{opacity:.075;background-position:right center}
+@media(max-width:580px){
+ .hero{display:block;min-height:368px;padding:20px 16px 15px}
+ .heroCopy{position:relative;z-index:2}
+ .hero .eyebrow{font-size:9px;line-height:1.45;max-width:320px}
+ .hero h1{font-size:clamp(39px,10.2vw,54px);margin-bottom:10px}
+ .hero h1 span{white-space:normal}
+ .hero .heroTag{font-size:10px;line-height:1.5}
+ .hero .heroDescription{font-size:12px;line-height:1.55;width:calc(100% - 125px);min-width:170px}
+ .heroStats{max-width:calc(100% - 155px);align-content:start}
+ .coreVisual{display:flex!important;position:absolute;right:1px;bottom:34px;width:178px;height:190px;min-height:0;pointer-events:none;align-self:auto}
+ .coreVisual #dexMascot{width:100%;min-width:0;max-height:none}
+ .dexVerdict{margin-top:38px;position:relative;z-index:5;max-width:100%}
+}
+@media(max-width:385px){
+ .hero{min-height:375px;padding:17px 12px 14px}
+ .hero h1{font-size:clamp(37px,11vw,42px)}
+ .hero .heroDescription{min-width:148px;width:calc(100% - 133px)}
+ .heroStats{max-width:calc(100% - 141px)}
+ .coreVisual{width:158px;height:172px;bottom:45px}
+ .dexVerdict{margin-top:38px}
+}
+
+/* WCAG AA: preserve canonical vivid red for accents; deepen actionable red beneath white labels. */
+:root{--action-red:#cb292d}
+.deviceGateAction,.chip.active,.actionPrimary,.sheetRun,.sheetResultActions .primary,.verifyRun,.installPrimary{background:var(--action-red);color:#fff}
+.deviceGateAction{border-color:#e33434}
+.deviceGateAction:hover,.installPrimary:hover{background:#b92428}

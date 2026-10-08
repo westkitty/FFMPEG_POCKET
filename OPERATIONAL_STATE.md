@@ -1,8 +1,8 @@
 # OPERATIONAL_STATE
 
 project_id: ffmpeg-pocket
-project_name: FFmpeg Pocket
-revision: 6
+project_name: DEX//CUT (formerly FFmpeg Pocket)
+revision: 7
 
 ## Current baseline
 - Repository: westkitty/FFMPEG_POCKET
@@ -53,3 +53,13 @@ Open the installed FFmpeg Pocket PWA on the target iPhone. Tap 'Verify tools on 
 
 ## Prior deployment failure
 Historical custom GitHub Actions Pages enablement failed; branch-based Pages publishing subsequently succeeded. It is unrelated to current tool behavior.
+
+## 2026-10-08 DEX//CUT rebrand and release evidence
+- The product name is DEX//CUT; the repository and Pages URL retain FFMPEG_POCKET for compatibility with existing links.
+- Canonical Dexter artwork, the DEX//CUT poster, icons, typography, interaction copy, PWA manifest, and app-shell cache are updated.
+- All 30 original tool definitions, command handlers, and the device-verification engine remain available. The diagnostic has a prominent entry point and preserves ?verify=1 and Copy report.
+- A cancellation-generation guard now prevents stale engine startup or late worker results from overriding the UI after cancellation or immediate retry.
+- Automated accessibility audit: zero WCAG A/AA violations across landing, tool, verification, and installation dialogs.
+- Post-rebrand desktop Brave/macOS ARM64: 30/30 real FFmpeg.wasm device diagnostic, normal mute/playback/save/continue/JPEG workflow, 4 responsive viewports, cancelled-startup and immediate-retry scenarios all PASS.
+- Performance is measured against original commit 0cc2943; a secondary-resource/page-load cost is documented rather than concealed.
+- Physical iPhone installed-PWA verification remains pending. See QA_REPORT_DEXCUT.md; no desktop result is iPhone certification.

@@ -1,6 +1,6 @@
-const APP='ffmpeg-pocket-app-v5';
+const APP='dexcut-app-v1';
 const CORE='ffmpeg-pocket-core-v1';
-const SHELL=['./','./index.html','./manifest.json','./icon.svg','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./apple-touch-icon.png','./qa-sample.mp4'];
+const SHELL=['./','./index.html','./manifest.json','./icon.svg','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./apple-touch-icon.png','./qa-sample.mp4','./dexcut.css','./assets/dexcut-atlas.avif','./assets/dexcut-poster.webp'];
 const CORE_PATH='/npm/@ffmpeg/core@0.12.10/dist/umd/';
 
 self.addEventListener('install',event=>{
@@ -16,7 +16,7 @@ self.addEventListener('activate',event=>{
     caches.keys()
       .then(keys=>Promise.all(
         keys
-          .filter(key=>key.startsWith('ffmpeg-pocket-app-')&&key!==APP)
+          .filter(key=>(key.startsWith('ffmpeg-pocket-app-')||key.startsWith('dexcut-app-'))&&key!==APP)
           .map(key=>caches.delete(key))
       ))
       .then(()=>self.clients.claim())

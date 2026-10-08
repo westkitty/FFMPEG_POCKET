@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#08080a">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111113">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="FFmpeg Pocket">
-<meta name="application-name" content="FFmpeg Pocket">
-<meta name="description" content="Thirty private video and audio tools that run locally in your browser.">
+<meta name="apple-mobile-web-app-title" content="DEX//CUT">
+<meta name="application-name" content="DEX//CUT">
+<meta name="description" content="DEX//CUT: 30 private media tools. Your files. My judgment. Local browser processing under protest.">
 <link rel="manifest" href="manifest.json">
+<meta property="og:title" content="DEX//CUT — Your files. My judgment.">
+<meta property="og:description" content="Thirty private media tools. Media processing under protest.">
+<meta property="og:image" content="https://westkitty.github.io/FFMPEG_POCKET/assets/dexcut-poster.webp">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
 <meta name="mobile-web-app-capable" content="yes">
-<title>FFmpeg Pocket</title>
+<title>DEX//CUT — Your files. My judgment.</title>
 <style>
 :root{
   color-scheme:dark;
@@ -71,34 +75,42 @@ body.processing .coreRing{animation-duration:3s}body.processing .corePulse{anima
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.coreRing,.corePulse,.processCard::before,.processIcon,.audioViz i{animation:none!important}.job{opacity:1;transform:none}.toolSheet,.job,.chip,.toast,.progressBar{transition-duration:.01ms!important}}
 body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:paused}
 </style>
+<link rel="stylesheet" href="./dexcut.css">
 </head>
-<body>
+<body data-dex-mood="idle">
 <main class="app">
   <header class="topbar">
-    <div class="brand"><span class="brandmark" aria-hidden="true"></span><span>FFmpeg Pocket</span></div>
+    <div class="brand" aria-label="DEX//CUT by Stinky Weasel Productions"><span class="brandIcon dexAsset dexIdle" aria-hidden="true"></span><span class="brandWord">DEX<span class="brandSlash">//</span>CUT<small>STINKY WEASEL PRODUCTIONS</small></span></div>
     <div class="topActions">
       <button class="installBtn" id="installBtn" type="button" aria-haspopup="dialog"><span class="installGlyph" aria-hidden="true">↓</span><span id="installLabel">Install app</span></button>
-      <div class="localchip">Runs on this phone</div>
+      <div class="localchip" title="Your selected files are processed locally">LOCAL PROCESSING</div>
     </div>
   </header>
 
-  <section class="hero">
+  <section class="hero" aria-labelledby="heroTitle">
     <div class="heroCopy">
-      <p class="eyebrow">30 pocket media tools</p>
-      <h1>Pick it. Transform it. Play it back.</h1>
-      <p>Video and audio tools built for Chrome on iPhone. No account, no upload, no terminal. Choose a file, tap a tool, and the result plays right here.</p>
-      <div class="heroStats"><span class="heroStat">Local processing</span><span class="heroStat">Share-ready results</span><span class="heroStat">No watermark</span><button class="heroStat checkTrigger" id="verifyOpen" type="button">Verify tools on this device →</button></div>
+      <p class="eyebrow">A STINKY WEASEL PRODUCTIONS INSTRUMENT / 30 TOOLS</p>
+      <h1 id="heroTitle"><span>YOUR FILES.</span><span>MY JUDGMENT.</span></h1>
+      <p class="heroTag">MEDIA PROCESSING. UNDER PROTEST.</p>
+      <p class="heroDescription">Trim, extract, compress and correct video or audio. Privately in this browser. No accounts. No uploads. No unnecessary conversation.</p>
+      <div class="heroStats"><span class="heroStat">PRIVATE BY DESIGN</span><span class="heroStat">SHARE-READY RESULTS</span><span class="heroStat">NO WATERMARK</span></div>
+      <div class="dexVerdict" aria-live="polite" aria-atomic="true"><span class="dexSignal" aria-hidden="true">DEX // 00</span><span id="dexLine">Well? I'm waiting.</span></div>
     </div>
-    <div class="coreVisual" aria-hidden="true"><div class="coreRing r1"></div><div class="coreRing r2"></div><div class="coreRing r3"></div><div class="corePulse"></div><div class="coreCenter">FF</div></div>
+    <div class="coreVisual" aria-hidden="true"><span class="dexHalo"></span><span id="dexMascot" class="dexAsset dexIdle moodSprite"></span><span class="dexCaption">THE FURIOUS LITTLE STINKWEASEL</span></div>
   </section>
+  <aside class="deviceGate" aria-labelledby="deviceGateTitle">
+    <div class="deviceGateMark" aria-hidden="true">✓</div>
+    <div class="deviceGateCopy"><div class="step">DEVICE DIAGNOSTICS / 30 TESTS</div><h2 id="deviceGateTitle">PROVE IT ON THIS DEVICE.</h2><p>Run real FFmpeg WebAssembly conversions and check output playback in this browser. Run the test again in your installed phone app.</p></div>
+    <button class="deviceGateAction checkTrigger" id="verifyOpen" type="button" aria-haspopup="dialog" aria-controls="verifyDialog">VERIFY ALL 30 TOOLS <span aria-hidden="true">↗</span></button>
+  </aside>
 
   <section class="panel filePanel" id="filePanel">
-    <div class="step">1 / Choose media</div>
+    <div class="step">01 / SUBMIT MEDIA</div>
     <label class="filepick" id="filePick">
       <input id="fileInput" type="file" accept="video/*,audio/*,.mov,.mp4,.m4v,.mkv,.webm,.avi,.mp3,.m4a,.aac,.wav,.flac,.ogg,.opus,.gif">
       <div class="fileicon">+</div>
-      <strong>Choose video or audio</strong>
-      <span>Photos, Files and Chrome downloads are all fair game.</span>
+      <strong>CHOOSE FILE</strong>
+      <span>Video or audio from your device. Dexter will inspect the evidence.</span>
     </label>
     <div id="fileCard" class="filecard hidden">
       <div class="thumb" id="thumb">&gt;</div>
@@ -110,16 +122,16 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
 
   <section class="library" id="library">
     <div class="libraryHead">
-      <div><div class="step">2 / Choose a tool</div><h2>What do you want to do?</h2><p>Start with Quick picks, or search all thirty.</p></div>
+      <div><div class="step">02 / SELECT CORRECTION</div><h2>THE FULL ARSENAL.</h2><p>Quick fixes or surgical intervention. All thirty tools remain available.</p></div>
       <div class="toolCount"><span id="visibleCount">10</span> shown</div>
     </div>
-    <div class="searchWrap"><input id="toolSearch" type="search" inputmode="search" autocomplete="off" placeholder="Find a tool - crop, audio, GIF, blur..."></div>
+    <div class="searchWrap"><label for="toolSearch" class="sr-only">Search all media tools</label><input id="toolSearch" type="search" inputmode="search" autocomplete="off" placeholder="Search tools — trim, audio, GIF, blur..."></div>
     <div class="chips" id="chips" aria-label="Tool categories"></div>
     <div class="jobs" id="jobs"></div>
   </section>
 
   <section class="panel resultHub hidden" id="resultHub" aria-live="polite">
-    <div class="resultTop"><div><div class="step">Last result</div><h2 id="hubTitle">Ready to play</h2></div><span class="successPill">Ready</span></div>
+    <div class="resultTop"><div><div class="step">03 / THE VERDICT</div><h2 id="hubTitle">Acceptable. Barely.</h2></div><span class="successPill">Ready</span></div>
     <div class="previewFrame" id="hubPreview"></div>
     <div class="resultMeta" id="hubMeta"></div>
     <div class="resultActions">
@@ -131,12 +143,12 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
   </section>
 
   <details class="more">
-    <summary>Large files, privacy and offline use</summary>
+    <summary>THE FINE PRINT / Privacy, large files, offline use</summary>
     <p>The selected media is copied into the browser media engine and processed locally. This page does not upload the selected file to a server.</p>
     <p>Short clips and ordinary phone videos are safest. Very large files can exceed iPhone browser memory. Keep Chrome open while a job runs.</p>
     <p>The first run downloads the browser media engine. Chrome can cache it afterward, and the page can be added to the Home Screen.</p>
   </details>
-  <div class="footer">FFmpeg Pocket / local browser media tools</div>
+  <div class="footer"><strong>DEX<span>//</span>CUT</strong> · MEDIA PROCESSING. UNDER PROTEST.<small>STINKY WEASEL PRODUCTIONS · YOUR FILES STAY ON THIS DEVICE.</small></div>
 </main>
 
 <dialog class="toolDialog" id="toolDialog" aria-labelledby="sheetTitle">
@@ -144,6 +156,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
     <div class="sheetGrab" aria-hidden="true"></div>
     <button class="sheetClose" id="sheetClose" type="button" aria-label="Close tool">&times;</button>
     <div class="sheetHeader">
+      <div class="sheetBrand"><span class="dexAsset dexIdle moodSprite" aria-hidden="true"></span><span>DEX // CASE FILE<b id="sheetVerdict">What have you brought me?</b></span></div>
       <div class="sheetKicker"><span id="sheetIcon" aria-hidden="true"></span><span id="sheetCategory"></span></div>
       <h2 id="sheetTitle"></h2>
       <p id="sheetDesc"></p>
@@ -162,6 +175,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
 
     <div class="processPane hidden" id="processPane" aria-live="polite">
       <div class="processCard">
+        <span class="processDex dexAsset dexProcessing" aria-hidden="true"></span>
         <div class="processIcon" aria-hidden="true">&gt;&gt;</div>
         <h3 id="processTitle">Preparing media engine</h3>
         <p id="processText">Keep Chrome open while this finishes.</p>
@@ -172,7 +186,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
     </div>
 
     <div class="sheetResult hidden" id="sheetResult" aria-live="polite">
-      <div class="resultHeadline"><div class="resultCheck" id="resultCheck">&#10003;</div><div><h3 id="sheetResultTitle">Done</h3><p id="sheetResultText"></p></div></div>
+      <div class="resultHeadline"><span class="dexAsset dexIdle moodSprite" aria-hidden="true"></span><div class="resultCheck" id="resultCheck">&#10003;</div><div><h3 id="sheetResultTitle">Done</h3><p id="sheetResultText"></p></div></div>
       <div class="previewFrame" id="sheetPreview"></div>
       <div class="resultMeta" id="sheetMeta"></div>
       <div class="sheetResultActions" id="sheetResultActions">
@@ -191,9 +205,9 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
   <div class="installSheet">
     <button class="installClose" id="installClose" type="button" aria-label="Close install instructions">×</button>
     <img class="installAppIcon" src="icon-192.png" alt="">
-    <p class="eyebrow">FFmpeg Pocket app</p>
+    <p class="eyebrow">DEX//CUT / INSTALLATION</p>
     <h2 id="installTitle">Install on this device</h2>
-    <p id="installCopy">Add FFmpeg Pocket like an app for one-tap launch and an app-style standalone window.</p>
+    <p id="installCopy">Install DEX//CUT for one-tap access and a standalone window.</p>
     <ol class="installSteps" id="installSteps"></ol>
     <div class="installActions">
       <button class="installPrimary hidden" id="installNative" type="button">Install now</button>
@@ -206,9 +220,9 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
 <dialog class="installDialog" id="verifyDialog" aria-labelledby="verifyTitle">
   <div class="installSheet verifySheet">
     <button class="installClose" id="verifyClose" type="button" aria-label="Close device check">×</button>
-    <p class="eyebrow">Local runtime test</p>
-    <h2 id="verifyTitle">Test all 30 tools on this device</h2>
-    <p>Runs tiny sample media through this browser's real FFmpeg engine, then checks that each result is readable here. No personal media or uploads.</p>
+    <p class="eyebrow">DEX//CUT / DEVICE VERIFICATION</p>
+    <h2 id="verifyTitle">PUT ALL 30 TO THE TEST.</h2>
+    <p>Dexter demands proof. Synthetic media runs through this device's actual FFmpeg engine and its output is decoded here. No personal files or uploads.</p>
     <div class="verifyStatus" id="verifyStatus" aria-live="polite">Ready. Run this once after installing the Home Screen app.</div>
     <div class="verifyProgress"><i id="verifyBar"></i></div>
     <div class="verifyActions">
@@ -217,7 +231,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
       <button class="verifyCopy" id="verifyCopy" type="button" disabled>Copy report</button>
     </div>
     <div class="verifyList" id="verifyList" role="log" aria-label="Device test results"></div>
-    <div class="verifyFoot">A passing result proves this small sample works in the current browser session. It does not certify large files, every codec, or other iPhone models. Keep the screen active during testing.</div>
+    <div class="verifyFoot">Proof is device- and session-specific. A PASS covers this sample only, not large files, every codec, or other devices. On iPhone, test the installed app separately. Keep this screen active.</div>
   </div>
 </dialog>
 
@@ -234,6 +248,26 @@ const processPane=$('#processPane'),processTitle=$('#processTitle'),processText=
 const sheetResult=$('#sheetResult'),resultCheck=$('#resultCheck'),sheetResultTitle=$('#sheetResultTitle'),sheetResultText=$('#sheetResultText'),sheetPreview=$('#sheetPreview'),sheetMeta=$('#sheetMeta'),errorBox=$('#errorBox'),errorDetails=$('#errorDetails'),logText=$('#logText');
 const resultHub=$('#resultHub'),hubTitle=$('#hubTitle'),hubPreview=$('#hubPreview'),hubMeta=$('#hubMeta'),continueRow=$('#continueRow'),toastEl=$('#toast');
 const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const DEX_MESSAGES={
+ idle:"Well? I'm waiting.",
+ selected:"Let's see what you've brought me.",
+ processing:"Correcting your mistakes.",
+ success:"Acceptable. Barely.",
+ failure:"This file has offended me.",
+ cancelled:"Cancellation acknowledged."
+};
+function dexMood(state){
+ const text=DEX_MESSAGES[state]||DEX_MESSAGES.idle;
+ const heroMessage=$('#dexLine'),sheetMessage=$('#sheetVerdict');
+ if(heroMessage)heroMessage.textContent=text;
+ if(sheetMessage)sheetMessage.textContent=text;
+ const asset=state==='processing'?'dexProcessing':state==='failure'?'dexError':'dexIdle';
+ for(const el of document.querySelectorAll('.moodSprite')){
+   el.classList.remove('dexIdle','dexProcessing','dexError','dexExhausted');
+   el.classList.add(asset);
+ }
+ document.body.dataset.dexMood=state;
+}
 const installBtn=$('#installBtn'),installLabel=$('#installLabel'),installDialog=$('#installDialog'),installClose=$('#installClose'),installDone=$('#installDone'),installNative=$('#installNative'),installTitle=$('#installTitle'),installCopy=$('#installCopy'),installSteps=$('#installSteps'),installHint=$('#installHint');
 let deferredInstallPrompt=null;
 let sourceFile=null,sourceURL='',selectedJob=null,resultFile=null,resultURL='',engine=null,engineLoading=null,lastLogs=[],activeCategory='all',searchTerm='',lastCard=null,runSerial=0,cancelled=false;
@@ -302,14 +336,14 @@ function outputName(job){const s=stemOf(sourceFile?.name),video=inputLooksVideo(
 function renderChips(){chipsEl.innerHTML=CATEGORIES.map(([id,label])=>`<button class="chip${activeCategory===id?' active':''}" type="button" data-cat="${id}">${esc(label)}</button>`).join('');chipsEl.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{activeCategory=b.dataset.cat;renderChips();renderJobs();}));}
 function filteredJobs(){const q=searchTerm.trim().toLowerCase();return JOBS.filter(j=>{const cat=activeCategory==='all'||(activeCategory==='quick'?j.quick:j.category===activeCategory);const hit=!q||(`${j.title} ${j.desc} ${j.about} ${j.category}`).toLowerCase().includes(q);return cat&&hit;});}
 let revealObserver=null;
-function revealCards(){if(reduceMotion.matches){jobsEl.querySelectorAll('.job').forEach(x=>x.classList.add('revealed'));return;}if(!revealObserver)revealObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');revealObserver.unobserve(e.target)}}),{threshold:.08});jobsEl.querySelectorAll('.job').forEach((el,i)=>{el.style.transitionDelay=Math.min(i*20,180)+'ms';revealObserver.observe(el)});}
+function revealCards(){if(reduceMotion.matches){jobsEl.querySelectorAll('.job').forEach(x=>x.classList.add('revealed'));return;}if(!revealObserver)revealObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');revealObserver.unobserve(e.target)}}),{threshold:.08});revealObserver.disconnect();jobsEl.querySelectorAll('.job').forEach((el,i)=>{el.style.transitionDelay=Math.min(i*20,180)+'ms';revealObserver.observe(el)});}
 function renderJobs(){const list=filteredJobs();visibleCount.textContent=list.length;jobsEl.innerHTML=list.length?list.map(j=>{const allowed=!sourceFile||jobAllowed(j);return `<button class="job${selectedJob?.id===j.id?' selected':''}${allowed?'':' unavailable'}" type="button" data-job="${j.id}" aria-disabled="${allowed?'false':'true'}"><div class="icon">${esc(j.icon)}</div><strong>${esc(j.title)}</strong><span>${esc(j.desc)}</span><div class="tag">${allowed?esc(CATEGORIES.find(x=>x[0]===j.category)?.[1]||j.category):esc(jobBlockReason(j))}</div></button>`}).join(''):'<div class="emptyTools">No tools match that search.</div>';jobsEl.querySelectorAll('[data-job]').forEach(b=>b.addEventListener('click',()=>openTool(b.dataset.job,b)));requestAnimationFrame(revealCards);}
 searchEl.addEventListener('input',()=>{searchTerm=searchEl.value;renderJobs()});
 
-function renderFields(job){const v=values[job.id];fieldsEl.innerHTML=job.fields.map(f=>{if(f.type==='select')return `<div class="field"><label>${esc(f.label)}</label><select data-key="${f.k}">${f.options.map(o=>`<option value="${o[0]}"${String(v[f.k])===String(o[0])?' selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`;if(f.type==='range')return `<div class="field full"><label>${esc(f.label)} <output data-out="${f.k}">${esc(v[f.k])}</output></label><input data-key="${f.k}" type="range" value="${esc(v[f.k])}" min="${f.min}" max="${f.max}" step="${f.step||1}"></div>`;return `<div class="field"><label>${esc(f.label)}</label><input data-key="${f.k}" type="number" value="${esc(v[f.k])}" min="${f.min??0}" max="${f.max??999999}" step="${f.step??1}"><small>${esc(f.suffix||'')}</small></div>`}).join('')||'<div class="noOptions">No extra choices needed. This tool is ready as-is.</div>';fieldsEl.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',()=>{values[job.id][el.dataset.key]=el.value;const out=fieldsEl.querySelector(`[data-out="${el.dataset.key}"]`);if(out)out.value=el.value;}));}
+function renderFields(job){const v=values[job.id];fieldsEl.innerHTML=job.fields.map(f=>{if(f.type==='select')return `<div class="field"><label>${esc(f.label)}</label><select aria-label="${esc(f.label)}" data-key="${f.k}">${f.options.map(o=>`<option value="${o[0]}"${String(v[f.k])===String(o[0])?' selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`;if(f.type==='range')return `<div class="field full"><label>${esc(f.label)} <output data-out="${f.k}">${esc(v[f.k])}</output></label><input aria-label="${esc(f.label)}" data-key="${f.k}" type="range" value="${esc(v[f.k])}" min="${f.min}" max="${f.max}" step="${f.step||1}"></div>`;return `<div class="field"><label>${esc(f.label)}</label><input aria-label="${esc(f.label)}" data-key="${f.k}" type="number" value="${esc(v[f.k])}" min="${f.min??0}" max="${f.max??999999}" step="${f.step??1}"><small>${esc(f.suffix||'')}</small></div>`}).join('')||'<div class="noOptions">No extra choices needed. This tool is ready as-is.</div>';fieldsEl.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',()=>{values[job.id][el.dataset.key]=el.value;const out=fieldsEl.querySelector(`[data-out="${el.dataset.key}"]`);if(out)out.value=el.value;}));}
 function updateSourceChip(){if(sourceFile){sourceChip.classList.remove('missing');sourceChipText.textContent=sourceFile.name;}else{sourceChip.classList.add('missing');sourceChipText.textContent='Choose a file before running';}}
 function updateSheetRun(){if(!selectedJob)return;const allowed=sourceFile&&jobAllowed(selectedJob);sheetRun.disabled=!allowed;sheetHint.textContent=!sourceFile?'Choose a file first.':!jobAllowed(selectedJob)?sourceMediaInfo.audio===false&&AUDIO_REQUIRED.has(selectedJob.id)?'This file has no audio track. Choose a file with sound.':'This tool needs a video file.':selectedJob.warning||'The result stays on this device.';compatMessage.classList.toggle('hidden',!selectedJob.warning);compatMessage.textContent=selectedJob.warning||'';updateSourceChip();}
-function openTool(id,card){const job=JOBS.find(j=>j.id===id);if(!job)return;selectedJob=job;lastCard=card;renderJobs();sheetIcon.textContent=job.icon;sheetCategory.textContent=CATEGORIES.find(x=>x[0]===job.category)?.[1]||job.category;sheetTitle.textContent=job.title;sheetDesc.textContent=job.about;renderFields(job);configPane.classList.remove('hidden');processPane.classList.add('hidden');sheetResult.classList.add('hidden');errorBox.classList.add('hidden');errorDetails.classList.add('hidden');updateSheetRun();toolDialog.showModal();requestAnimationFrame(()=>animateSheetFrom(card));}
+function openTool(id,card){const job=JOBS.find(j=>j.id===id);if(!job)return;dexMood('selected');selectedJob=job;lastCard=card;renderJobs();sheetIcon.textContent=job.icon;sheetCategory.textContent=CATEGORIES.find(x=>x[0]===job.category)?.[1]||job.category;sheetTitle.textContent=job.title;sheetDesc.textContent=job.about;renderFields(job);configPane.classList.remove('hidden');processPane.classList.add('hidden');sheetResult.classList.add('hidden');errorBox.classList.add('hidden');errorDetails.classList.add('hidden');updateSheetRun();toolDialog.showModal();requestAnimationFrame(()=>animateSheetFrom(card));}
 function animateSheetFrom(card){if(reduceMotion.matches||!card)return;const from=card.getBoundingClientRect(),to=toolSheet.getBoundingClientRect();const sx=Math.max(.2,Math.min(1,from.width/to.width)),sy=Math.max(.12,Math.min(1,from.height/to.height));const tx=(from.left+from.width/2)-(to.left+to.width/2),ty=(from.top+from.height/2)-(to.top+to.height/2);toolSheet.animate([{transform:`translate(${tx}px,${ty}px) scale(${sx},${sy})`,opacity:.3,borderRadius:'18px'},{transform:'translate(0,0) scale(1)',opacity:1,borderRadius:'28px'}],{duration:430,easing:'cubic-bezier(.18,.9,.22,1)',fill:'both'});}
 async function closeTool(){if(!toolDialog.open)return;if(!reduceMotion.matches){const anim=toolSheet.animate([{transform:'translateY(0) scale(1)',opacity:1},{transform:'translateY(24px) scale(.985)',opacity:0}],{duration:170,easing:'ease-in',fill:'both'});try{await anim.finished}catch(_){}}toolDialog.close();selectedJob=null;renderJobs();lastCard?.focus?.();}
 sheetClose.addEventListener('click',closeTool);toolDialog.addEventListener('click',e=>{if(e.target===toolDialog)closeTool()});toolDialog.addEventListener('cancel',e=>{e.preventDefault();closeTool()});
@@ -343,7 +377,43 @@ self.onmessage=async(e)=>{const {id,type,data}=e.data;try{
 
 async function blobURL(url,mime){const r=await fetch(url,{mode:'cors',cache:'force-cache'});if(!r.ok)throw new Error('Could not download the media engine ('+r.status+').');const b=await r.blob();return URL.createObjectURL(new Blob([b],{type:mime}))}
 function setProgress(p,stage,text){const n=Math.max(0,Math.min(1,p));progressBar.style.width=Math.round(n*100)+'%';processPercent.textContent=Math.round(n*100)+'%';if(stage)processStage.textContent=stage;if(text)processText.textContent=text;}
-async function ensureEngine(){if(engine)return engine;if(engineLoading)return engineLoading;engineLoading=(async()=>{if(!('WebAssembly'in window)||!('Worker'in window))throw new Error('This browser is missing WebAssembly or Web Worker support.');processTitle.textContent='Loading the media engine';setProgress(.04,'Engine','First run downloads the browser engine.');const CORE='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';let coreBlob='',wasmBlob='';try{coreBlob=await blobURL(CORE+'/ffmpeg-core.js','text/javascript');setProgress(.22,'Engine','Loading the FFmpeg core.');wasmBlob=await blobURL(CORE+'/ffmpeg-core.wasm','application/wasm');setProgress(.58,'Engine','Starting the local media worker.');const f=new PocketFFmpeg();f.onLog(({message})=>{lastLogs.push(message);if(lastLogs.length>140)lastLogs.shift()});f.onProgress(({progress})=>{if(Number.isFinite(progress))setProgress(Math.max(.62,Math.min(.97,.62+progress*.35)),'Processing')});await f.load(coreBlob,wasmBlob);engine=f;setProgress(1,'Ready','Media engine ready.');return engine;}finally{if(coreBlob)URL.revokeObjectURL(coreBlob);if(wasmBlob)URL.revokeObjectURL(wasmBlob);engineLoading=null}})();return engineLoading;}
+let engineLoadToken=0,engineStartingWorker=null;
+async function ensureEngine(){
+  if(engine)return engine;
+  if(engineLoading)return engineLoading;
+  const token=engineLoadToken;
+  const task=(async()=>{
+    if(!('WebAssembly'in window)||!('Worker'in window))throw new Error('This browser is missing WebAssembly or Web Worker support.');
+    processTitle.textContent='Loading the media engine';
+    setProgress(.04,'Engine','First run downloads the browser engine.');
+    const CORE='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
+    let coreBlob='',wasmBlob='',f=null;
+    const active=()=>{if(token!==engineLoadToken)throw new Error('cancelled')};
+    try{
+      coreBlob=await blobURL(CORE+'/ffmpeg-core.js','text/javascript');
+      active();setProgress(.22,'Engine','Loading the FFmpeg core.');
+      wasmBlob=await blobURL(CORE+'/ffmpeg-core.wasm','application/wasm');
+      active();setProgress(.58,'Engine','Starting the local media worker.');
+      f=new PocketFFmpeg();engineStartingWorker=f;
+      f.onLog(({message})=>{if(token===engineLoadToken){lastLogs.push(message);if(lastLogs.length>140)lastLogs.shift()}});
+      f.onProgress(({progress})=>{if(token===engineLoadToken&&Number.isFinite(progress))setProgress(Math.max(.62,Math.min(.97,.62+progress*.35)),'Processing')});
+      await f.load(coreBlob,wasmBlob);
+      active();
+      engine=f;
+      setProgress(1,'Ready','Media engine ready.');
+      return f;
+    }catch(err){
+      if(f&&f!==engine)f.terminate('startup abandoned');
+      throw err;
+    }finally{
+      if(engineStartingWorker===f)engineStartingWorker=null;
+      if(coreBlob)URL.revokeObjectURL(coreBlob);
+      if(wasmBlob)URL.revokeObjectURL(wasmBlob);
+    }
+  })();
+  engineLoading=task;
+  try{return await task}finally{if(engineLoading===task)engineLoading=null}
+}
 
 function parseMediaInfo(logs){
   const text=logs.join('\n');
@@ -428,7 +498,7 @@ default:throw new Error('Unknown tool')}
 
 function friendlyError(err){const s=(lastLogs.join('\n')+'\n'+String(err?.message||err));if(cancelled||/cancelled/i.test(s))return 'Cancelled. Nothing was saved.';if(/out of memory|memory access out of bounds|Cannot enlarge memory|OOM/i.test(s))return 'This file is too large for Chrome to process comfortably on this iPhone. Try a shorter or smaller file.';if(/Invalid data found|moov atom not found/i.test(s))return 'Chrome could not read this media file. It may be incomplete or use an unusual format.';if(/matches no streams|does not contain any stream|Stream map.*matches no streams/i.test(s))return 'This file does not have the audio or video track that this tool needs.';if(/This file has no audio track/i.test(s))return 'This file has no audio track. Choose a file with sound for this tool.';if(/already as compact as this setting/i.test(s))return 'This file is already compact. The result was larger, so it was not saved. Try Much smaller.';if(/Cannot determine the source video size/i.test(s))return 'Could not read the video dimensions. Try an MP4 file.';if(/Could not inspect the audio and video tracks/i.test(s))return 'Could not inspect this file. Try converting it to MP4 first.';if(/Unknown encoder|Encoder .* not found/i.test(s))return 'This conversion is not available in the browser media engine.';return 'The tool stopped before it finished. A smaller file or a different format may work better.'}
 async function maybeWake(){try{if('wakeLock'in navigator)return await navigator.wakeLock.request('screen')}catch(_){return null}return null}
-function enterProcess(){configPane.classList.add('hidden');sheetResult.classList.add('hidden');processPane.classList.remove('hidden');document.body.classList.add('processing');setProgress(.02,'Starting','Keep Chrome open while this finishes.');}
+function enterProcess(){dexMood('processing');configPane.classList.add('hidden');sheetResult.classList.add('hidden');processPane.classList.remove('hidden');document.body.classList.add('processing');setProgress(.02,'Starting','Keep Chrome open while this finishes.');}
 function leaveProcess(){document.body.classList.remove('processing');processPane.classList.add('hidden');}
 async function runTool(){if(!sourceFile||!selectedJob||!jobAllowed(selectedJob))return;const serial=++runSerial;cancelled=false;enterProcess();lastLogs=[];let wake=null,input='',output='',f=null;try{wake=await maybeWake();f=await ensureEngine();if(serial!==runSerial||cancelled)throw new Error('cancelled');processTitle.textContent='Processing '+sourceFile.name;setProgress(.08,'Reading file','Copying the selected media into the local engine.');input=safeInputName();output=outputName(selectedJob);await f.del(input).catch(()=>{});await f.del(output).catch(()=>{});const bytes=new Uint8Array(await sourceFile.arrayBuffer());setProgress(.14,'Reading file');await f.write(input,bytes);
 setProgress(.17,'Inspecting file','Checking media tracks and duration.');
@@ -436,18 +506,18 @@ const info=await probeMedia(f,input);
 if(serial!==runSerial||cancelled)throw new Error('cancelled');
 if(AUDIO_REQUIRED.has(selectedJob.id)&&!info.audio)throw new Error('This file has no audio track. Choose a file containing sound.');
 if(selectedJob.kind==='video'&&!info.video)throw new Error('This file has no video track.');
-setProgress(.2,'Processing','Running '+selectedJob.title.toLowerCase()+'.');const code=await f.exec(build(selectedJob,input,output));if(serial!==runSerial||cancelled)throw new Error('cancelled');if(code!==0)throw new Error('FFmpeg exited with code '+code);setProgress(.98,'Finishing','Preparing the result for playback.');const data=await f.read(output);if(selectedJob.id==='smaller'&&data.byteLength>=sourceFile.size)throw new Error('The original is already as compact as this setting can make it. No larger copy was saved. Try Much smaller.');const blob=new Blob([data.buffer],{type:mimeFor(output)});if(resultURL)URL.revokeObjectURL(resultURL);resultURL=URL.createObjectURL(blob);resultFile=new File([blob],output,{type:blob.type,lastModified:Date.now()});setProgress(1,'Ready','Done.');showSuccess();await f.del(input).catch(()=>{});await f.del(output).catch(()=>{});}catch(err){showFailure(friendlyError(err),err)}finally{if(f){if(input)await f.del(input).catch(()=>{});if(output)await f.del(output).catch(()=>{});}try{await wake?.release()}catch(_){}leaveProcess();}}
-function cancelCurrent(){if(processPane.classList.contains('hidden'))return;cancelled=true;runSerial++;if(engine){engine.terminate('cancelled');engine=null;}engineLoading=null;leaveProcess();configPane.classList.remove('hidden');toast('Cancelled');}
+setProgress(.2,'Processing','Running '+selectedJob.title.toLowerCase()+'.');const code=await f.exec(build(selectedJob,input,output));if(serial!==runSerial||cancelled)throw new Error('cancelled');if(code!==0)throw new Error('FFmpeg exited with code '+code);setProgress(.98,'Finishing','Preparing the result for playback.');const data=await f.read(output);if(serial!==runSerial||cancelled)throw new Error('cancelled');if(selectedJob.id==='smaller'&&data.byteLength>=sourceFile.size)throw new Error('The original is already as compact as this setting can make it. No larger copy was saved. Try Much smaller.');const blob=new Blob([data.buffer],{type:mimeFor(output)});if(resultURL)URL.revokeObjectURL(resultURL);resultURL=URL.createObjectURL(blob);resultFile=new File([blob],output,{type:blob.type,lastModified:Date.now()});setProgress(1,'Ready','Done.');showSuccess();await f.del(input).catch(()=>{});await f.del(output).catch(()=>{});}catch(err){if(serial===runSerial&&!cancelled)showFailure(friendlyError(err),err)}finally{if(f){if(input)await f.del(input).catch(()=>{});if(output)await f.del(output).catch(()=>{});}try{await wake?.release()}catch(_){}if(serial===runSerial)leaveProcess();}}
+function cancelCurrent(){if(processPane.classList.contains('hidden'))return;dexMood('cancelled');cancelled=true;runSerial++;engineLoadToken++;if(engineStartingWorker){engineStartingWorker.terminate('cancelled');engineStartingWorker=null;}if(engine){engine.terminate('cancelled');engine=null;}engineLoading=null;leaveProcess();configPane.classList.remove('hidden');toast('Cancelled');}
 cancelRun.addEventListener('click',cancelCurrent);sheetRun.addEventListener('click',runTool);
 
 function previewMarkup(file,url){if(!file||!url)return '';const type=file.type||mimeFor(file.name);if(type.startsWith('video/'))return `<video controls playsinline preload="metadata" src="${url}"></video>`;if(type.startsWith('audio/'))return `<div class="audioFrame"><div class="audioViz" aria-hidden="true">${'<i></i>'.repeat(10)}</div><audio controls preload="metadata" src="${url}"></audio></div>`;if(type.startsWith('image/'))return `<img src="${url}" alt="Processed result">`;return `<div class="audioFrame"><strong>${esc(file.name)}</strong></div>`}
 function metaMarkup(file){return `<span class="metaPill">${esc(extOf(file.name).toUpperCase())}</span><span class="metaPill">${esc(fmtBytes(file.size))}</span><span class="metaPill">Processed locally</span>`}
 function suggestedTools(){if(!resultFile)return[];const video=resultFile.type.startsWith('video/');const audio=resultFile.type.startsWith('audio/');const ids=video?['clip','smaller','gif','crop','audio']:audio?['mp3','normalize','volume','silence']:['gif'];return ids.map(id=>JOBS.find(j=>j.id===id)).filter(Boolean).slice(0,4)}
-function showSuccess(){sheetResult.classList.remove('hidden');configPane.classList.add('hidden');resultCheck.textContent='\u2713';sheetResultTitle.textContent='Ready to play';sheetResultText.textContent=resultFile.name+' / '+fmtBytes(resultFile.size);sheetPreview.innerHTML=previewMarkup(resultFile,resultURL);sheetMeta.innerHTML=metaMarkup(resultFile);errorBox.classList.add('hidden');errorDetails.classList.add('hidden');resultHub.classList.remove('hidden');hubTitle.textContent=resultFile.name;hubPreview.innerHTML=previewMarkup(resultFile,resultURL);hubMeta.innerHTML=metaMarkup(resultFile);continueRow.innerHTML=suggestedTools().map(j=>`<button type="button" data-next="${j.id}">Next: ${esc(j.title)}</button>`).join('');continueRow.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{handleFile(resultFile);openTool(b.dataset.next,null)}));}
-function showFailure(msg,err){sheetResult.classList.remove('hidden');configPane.classList.add('hidden');resultCheck.textContent='!';sheetResultTitle.textContent=cancelled?'Cancelled':'That did not finish';sheetResultText.textContent=msg;sheetPreview.innerHTML='';sheetMeta.innerHTML='';errorBox.textContent=msg;errorBox.classList.remove('hidden');logText.textContent=(lastLogs.slice(-70).join('\n')+'\n'+String(err?.stack||err?.message||err)).trim();errorDetails.classList.remove('hidden');}
+function showSuccess(){dexMood('success');sheetResult.classList.remove('hidden');configPane.classList.add('hidden');resultCheck.textContent='\u2713';sheetResultTitle.textContent='Ready to play';sheetResultText.textContent=resultFile.name+' / '+fmtBytes(resultFile.size);sheetPreview.innerHTML=previewMarkup(resultFile,resultURL);sheetMeta.innerHTML=metaMarkup(resultFile);errorBox.classList.add('hidden');errorDetails.classList.add('hidden');resultHub.classList.remove('hidden');hubTitle.textContent=resultFile.name;hubPreview.innerHTML=previewMarkup(resultFile,resultURL);hubMeta.innerHTML=metaMarkup(resultFile);continueRow.innerHTML=suggestedTools().map(j=>`<button type="button" data-next="${j.id}">Next: ${esc(j.title)}</button>`).join('');continueRow.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{handleFile(resultFile);openTool(b.dataset.next,null)}));}
+function showFailure(msg,err){dexMood('failure');sheetResult.classList.remove('hidden');configPane.classList.add('hidden');resultCheck.textContent='!';sheetResultTitle.textContent=cancelled?'Cancelled':'That did not finish';sheetResultText.textContent=msg;sheetPreview.innerHTML='';sheetMeta.innerHTML='';errorBox.textContent=msg;errorBox.classList.remove('hidden');logText.textContent=(lastLogs.slice(-70).join('\n')+'\n'+String(err?.stack||err?.message||err)).trim();errorDetails.classList.remove('hidden');}
 async function shareResult(){if(!resultFile)return;try{if(navigator.canShare&&navigator.canShare({files:[resultFile]})){await navigator.share({files:[resultFile],title:resultFile.name});return}}catch(e){if(e?.name==='AbortError')return}saveResult()}
 function saveResult(){if(!resultFile||!resultURL)return;const a=document.createElement('a');a.href=resultURL;a.download=resultFile.name;document.body.appendChild(a);a.click();a.remove();toast('Saved through Chrome downloads')}
-function useResult(){if(!resultFile)return;handleFile(resultFile);resultHub.classList.add('hidden');closeTool();setTimeout(()=>$('#library').scrollIntoView({behavior:reduceMotion.matches?'auto':'smooth',block:'start'}),80);toast('Result is now your source file')}
+function useResult(){if(!resultFile)return;dexMood('selected');handleFile(resultFile);resultHub.classList.add('hidden');closeTool();setTimeout(()=>$('#library').scrollIntoView({behavior:reduceMotion.matches?'auto':'smooth',block:'start'}),80);toast('Result is now your source file')}
 document.addEventListener('click',e=>{const a=e.target.closest('[data-action]');if(!a)return;const action=a.dataset.action;if(action==='share')shareResult();else if(action==='save')saveResult();else if(action==='use-result')useResult();else if(action==='close-result')closeTool();});
 
 function isInstalledPWA(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
@@ -463,17 +533,17 @@ function setInstallGuide(){
   const chromeIOS=/CriOS/i.test(navigator.userAgent);
   installNative.classList.toggle('hidden',!deferredInstallPrompt);
   if(deferredInstallPrompt){
-    installTitle.textContent='Install FFmpeg Pocket';
+    installTitle.textContent='Install DEX//CUT';
     installCopy.textContent='Chrome can install this as an app on this device.';
-    installSteps.innerHTML='<li>Tap Install now below.</li><li>Confirm the browser installation.</li><li>Open FFmpeg Pocket from your apps or Home Screen.</li>';
+    installSteps.innerHTML='<li>Tap Install now below.</li><li>Confirm the browser installation.</li><li>Open DEX//CUT from your apps or Home Screen.</li>';
     installHint.textContent='It launches in its own app-style window.';
   }else if(ios){
-    installTitle.textContent='Add FFmpeg Pocket to Home Screen';
+    installTitle.textContent='Add DEX//CUT to Home Screen';
     installCopy.textContent=(chromeIOS?'In Chrome on iPhone or iPad, ':'On iPhone or iPad, ')+'use the Share menu to install this web app.';
-    installSteps.innerHTML='<li>Tap Share beside the Chrome address bar.</li><li>Tap Add to Home Screen.</li><li>Tap Add. Then launch FFmpeg Pocket from the new icon.</li>';
+    installSteps.innerHTML='<li>Tap Share beside the Chrome address bar.</li><li>Tap Add to Home Screen.</li><li>Tap Add. Then launch DEX//CUT from the new icon.</li>';
     installHint.textContent='The Home Screen version opens as the web app when iOS recognizes the PWA.';
   }else{
-    installTitle.textContent='Install FFmpeg Pocket';
+    installTitle.textContent='Install DEX//CUT';
     installCopy.textContent='Your browser can add this site as an app. If no install prompt appears, use the browser menu.';
     installSteps.innerHTML='<li>Open the browser menu.</li><li>Choose Install app, Install page as app, or Add to Home Screen.</li><li>Confirm installation and launch from your apps.</li>';
     installHint.textContent='No App Store account is required for the PWA.';
@@ -487,7 +557,7 @@ async function requestInstall(){
     try{
       await promptEvent.prompt();
       const choice=await promptEvent.userChoice;
-      if(choice?.outcome==='accepted')toast('FFmpeg Pocket installed');
+      if(choice?.outcome==='accepted')toast('DEX//CUT installed');
     }catch(_){}
     setInstallState();
     return;
@@ -501,7 +571,7 @@ installClose.addEventListener('click',()=>installDialog.close());
 installDone.addEventListener('click',()=>installDialog.close());
 installDialog.addEventListener('click',e=>{if(e.target===installDialog)installDialog.close()});
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;setInstallGuide();setInstallState()});
-window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;setInstallState();if(installDialog.open)installDialog.close();toast('FFmpeg Pocket installed')});
+window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;setInstallState();if(installDialog.open)installDialog.close();toast('DEX//CUT installed')});
 window.matchMedia('(display-mode: standalone)').addEventListener?.('change',setInstallState);
 setInstallGuide();setInstallState();
 
@@ -598,11 +668,11 @@ async function runDeviceTests(){
 }
 verifyOpen.addEventListener('click',()=>verifyDialog.showModal());
 verifyRun.addEventListener('click',runDeviceTests);
-verifyCancel.addEventListener('click',()=>{verifyCancelled=true;if(engine){engine.terminate('device check cancelled');engine=null;}engineLoading=null;verifyStatus.textContent='Stopping the device test…'});
+verifyCancel.addEventListener('click',()=>{verifyCancelled=true;engineLoadToken++;if(engineStartingWorker){engineStartingWorker.terminate('device check cancelled');engineStartingWorker=null;}if(engine){engine.terminate('device check cancelled');engine=null;}engineLoading=null;verifyStatus.textContent='Stopping the device test…'});
 verifyClose.addEventListener('click',()=>{if(verifyRunning)return;verifyDialog.close()});
 verifyDialog.addEventListener('cancel',e=>{if(verifyRunning)e.preventDefault()});
 verifyCopy.addEventListener('click',async()=>{
-  const report={product:'FFmpeg Pocket',testedAt:new Date().toISOString(),userAgent:navigator.userAgent,tests:verifyRecords};
+  const report={product:'DEX//CUT',testedAt:new Date().toISOString(),userAgent:navigator.userAgent,tests:verifyRecords};
   try{await navigator.clipboard.writeText(JSON.stringify(report,null,2));toast('Device test report copied')}
   catch(_){toast('Copy unavailable. Take a screenshot of the test results.')}
 });
@@ -610,7 +680,7 @@ if(new URLSearchParams(location.search).has('verify'))verifyDialog.showModal();
 
 renderChips();renderJobs();
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
-window.addEventListener('pagehide',()=>{try{engine?.terminate('page closed')}catch(_){}if(sourceURL)URL.revokeObjectURL(sourceURL);if(resultURL)URL.revokeObjectURL(resultURL);},{once:true});
+window.addEventListener('pagehide',()=>{engineLoadToken++;try{engineStartingWorker?.terminate('page closed')}catch(_){}try{engine?.terminate('page closed')}catch(_){}if(sourceURL)URL.revokeObjectURL(sourceURL);if(resultURL)URL.revokeObjectURL(resultURL);},{once:true});
 document.addEventListener('visibilitychange',()=>document.body.classList.toggle('reduceAmbient',document.hidden));
 })();
 </script>
