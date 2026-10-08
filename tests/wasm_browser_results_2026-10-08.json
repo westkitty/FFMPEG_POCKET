@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-10-08T08:57:29Z",
+  "git_commit": "ccb7e4d8bfd91af25e8dd3ab68648d46d61d35d5",
+  "environment": "macOS arm64, headless Brave (Chromium-based desktop browser); NOT iPhone Chrome/WebKit",
+  "target": "https://westkitty.github.io/FFMPEG_POCKET/",
+  "engine": "@ffmpeg/core@0.12.10 single-thread WebAssembly",
+  "input": "2.5-second public synthetic MP4 with audio",
+  "checks": "Each job executes FFmpeg.wasm, yields nonempty output, is probed for streams/selected semantics, and is browser-decoded",
+  "summary": {
+    "passed": 30,
+    "failed": 0
+  },
+  "tools": [
+    {
+      "id": "ending",
+      "status": "PASS"
+    },
+    {
+      "id": "clip",
+      "status": "PASS"
+    },
+    {
+      "id": "smaller",
+      "status": "PASS"
+    },
+    {
+      "id": "audio",
+      "status": "PASS"
+    },
+    {
+      "id": "mute",
+      "status": "PASS"
+    },
+    {
+      "id": "gif",
+      "status": "PASS"
+    },
+    {
+      "id": "resize",
+      "status": "PASS"
+    },
+    {
+      "id": "rotate",
+      "status": "PASS"
+    },
+    {
+      "id": "picture",
+      "status": "PASS"
+    },
+    {
+      "id": "speed",
+      "status": "PASS"
+    },
+    {
+      "id": "crop",
+      "status": "PASS"
+    },
+    {
+      "id": "fitframe",
+      "status": "PASS"
+    },
+    {
+      "id": "reverse",
+      "status": "PASS"
+    },
+    {
+      "id": "loop",
+      "status": "PASS"
+    },
+    {
+      "id": "boomerang",
+      "status": "PASS"
+    },
+    {
+      "id": "compat",
+      "status": "PASS"
+    },
+    {
+      "id": "webm",
+      "status": "PASS"
+    },
+    {
+      "id": "mp3",
+      "status": "PASS"
+    },
+    {
+      "id": "wav",
+      "status": "PASS"
+    },
+    {
+      "id": "normalize",
+      "status": "PASS"
+    },
+    {
+      "id": "volume",
+      "status": "PASS"
+    },
+    {
+      "id": "silence",
+      "status": "PASS"
+    },
+    {
+      "id": "mono",
+      "status": "PASS"
+    },
+    {
+      "id": "color",
+      "status": "PASS"
+    },
+    {
+      "id": "blur",
+      "status": "PASS"
+    },
+    {
+      "id": "sharpen",
+      "status": "PASS"
+    },
+    {
+      "id": "bw",
+      "status": "PASS"
+    },
+    {
+      "id": "pixelate",
+      "status": "PASS"
+    },
+    {
+      "id": "fps",
+      "status": "PASS"
+    },
+    {
+      "id": "metadata",
+      "status": "PASS"
+    }
+  ],
+  "workflow": {
+    "pageStatus": 200,
+    "chooseMuteProcess": true,
+    "inlineVideoDecoded": true,
+    "downloadedBytes": 121985,
+    "chainResult": true,
+    "imageDecoded": true,
+    "offlineShell": true,
+    "offlineConversionAfterCoreCached": true
+  },
+  "limitations": [
+    "Not performed in iPhone Chrome or installed iOS PWA",
+    "Tiny synthetic media does not prove long/large/unusual media",
+    "Offline conversion proved only after core was cached and controlled by a service worker"
+  ]
+}

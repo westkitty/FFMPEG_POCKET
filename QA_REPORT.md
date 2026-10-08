@@ -1,60 +1,37 @@
-# FFmpeg Pocket — bounded repair verification
-
+# FFmpeg Pocket — release verification
 **Date:** 2026-10-08  
-**Repository:** `westkitty/FFMPEG_POCKET`  
-**Scope:** Repair incorrect cuts, non-shrinking compression, pixelation dimensions, missing-audio behavior and failure cleanup; preserve the installed PWA and all 30 tools.
+**Target:** [Live PWA](https://westkitty.github.io/FFMPEG_POCKET/)  
+**Deployed code:** `ccb7e4d8bfd91af25e8dd3ab68648d46d61d35d5`  
 
-## Evidence tiers
+## Verdict
+**30/30 actual WebAssembly tools PASS in headless Brave on macOS ARM64.** This is browser-runtime proof, **not iPhone certification**.
 
-| Test | Outcome | What it proves |
+| Check | Result | Evidence scope |
 |---|---|---|
-| JavaScript + service-worker syntax | PASS | Parsed locally by Node |
-| Mobile browser control matrix | 100/100 PASS | Every tool opens/updates correctly across audio, video, silent-video and longer-video inputs at 390×844 (desktop Chromium mobile emulation) |
-| Native FFmpeg executions | 46/46 PASS | 30 video tools + 10 audio-only paths + 6 longer/silent-video cases produce valid media |
-| Semantic assertions | PASS | Accurate 10-second ending, 5-second clip, compressed output smaller, pixelate retains dimensions, correct audio/video stream composition |
-| Simulated-engine device-test workflow | 30/30 PASS | Diagnostic UI loops, checks, creates playable previews and completes correctly with prerecorded test media |
-| Actual WebAssembly on iPhone PWA | NOT RUN | Cannot be certified without the target device |
-| iOS memory, storage, offline cold start | NOT RUN | Requires phone observation |
+| GitHub Pages deployment | PASS | GitHub native Pages build and deploy succeeded for this commit |
+| Installed tool inventory | PASS | 30 exposed tools; 30 matching command handlers |
+| Desktop native FFmpeg | 46/46 PASS | Tool outputs + semantic assertions, including accurate clip/ending, compression, and pixelation |
+| Responsive UI regression | 100/100 PASS | 390×844 Chromium test; no horizontal overflow or JS errors |
+| Simulated diagnostic engine | 30/30 PASS | Tests UI/control flow only; not FFmpeg.wasm proof |
+| **Actual FFmpeg.wasm** | **30/30 PASS** | Live page, single-thread @ffmpeg/core@0.12.10, 2.5-second synthetic media, real FFmpeg execution, output stream probes and browser playback |
+| Normal workflow | PASS | Pick video → Mute → inline play → download (121,985 bytes) → Keep editing → Save a picture → inline JPEG decode |
+| Offline after warm-up | PASS | Service worker app shell + JS/WASM CDN cache; reload offline and perform Mute conversion |
+| Physical installed iPhone PWA | **NOT RUN** | Requires an iPhone; macOS Brave is not iOS WebKit |
+| Large/long clips and uncommon codecs | **NOT RUN** | WebKit memory, per-codec and performance limitations remain |
 
-## Tool inventory
+## Confirmed corrections
+- Accurate clip and ending cuts use re-encoding to avoid keyframe seeking inaccuracies.
+- Compression refuses to report a file-size increase as success.
+- Pixelation preserves source dimensions.
+- Audio-dependent operations preflight input tracks, including silent-video cases.
+- Temporary media files are cleaned even on error.
+- The device diagnostic retains original sample byte size across transferred ArrayBuffers.
+- Audio-filter helpers consume their explicitly provided input path, so production and verification paths agree.
 
-1. Keep the ending
-2. Cut a clip
-3. Make it smaller
-4. Save just the audio
-5. Mute
-6. Make a GIF
-7. Resize
-8. Rotate / flip
-9. Save a picture
-10. Change speed
-11. Crop for a screen
-12. Fit inside a frame
-13. Reverse
-14. Loop video
-15. Boomerang
-16. Fix phone compatibility
-17. Convert to WebM
-18. Make an MP3
-19. Make a WAV
-20. Even out loudness
-21. Change volume
-22. Trim edge silence
-23. Make audio mono
-24. Adjust picture
-25. Blur
-26. Sharpen
-27. Black + white
-28. Pixelate
-29. Change frame rate
-30. Strip metadata
+## Individual per-tool execution
+See [machine-readable 30-tool proof](tests/wasm_browser_results_2026-10-08.json). All 30 show PASS in the stated browser environment.
 
-## Device verification
+## Closing the iPhone-specific gate
+On the target iPhone, open the **installed FFmpeg Pocket PWA**, tap **Verify tools on this device**, then **Run 30 tests**. Keep the screen active. When complete, use **Copy report**. Per-tool PASS on the phone, plus representative real-file playback/Share, is the only appropriate basis for an iPhone-specific claim.
 
-Open `https://westkitty.github.io/FFMPEG_POCKET/?verify=1` on the target iPhone or tap **Verify tools on this device** inside the installed PWA. Press **Run 30 tests**. Keep the PWA foregrounded and on power if possible. This uses a public synthetic 2.5-second H.264/AAC test clip, processes sequentially with the actual current browser FFmpeg worker, and checks that every output is readable with its expected type/dimensions/duration. **Copy report** to preserve per-tool outcomes.
-
-A diagnostic PASS only proves the small sample in the current browser session. Actual user media may still exceed WebKit memory limits, contain unsupported codecs, or trigger edge conditions. Real iPhone hardware is required to close this final gate. No personal media leaves the browser.
-
-## Recovery
-
-Failures are presented by tool. If the engine cannot load, verify online connectivity for the first download and that the app is served through HTTPS. Reopen the installed PWA after a crash; avoid large media for the first proof. Do not conflate a successful GitHub Pages deployment with a successful FFmpeg conversion.
+These synthetic browser tests do not upload personal media. The app downloads its browser FFmpeg engine while online; an offline run requires the engine to have been downloaded and cached previously.

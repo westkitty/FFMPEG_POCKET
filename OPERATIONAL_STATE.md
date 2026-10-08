@@ -2,7 +2,7 @@
 
 project_id: ffmpeg-pocket
 project_name: FFmpeg Pocket
-revision: 5
+revision: 6
 
 ## Current baseline
 - Repository: westkitty/FFMPEG_POCKET
@@ -33,9 +33,20 @@ revision: 5
 - PASS: 100 mobile-sized Chromium UI cases across video, audio, and silent-video inputs (no page errors or overflow).
 - PASS: 46/46 desktop native FFmpeg output tests and semantic assertions, including accurate 10-second ending and 5-second clip, source dimensions, and source-size compression guard.
 - PASS: 30/30 simulated-engine runs of the new on-device tester, with output browser decoding; this tests the harness and does NOT prove ffmpeg.wasm execution.
-- UNVERIFIED: all 30 commands executed by @ffmpeg/core WASM on Greyson's actual iPhone/installed PWA.
+- VERIFIED: 30/30 commands executed by @ffmpeg/core WASM in headless Brave on macOS ARM64, with stream probes and browser decoding of every result.
+- VERIFIED: actual user-flow Mute -> inline playback -> download -> continue-editing -> JPEG preview, and offline conversion after initial CDN cache, all in headless Brave.
+- UNVERIFIED: those same 30 operations on the actual iPhone/installed PWA.
 - UNVERIFIED: realistic phone storage/memory limits, long reverse/boomerang clips, iOS Chrome Share behavior on the device.
-- UNVERIFIED: offline FFmpeg engine availability until it has been downloaded and cached once.
+- VERIFIED IN BRAVE: offline PWA shell and FFmpeg conversion after the core was downloaded and cached.
+- UNVERIFIED ON IPHONE: offline FFmpeg processing and iOS background/lifecycle behavior.
+
+## 2026-10-08 browser-native verification
+- Source commit: ccb7e4d8bfd91af25e8dd3ab68648d46d61d35d5
+- Actual FFmpeg.wasm browser run: 30/30 PASS in desktop headless Brave; 0 browser page errors.
+- Repaired device-test fixture byte-size accounting and explicit audio input paths.
+- Native desktop regression: 46/46; mobile UI regression: 100/100.
+- Release evidence: QA_REPORT.md and tests/wasm_browser_results_2026-10-08.json.
+- Crucial boundary: physical iPhone Chrome/WebKit verification remains pending; never equate desktop Chromium with iOS.
 
 ## Decisive next proof
 Open the installed FFmpeg Pocket PWA on the target iPhone. Tap 'Verify tools on this device' (or use ?verify=1). Run the 30-tool check while online, then Copy report. A per-tool PASS requires nonempty decoded media and expected semantics. Do not upgrade to iPhone-certified until that actual device report is observed.
