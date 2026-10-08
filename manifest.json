@@ -1,0 +1,13 @@
+{
+  "name": "FFmpeg Pocket",
+  "short_name": "FFmpeg Pocket",
+  "description": "Thirty private video and audio tools that run on your device.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08080a",
+  "theme_color": "#08080a",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
