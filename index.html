@@ -64,6 +64,9 @@ body.processing .coreRing{animation-duration:3s}body.processing .corePulse{anima
 .topActions{display:flex;align-items:center;gap:8px}.installBtn{min-height:38px;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,59,48,.34);background:rgba(255,59,48,.10);color:#ff938d;font-size:11px;font-weight:900;display:inline-flex;align-items:center;gap:7px;transition:transform .18s var(--ease),background .18s,border-color .18s}.installBtn:hover{background:rgba(255,59,48,.16);border-color:rgba(255,59,48,.55)}.installBtn:active{transform:scale(.96)}.installBtn.installed{color:#92f0b7;background:rgba(61,220,132,.08);border-color:rgba(61,220,132,.24)}.installBtn:disabled{opacity:.82}.installGlyph{font-size:15px;line-height:1}
 .installDialog{border:0;padding:0;background:transparent;color:var(--ink);width:min(540px,calc(100% - 24px));max-height:calc(100dvh - 24px)}.installDialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(9px)}.installSheet{position:relative;background:linear-gradient(180deg,#1b1b21,#111115);border:1px solid #383842;border-radius:26px;padding:22px;box-shadow:var(--shadow);overflow:hidden}.installSheet::before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent)}.installAppIcon{width:72px;height:72px;border-radius:20px;box-shadow:0 14px 34px rgba(0,0,0,.36);margin-bottom:16px}.installClose{position:absolute;right:14px;top:14px;width:40px;height:40px;border-radius:50%;background:#25252c;color:#d6d6db;font-size:24px;display:grid;place-items:center}.installSheet h2{font-size:30px;line-height:1;margin:0 44px 10px 0;letter-spacing:-.045em}.installSheet>p{color:var(--muted);margin:0 0 18px}.installSteps{display:grid;gap:10px;counter-reset:install;margin:0 0 18px;padding:0;list-style:none}.installSteps li{counter-increment:install;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:14px;background:#15151a;color:#d9d9de}.installSteps li::before{content:counter(install);width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--redSoft);color:#ff8f88;font-weight:950}.installActions{display:grid;grid-template-columns:1fr;gap:9px}.installActions button{min-height:50px;border-radius:14px;font-weight:900}.installPrimary{background:var(--red);color:white}.installSecondary{background:#25252c;border:1px solid var(--line)}.installHint{font-size:11px;color:var(--faint);margin-top:12px;text-align:center}
 @media(max-width:520px){.topActions .localchip{display:none}.installBtn{padding:8px 10px}.installSheet{padding:20px 16px calc(18px + env(safe-area-inset-bottom));border-radius:24px 24px 0 0}.installDialog{width:100%;max-width:none;margin:auto 0 0 0;max-height:92dvh}.installDialog[open]{position:fixed;inset:auto 0 0 0}.installSheet h2{font-size:27px}}
+/* A diagnostic is deliberately opt-in: media work should never start automatically. */
+.checkTrigger{cursor:pointer;color:#ff938d;border-color:rgba(255,59,48,.35);transition:background .2s}.checkTrigger:hover{background:var(--redSoft)}
+.verifySheet{max-height:min(88dvh,840px);overflow:auto}.verifySheet .installAppIcon{display:none}.verifyActions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.verifyActions button{flex:1;min-height:48px;padding:9px 12px;border-radius:12px;font-size:13px;font-weight:900}.verifyActions button:disabled{opacity:.4}.verifyRun{background:var(--red);color:#fff}.verifyCancel{background:#292932}.verifyCopy{background:#24242a}.verifyList{display:grid;gap:6px;max-height:36dvh;overflow:auto;padding-right:4px}.verifyEntry{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px}.verifyEntry .pass{color:#86eab0}.verifyEntry .fail{color:#ff9b91}.verifyProgress{height:6px;background:#2e2e35;border-radius:999px;overflow:hidden;margin-bottom:10px}.verifyProgress>i{display:block;height:100%;background:var(--red);width:0%;transition:width .2s}.verifyStatus{color:var(--muted);margin-bottom:10px;font-size:13px}.verifyFoot{font-size:11px;color:var(--faint);line-height:1.5;margin-top:8px}
 @media(max-width:360px){.jobs{grid-template-columns:1fr}.localchip{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.coreRing,.corePulse,.processCard::before,.processIcon,.audioViz i{animation:none!important}.job{opacity:1;transform:none}.toolSheet,.job,.chip,.toast,.progressBar{transition-duration:.01ms!important}}
 body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:paused}
@@ -84,7 +87,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
       <p class="eyebrow">30 pocket media tools</p>
       <h1>Pick it. Transform it. Play it back.</h1>
       <p>Video and audio tools built for Chrome on iPhone. No account, no upload, no terminal. Choose a file, tap a tool, and the result plays right here.</p>
-      <div class="heroStats"><span class="heroStat">Local processing</span><span class="heroStat">Share-ready results</span><span class="heroStat">No watermark</span></div>
+      <div class="heroStats"><span class="heroStat">Local processing</span><span class="heroStat">Share-ready results</span><span class="heroStat">No watermark</span><button class="heroStat checkTrigger" id="verifyOpen" type="button">Verify tools on this device →</button></div>
     </div>
     <div class="coreVisual" aria-hidden="true"><div class="coreRing r1"></div><div class="coreRing r2"></div><div class="coreRing r3"></div><div class="corePulse"></div><div class="coreCenter">FF</div></div>
   </section>
@@ -200,6 +203,24 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
   </div>
 </dialog>
 
+<dialog class="installDialog" id="verifyDialog" aria-labelledby="verifyTitle">
+  <div class="installSheet verifySheet">
+    <button class="installClose" id="verifyClose" type="button" aria-label="Close device check">×</button>
+    <p class="eyebrow">Local runtime test</p>
+    <h2 id="verifyTitle">Test all 30 tools on this device</h2>
+    <p>Runs tiny sample media through this browser's real FFmpeg engine, then checks that each result is readable here. No personal media or uploads.</p>
+    <div class="verifyStatus" id="verifyStatus" aria-live="polite">Ready. Run this once after installing the Home Screen app.</div>
+    <div class="verifyProgress"><i id="verifyBar"></i></div>
+    <div class="verifyActions">
+      <button class="verifyRun" id="verifyRun" type="button">Run 30 tests</button>
+      <button class="verifyCancel" id="verifyCancel" type="button" disabled>Cancel</button>
+      <button class="verifyCopy" id="verifyCopy" type="button" disabled>Copy report</button>
+    </div>
+    <div class="verifyList" id="verifyList" role="log" aria-label="Device test results"></div>
+    <div class="verifyFoot">A passing result proves this small sample works in the current browser session. It does not certify large files, every codec, or other iPhone models. Keep the screen active during testing.</div>
+  </div>
+</dialog>
+
 <div class="toast" id="toast"></div>
 <script>
 (() => {
@@ -216,6 +237,7 @@ const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 const installBtn=$('#installBtn'),installLabel=$('#installLabel'),installDialog=$('#installDialog'),installClose=$('#installClose'),installDone=$('#installDone'),installNative=$('#installNative'),installTitle=$('#installTitle'),installCopy=$('#installCopy'),installSteps=$('#installSteps'),installHint=$('#installHint');
 let deferredInstallPrompt=null;
 let sourceFile=null,sourceURL='',selectedJob=null,resultFile=null,resultURL='',engine=null,engineLoading=null,lastLogs=[],activeCategory='all',searchTerm='',lastCard=null,runSerial=0,cancelled=false;
+let sourceMediaInfo={audio:null,video:null,duration:null,width:null,height:null};
 
 const CATEGORIES=[
   ['all','All 30'],['quick','Quick'],['time','Cut + time'],['size','Size + format'],['audio','Audio'],['look','Look'],['fun','Fun']
@@ -266,11 +288,13 @@ function stemOf(name){return (name||'media').replace(/\.[^.]+$/,'').replace(/[^A
 function safeInputName(){return 'input.'+extOf(sourceFile?.name)}
 function inputLooksVideo(){return !!sourceFile&&(sourceFile.type.startsWith('video/')||/\.(mp4|mov|m4v|mkv|webm|avi)$/i.test(sourceFile.name))}
 function inputLooksAudio(){return !!sourceFile&&(sourceFile.type.startsWith('audio/')||/\.(mp3|m4a|aac|wav|flac|ogg|opus)$/i.test(sourceFile.name))}
-function jobAllowed(job){return job.kind!=='video'||inputLooksVideo()}
+const AUDIO_REQUIRED=new Set(['audio','mp3','wav','normalize','volume','silence','mono']);
+function jobAllowed(job){return (job.kind!=='video'||inputLooksVideo())&&(!AUDIO_REQUIRED.has(job.id)||sourceMediaInfo.audio!==false)}
+function jobBlockReason(job){return job.kind==='video'&&!inputLooksVideo()?'Needs video':AUDIO_REQUIRED.has(job.id)&&sourceMediaInfo.audio===false?'No audio track':'Unavailable'}
 function ratioSize(v){return ({'9x16':[720,1280],'1x1':[720,720],'16x9':[1280,720],'4x5':[720,900]})[v]||[720,1280]}
 function mimeFor(name){const e=extOf(name);return ({mp4:'video/mp4',m4a:'audio/mp4',gif:'image/gif',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',mp3:'audio/mpeg',wav:'audio/wav',webm:'video/webm',mov:'video/quicktime',mkv:'video/x-matroska',ogg:'audio/ogg',opus:'audio/ogg',aac:'audio/aac',flac:'audio/flac'})[e]||'application/octet-stream'}
 function outputName(job){const s=stemOf(sourceFile?.name),video=inputLooksVideo(),ext=extOf(sourceFile?.name);const map={
- ending:s+'-ending.mp4',clip:s+'-clip.mp4',smaller:s+'-smaller.mp4',audio:s+'-audio.m4a',mute:s+'-muted.mp4',gif:s+'.gif',resize:s+'-resized.mp4',rotate:s+'-fixed.mp4',picture:s+'.jpg',speed:s+'-speed.mp4',
+ ending:s+'-ending.'+(video?'mp4':'m4a'),clip:s+'-clip.'+(video?'mp4':'m4a'),smaller:s+'-smaller.mp4',audio:s+'-audio.m4a',mute:s+'-muted.mp4',gif:s+'.gif',resize:s+'-resized.mp4',rotate:s+'-fixed.mp4',picture:s+'.jpg',speed:s+'-speed.mp4',
  crop:s+'-cropped.mp4',fitframe:s+'-framed.mp4',reverse:s+'-reversed.mp4',loop:s+'-loop.mp4',boomerang:s+'-boomerang.mp4',compat:s+'-compatible.mp4',webm:s+'.webm',mp3:s+'.mp3',wav:s+'.wav',
  normalize:s+'-normalized.'+(video?'mp4':'m4a'),volume:s+'-volume.'+(video?'mp4':'m4a'),silence:s+'-trimmed.'+(video?'mp4':'m4a'),mono:s+'-mono.'+(video?'mp4':'m4a'),color:s+'-adjusted.mp4',blur:s+'-blurred.mp4',sharpen:s+'-sharpened.mp4',bw:s+'-bw.mp4',pixelate:s+'-pixelated.mp4',fps:s+'-'+values.fps.fps+'fps.mp4',metadata:s+'-clean.'+(ext||'mp4')
 };return map[job.id]||s+'-result.bin'}
@@ -279,24 +303,24 @@ function renderChips(){chipsEl.innerHTML=CATEGORIES.map(([id,label])=>`<button c
 function filteredJobs(){const q=searchTerm.trim().toLowerCase();return JOBS.filter(j=>{const cat=activeCategory==='all'||(activeCategory==='quick'?j.quick:j.category===activeCategory);const hit=!q||(`${j.title} ${j.desc} ${j.about} ${j.category}`).toLowerCase().includes(q);return cat&&hit;});}
 let revealObserver=null;
 function revealCards(){if(reduceMotion.matches){jobsEl.querySelectorAll('.job').forEach(x=>x.classList.add('revealed'));return;}if(!revealObserver)revealObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');revealObserver.unobserve(e.target)}}),{threshold:.08});jobsEl.querySelectorAll('.job').forEach((el,i)=>{el.style.transitionDelay=Math.min(i*20,180)+'ms';revealObserver.observe(el)});}
-function renderJobs(){const list=filteredJobs();visibleCount.textContent=list.length;jobsEl.innerHTML=list.length?list.map(j=>{const allowed=!sourceFile||jobAllowed(j);return `<button class="job${selectedJob?.id===j.id?' selected':''}${allowed?'':' unavailable'}" type="button" data-job="${j.id}" aria-disabled="${allowed?'false':'true'}"><div class="icon">${esc(j.icon)}</div><strong>${esc(j.title)}</strong><span>${esc(j.desc)}</span><div class="tag">${allowed?esc(CATEGORIES.find(x=>x[0]===j.category)?.[1]||j.category):'Needs video'}</div></button>`}).join(''):'<div class="emptyTools">No tools match that search.</div>';jobsEl.querySelectorAll('[data-job]').forEach(b=>b.addEventListener('click',()=>openTool(b.dataset.job,b)));requestAnimationFrame(revealCards);}
+function renderJobs(){const list=filteredJobs();visibleCount.textContent=list.length;jobsEl.innerHTML=list.length?list.map(j=>{const allowed=!sourceFile||jobAllowed(j);return `<button class="job${selectedJob?.id===j.id?' selected':''}${allowed?'':' unavailable'}" type="button" data-job="${j.id}" aria-disabled="${allowed?'false':'true'}"><div class="icon">${esc(j.icon)}</div><strong>${esc(j.title)}</strong><span>${esc(j.desc)}</span><div class="tag">${allowed?esc(CATEGORIES.find(x=>x[0]===j.category)?.[1]||j.category):esc(jobBlockReason(j))}</div></button>`}).join(''):'<div class="emptyTools">No tools match that search.</div>';jobsEl.querySelectorAll('[data-job]').forEach(b=>b.addEventListener('click',()=>openTool(b.dataset.job,b)));requestAnimationFrame(revealCards);}
 searchEl.addEventListener('input',()=>{searchTerm=searchEl.value;renderJobs()});
 
 function renderFields(job){const v=values[job.id];fieldsEl.innerHTML=job.fields.map(f=>{if(f.type==='select')return `<div class="field"><label>${esc(f.label)}</label><select data-key="${f.k}">${f.options.map(o=>`<option value="${o[0]}"${String(v[f.k])===String(o[0])?' selected':''}>${esc(o[1])}</option>`).join('')}</select></div>`;if(f.type==='range')return `<div class="field full"><label>${esc(f.label)} <output data-out="${f.k}">${esc(v[f.k])}</output></label><input data-key="${f.k}" type="range" value="${esc(v[f.k])}" min="${f.min}" max="${f.max}" step="${f.step||1}"></div>`;return `<div class="field"><label>${esc(f.label)}</label><input data-key="${f.k}" type="number" value="${esc(v[f.k])}" min="${f.min??0}" max="${f.max??999999}" step="${f.step??1}"><small>${esc(f.suffix||'')}</small></div>`}).join('')||'<div class="noOptions">No extra choices needed. This tool is ready as-is.</div>';fieldsEl.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',()=>{values[job.id][el.dataset.key]=el.value;const out=fieldsEl.querySelector(`[data-out="${el.dataset.key}"]`);if(out)out.value=el.value;}));}
 function updateSourceChip(){if(sourceFile){sourceChip.classList.remove('missing');sourceChipText.textContent=sourceFile.name;}else{sourceChip.classList.add('missing');sourceChipText.textContent='Choose a file before running';}}
-function updateSheetRun(){if(!selectedJob)return;const allowed=sourceFile&&jobAllowed(selectedJob);sheetRun.disabled=!allowed;sheetHint.textContent=!sourceFile?'Choose a file first.':!jobAllowed(selectedJob)?'This tool needs a video file.':selectedJob.warning||'The result stays on this device.';compatMessage.classList.toggle('hidden',!selectedJob.warning);compatMessage.textContent=selectedJob.warning||'';updateSourceChip();}
+function updateSheetRun(){if(!selectedJob)return;const allowed=sourceFile&&jobAllowed(selectedJob);sheetRun.disabled=!allowed;sheetHint.textContent=!sourceFile?'Choose a file first.':!jobAllowed(selectedJob)?sourceMediaInfo.audio===false&&AUDIO_REQUIRED.has(selectedJob.id)?'This file has no audio track. Choose a file with sound.':'This tool needs a video file.':selectedJob.warning||'The result stays on this device.';compatMessage.classList.toggle('hidden',!selectedJob.warning);compatMessage.textContent=selectedJob.warning||'';updateSourceChip();}
 function openTool(id,card){const job=JOBS.find(j=>j.id===id);if(!job)return;selectedJob=job;lastCard=card;renderJobs();sheetIcon.textContent=job.icon;sheetCategory.textContent=CATEGORIES.find(x=>x[0]===job.category)?.[1]||job.category;sheetTitle.textContent=job.title;sheetDesc.textContent=job.about;renderFields(job);configPane.classList.remove('hidden');processPane.classList.add('hidden');sheetResult.classList.add('hidden');errorBox.classList.add('hidden');errorDetails.classList.add('hidden');updateSheetRun();toolDialog.showModal();requestAnimationFrame(()=>animateSheetFrom(card));}
 function animateSheetFrom(card){if(reduceMotion.matches||!card)return;const from=card.getBoundingClientRect(),to=toolSheet.getBoundingClientRect();const sx=Math.max(.2,Math.min(1,from.width/to.width)),sy=Math.max(.12,Math.min(1,from.height/to.height));const tx=(from.left+from.width/2)-(to.left+to.width/2),ty=(from.top+from.height/2)-(to.top+to.height/2);toolSheet.animate([{transform:`translate(${tx}px,${ty}px) scale(${sx},${sy})`,opacity:.3,borderRadius:'18px'},{transform:'translate(0,0) scale(1)',opacity:1,borderRadius:'28px'}],{duration:430,easing:'cubic-bezier(.18,.9,.22,1)',fill:'both'});}
 async function closeTool(){if(!toolDialog.open)return;if(!reduceMotion.matches){const anim=toolSheet.animate([{transform:'translateY(0) scale(1)',opacity:1},{transform:'translateY(24px) scale(.985)',opacity:0}],{duration:170,easing:'ease-in',fill:'both'});try{await anim.finished}catch(_){}}toolDialog.close();selectedJob=null;renderJobs();lastCard?.focus?.();}
 sheetClose.addEventListener('click',closeTool);toolDialog.addEventListener('click',e=>{if(e.target===toolDialog)closeTool()});toolDialog.addEventListener('cancel',e=>{e.preventDefault();closeTool()});
 
 function clearSourcePreview(){if(sourceURL){URL.revokeObjectURL(sourceURL);sourceURL=''}thumb.innerHTML='&gt;'}
-function handleFile(file){clearSourcePreview();sourceFile=file;filePanel.classList.add('hasFile');filePick.classList.add('hidden');fileCard.classList.remove('hidden');fileName.textContent=file.name;fileMeta.textContent=fmtBytes(file.size)+(file.type?' / '+file.type:'');fileWarning.classList.add('hidden');if(file.size>250*1024*1024){fileWarning.textContent=file.size>600*1024*1024?'This is very large for an iPhone browser and may run out of memory. A shorter or smaller file is safer.':'Large files can be slow and may exceed iPhone browser memory. Keep Chrome open while it works.';fileWarning.classList.remove('hidden');}sourceURL=URL.createObjectURL(file);if(file.type.startsWith('video/'))thumb.innerHTML=`<video src="${sourceURL}" muted playsinline preload="metadata"></video>`;else if(file.type.startsWith('image/'))thumb.innerHTML=`<img src="${sourceURL}" alt="">`;else thumb.textContent='AUDIO';renderJobs();updateSheetRun();}
+function handleFile(file){clearSourcePreview();sourceFile=file;sourceMediaInfo={audio:null,video:null,duration:null,width:null,height:null};filePanel.classList.add('hasFile');filePick.classList.add('hidden');fileCard.classList.remove('hidden');fileName.textContent=file.name;fileMeta.textContent=fmtBytes(file.size)+(file.type?' / '+file.type:'');fileWarning.classList.add('hidden');if(file.size>250*1024*1024){fileWarning.textContent=file.size>600*1024*1024?'This is very large for an iPhone browser and may run out of memory. A shorter or smaller file is safer.':'Large files can be slow and may exceed iPhone browser memory. Keep Chrome open while it works.';fileWarning.classList.remove('hidden');}sourceURL=URL.createObjectURL(file);if(file.type.startsWith('video/'))thumb.innerHTML=`<video src="${sourceURL}" muted playsinline preload="metadata"></video>`;else if(file.type.startsWith('image/'))thumb.innerHTML=`<img src="${sourceURL}" alt="">`;else thumb.textContent='AUDIO';renderJobs();updateSheetRun();}
 fileInput.addEventListener('change',()=>{const f=fileInput.files?.[0];if(f)handleFile(f);fileInput.value=''});$('#changeFile').addEventListener('click',()=>fileInput.click());sheetPickFile.addEventListener('click',()=>fileInput.click());
 
 class PocketFFmpeg{
   constructor(){this.worker=null;this.seq=1;this.pending=new Map();this.logs=[];this.progress=[];}
-  onLog(cb){this.logs.push(cb)} onProgress(cb){this.progress.push(cb)}
+  onLog(cb){this.logs.push(cb)} offLog(cb){this.logs=this.logs.filter(f=>f!==cb)} onProgress(cb){this.progress.push(cb)}
   send(type,data,transfer=[]){if(!this.worker)return Promise.reject(new Error('engine not loaded'));return new Promise((resolve,reject)=>{const id=this.seq++;this.pending.set(id,{resolve,reject});this.worker.postMessage({id,type,data},transfer)})}
   async load(coreURL,wasmURL){if(this.worker)return;const workerSource=`
 let ffmpeg=null;
@@ -321,13 +345,57 @@ async function blobURL(url,mime){const r=await fetch(url,{mode:'cors',cache:'for
 function setProgress(p,stage,text){const n=Math.max(0,Math.min(1,p));progressBar.style.width=Math.round(n*100)+'%';processPercent.textContent=Math.round(n*100)+'%';if(stage)processStage.textContent=stage;if(text)processText.textContent=text;}
 async function ensureEngine(){if(engine)return engine;if(engineLoading)return engineLoading;engineLoading=(async()=>{if(!('WebAssembly'in window)||!('Worker'in window))throw new Error('This browser is missing WebAssembly or Web Worker support.');processTitle.textContent='Loading the media engine';setProgress(.04,'Engine','First run downloads the browser engine.');const CORE='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';let coreBlob='',wasmBlob='';try{coreBlob=await blobURL(CORE+'/ffmpeg-core.js','text/javascript');setProgress(.22,'Engine','Loading the FFmpeg core.');wasmBlob=await blobURL(CORE+'/ffmpeg-core.wasm','application/wasm');setProgress(.58,'Engine','Starting the local media worker.');const f=new PocketFFmpeg();f.onLog(({message})=>{lastLogs.push(message);if(lastLogs.length>140)lastLogs.shift()});f.onProgress(({progress})=>{if(Number.isFinite(progress))setProgress(Math.max(.62,Math.min(.97,.62+progress*.35)),'Processing')});await f.load(coreBlob,wasmBlob);engine=f;setProgress(1,'Ready','Media engine ready.');return engine;}finally{if(coreBlob)URL.revokeObjectURL(coreBlob);if(wasmBlob)URL.revokeObjectURL(wasmBlob);engineLoading=null}})();return engineLoading;}
 
+function parseMediaInfo(logs){
+  const text=logs.join('\n');
+  const streams=text.split('\n').filter(line=>/Stream #\d+:\d+/.test(line));
+  const videoLine=streams.find(line=>/\bVideo:/.test(line));
+  const audioLine=streams.find(line=>/\bAudio:/.test(line));
+  const durationMatch=text.match(/Duration:\s*(\d{2}):(\d{2}):(\d{2}(?:\.\d+)?)/);
+  const resolution=videoLine?.match(/(?:^|[,\s])(\d{2,5})x(\d{2,5})(?=[,\s\[])/);
+  return {
+    video:!!videoLine,
+    audio:!!audioLine,
+    duration:durationMatch?Number(durationMatch[1])*3600+Number(durationMatch[2])*60+Number(durationMatch[3]):null,
+    width:resolution?Number(resolution[1]):null,
+    height:resolution?Number(resolution[2]):null,
+    recognized:streams.length>0
+  };
+}
+async function inspectMedia(f,input){
+  const probeLogs=[];
+  const collect=({message})=>probeLogs.push(message);
+  f.onLog(collect);
+  try{await f.exec(['-hide_banner','-i',input]);}finally{f.offLog(collect)} // Nonzero without an output target is expected.
+  const info=parseMediaInfo(probeLogs);
+  if(!info.recognized)throw new Error('Could not inspect the audio and video tracks in this file.');
+  return info;
+}
+async function probeMedia(f,input){
+  const info=await inspectMedia(f,input);
+  sourceMediaInfo=info;
+  renderJobs();updateSheetRun();
+  return info;
+}
+
 function num(v,d){const n=Number(v);return Number.isFinite(n)?n:d}
 function videoAudioFilter(af,output){return inputLooksVideo()?['-i',safeInputName(),'-map','0:v:0','-map','0:a:0','-c:v','copy','-af',af,'-c:a','aac','-b:a','192k',output]:['-i',safeInputName(),'-af',af,'-c:a','aac','-b:a','192k',output]}
 function atempoChain(speed){const parts=[];let s=speed;while(s>2){parts.push('atempo=2');s/=2}while(s<.5){parts.push('atempo=0.5');s*=2}parts.push('atempo='+s.toFixed(4));return parts.join(',')}
 function build(job,input,output){const v=values[job.id];switch(job.id){
-case'ending':return ['-sseof','-'+Math.max(1,num(v.seconds,10)),'-i',input,'-map','0','-c','copy','-avoid_negative_ts','make_zero',output];
-case'clip':return ['-ss',String(Math.max(0,num(v.start,0))),'-i',input,'-t',String(Math.max(1,num(v.length,10))),'-map','0','-c','copy','-avoid_negative_ts','make_zero',output];
-case'smaller':{const scale=v.size==='tiny'?'scale=640:-2:force_original_aspect_ratio=decrease':v.size==='small'?'scale=960:-2:force_original_aspect_ratio=decrease':'scale=1280:-2:force_original_aspect_ratio=decrease';const rate=v.size==='tiny'?'450k':v.size==='small'?'800k':'1500k';const audio=v.size==='tiny'?'80k':v.size==='small'?'96k':'128k';return ['-i',input,'-vf',scale,'-c:v','libx264','-preset','ultrafast','-b:v',rate,'-maxrate',rate,'-bufsize',v.size==='tiny'?'900k':v.size==='small'?'1600k':'3000k','-c:a','aac','-b:a',audio,'-movflags','+faststart',output]}
+case'ending':return ['-sseof','-'+Math.max(1,num(v.seconds,10)),'-i',input,'-t',String(Math.max(1,num(v.seconds,10))),'-map','0:v:0?','-map','0:a:0?','-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-c:a','aac','-b:a','128k','-movflags','+faststart',output];
+case'clip':return ['-i',input,'-ss',String(Math.max(0,num(v.start,0))),'-t',String(Math.max(1,num(v.length,10))),'-map','0:v:0?','-map','0:a:0?','-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-c:a','aac','-b:a','128k','-movflags','+faststart',output];
+case'smaller':{
+  const size=v.size;
+  const width=size==='tiny'?640:size==='small'?960:1280;
+  const height=size==='tiny'?360:size==='small'?540:720;
+  const factor=size==='tiny'?.32:size==='small'?.48:.68;
+  const duration=sourceMediaInfo.duration;
+  const sourceKbps=duration&&duration>0?sourceFile.size*8/duration/1000:750;
+  const targetKbps=Math.max(80,Math.floor(sourceKbps*factor));
+  const audioKbps=Math.min(96,Math.max(32,Math.floor(targetKbps*.23)));
+  const videoKbps=Math.max(48,targetKbps-audioKbps);
+  const scale=`scale=w=min(iw\\,${width}):h=min(ih\\,${height}):force_original_aspect_ratio=decrease:force_divisible_by=2`;
+  return ['-i',input,'-vf',scale,'-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-b:v',videoKbps+'k','-maxrate',videoKbps+'k','-bufsize',videoKbps*2+'k','-c:a','aac','-b:a',audioKbps+'k','-movflags','+faststart',output];
+}
 case'audio':return ['-i',input,'-vn','-c:a','aac','-b:a','192k',output];
 case'mute':return ['-i',input,'-map','0:v:0','-c:v','copy','-an',output];
 case'gif':return ['-ss',String(Math.max(0,num(v.start,0))),'-t',String(Math.min(20,Math.max(1,num(v.length,4)))),'-i',input,'-vf','fps=10,scale=480:-1:flags=lanczos','-loop','0',output];
@@ -352,17 +420,23 @@ case'color':{const filter=`eq=brightness=${num(v.brightness,0)}:contrast=${num(v
 case'blur':{const sigma=v.strength==='soft'?3:v.strength==='strong'?12:7;return ['-i',input,'-vf','gblur=sigma='+sigma,'-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-b:a','128k',output]}
 case'sharpen':{const amount=v.strength==='strong'?'1.5':'0.7';return ['-i',input,'-vf',`unsharp=5:5:${amount}:5:5:0`,'-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-b:a','128k',output]}
 case'bw':return ['-i',input,'-vf','hue=s=0','-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-b:a','128k',output];
-case'pixelate':{const b=Math.max(4,num(v.blocks,16));return ['-i',input,'-vf',`scale=iw/${b}:ih/${b}:flags=neighbor,scale=iw*${b}:ih*${b}:flags=neighbor`,'-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-b:a','128k',output]}
+case'pixelate':{const b=Math.max(4,num(v.blocks,16));const w=sourceMediaInfo.width,h=sourceMediaInfo.height;if(!w||!h)throw new Error('Cannot determine the source video size for pixelation.');const filter=`scale=w=max(2\\,trunc(iw/${b}/2)*2):h=max(2\\,trunc(ih/${b}/2)*2):flags=neighbor,scale=${w}:${h}:flags=neighbor`;return ['-i',input,'-vf',filter,'-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','23','-c:a','aac','-b:a','128k',output]}
 case'fps':return ['-i',input,'-vf','fps='+num(v.fps,30),'-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-b:a','128k',output];
 case'metadata':return ['-i',input,'-map','0','-map_metadata','-1','-map_chapters','-1','-c','copy',output];
 default:throw new Error('Unknown tool')}
 }
 
-function friendlyError(err){const s=(lastLogs.join('\n')+'\n'+String(err?.message||err));if(cancelled||/cancelled/i.test(s))return 'Cancelled. Nothing was saved.';if(/out of memory|memory access out of bounds|Cannot enlarge memory|OOM/i.test(s))return 'This file is too large for Chrome to process comfortably on this iPhone. Try a shorter or smaller file.';if(/Invalid data found|moov atom not found/i.test(s))return 'Chrome could not read this media file. It may be incomplete or use an unusual format.';if(/matches no streams|does not contain any stream|Stream map.*matches no streams/i.test(s))return 'This file does not have the audio or video track that this tool needs.';if(/Unknown encoder|Encoder .* not found/i.test(s))return 'This conversion is not available in the browser media engine.';return 'The tool stopped before it finished. A smaller file or a different format may work better.'}
+function friendlyError(err){const s=(lastLogs.join('\n')+'\n'+String(err?.message||err));if(cancelled||/cancelled/i.test(s))return 'Cancelled. Nothing was saved.';if(/out of memory|memory access out of bounds|Cannot enlarge memory|OOM/i.test(s))return 'This file is too large for Chrome to process comfortably on this iPhone. Try a shorter or smaller file.';if(/Invalid data found|moov atom not found/i.test(s))return 'Chrome could not read this media file. It may be incomplete or use an unusual format.';if(/matches no streams|does not contain any stream|Stream map.*matches no streams/i.test(s))return 'This file does not have the audio or video track that this tool needs.';if(/This file has no audio track/i.test(s))return 'This file has no audio track. Choose a file with sound for this tool.';if(/already as compact as this setting/i.test(s))return 'This file is already compact. The result was larger, so it was not saved. Try Much smaller.';if(/Cannot determine the source video size/i.test(s))return 'Could not read the video dimensions. Try an MP4 file.';if(/Could not inspect the audio and video tracks/i.test(s))return 'Could not inspect this file. Try converting it to MP4 first.';if(/Unknown encoder|Encoder .* not found/i.test(s))return 'This conversion is not available in the browser media engine.';return 'The tool stopped before it finished. A smaller file or a different format may work better.'}
 async function maybeWake(){try{if('wakeLock'in navigator)return await navigator.wakeLock.request('screen')}catch(_){return null}return null}
 function enterProcess(){configPane.classList.add('hidden');sheetResult.classList.add('hidden');processPane.classList.remove('hidden');document.body.classList.add('processing');setProgress(.02,'Starting','Keep Chrome open while this finishes.');}
 function leaveProcess(){document.body.classList.remove('processing');processPane.classList.add('hidden');}
-async function runTool(){if(!sourceFile||!selectedJob||!jobAllowed(selectedJob))return;const serial=++runSerial;cancelled=false;enterProcess();lastLogs=[];let wake=null,input='',output='';try{wake=await maybeWake();const f=await ensureEngine();if(serial!==runSerial||cancelled)throw new Error('cancelled');processTitle.textContent='Processing '+sourceFile.name;setProgress(.08,'Reading file','Copying the selected media into the local engine.');input=safeInputName();output=outputName(selectedJob);await f.del(input).catch(()=>{});await f.del(output).catch(()=>{});const bytes=new Uint8Array(await sourceFile.arrayBuffer());setProgress(.14,'Reading file');await f.write(input,bytes);setProgress(.2,'Processing','Running '+selectedJob.title.toLowerCase()+'.');const code=await f.exec(build(selectedJob,input,output));if(serial!==runSerial||cancelled)throw new Error('cancelled');if(code!==0)throw new Error('FFmpeg exited with code '+code);setProgress(.98,'Finishing','Preparing the result for playback.');const data=await f.read(output);const blob=new Blob([data.buffer],{type:mimeFor(output)});if(resultURL)URL.revokeObjectURL(resultURL);resultURL=URL.createObjectURL(blob);resultFile=new File([blob],output,{type:blob.type,lastModified:Date.now()});setProgress(1,'Ready','Done.');showSuccess();await f.del(input).catch(()=>{});await f.del(output).catch(()=>{});}catch(err){showFailure(friendlyError(err),err)}finally{try{await wake?.release()}catch(_){}leaveProcess();}}
+async function runTool(){if(!sourceFile||!selectedJob||!jobAllowed(selectedJob))return;const serial=++runSerial;cancelled=false;enterProcess();lastLogs=[];let wake=null,input='',output='',f=null;try{wake=await maybeWake();f=await ensureEngine();if(serial!==runSerial||cancelled)throw new Error('cancelled');processTitle.textContent='Processing '+sourceFile.name;setProgress(.08,'Reading file','Copying the selected media into the local engine.');input=safeInputName();output=outputName(selectedJob);await f.del(input).catch(()=>{});await f.del(output).catch(()=>{});const bytes=new Uint8Array(await sourceFile.arrayBuffer());setProgress(.14,'Reading file');await f.write(input,bytes);
+setProgress(.17,'Inspecting file','Checking media tracks and duration.');
+const info=await probeMedia(f,input);
+if(serial!==runSerial||cancelled)throw new Error('cancelled');
+if(AUDIO_REQUIRED.has(selectedJob.id)&&!info.audio)throw new Error('This file has no audio track. Choose a file containing sound.');
+if(selectedJob.kind==='video'&&!info.video)throw new Error('This file has no video track.');
+setProgress(.2,'Processing','Running '+selectedJob.title.toLowerCase()+'.');const code=await f.exec(build(selectedJob,input,output));if(serial!==runSerial||cancelled)throw new Error('cancelled');if(code!==0)throw new Error('FFmpeg exited with code '+code);setProgress(.98,'Finishing','Preparing the result for playback.');const data=await f.read(output);if(selectedJob.id==='smaller'&&data.byteLength>=sourceFile.size)throw new Error('The original is already as compact as this setting can make it. No larger copy was saved. Try Much smaller.');const blob=new Blob([data.buffer],{type:mimeFor(output)});if(resultURL)URL.revokeObjectURL(resultURL);resultURL=URL.createObjectURL(blob);resultFile=new File([blob],output,{type:blob.type,lastModified:Date.now()});setProgress(1,'Ready','Done.');showSuccess();await f.del(input).catch(()=>{});await f.del(output).catch(()=>{});}catch(err){showFailure(friendlyError(err),err)}finally{if(f){if(input)await f.del(input).catch(()=>{});if(output)await f.del(output).catch(()=>{});}try{await wake?.release()}catch(_){}leaveProcess();}}
 function cancelCurrent(){if(processPane.classList.contains('hidden'))return;cancelled=true;runSerial++;if(engine){engine.terminate('cancelled');engine=null;}engineLoading=null;leaveProcess();configPane.classList.remove('hidden');toast('Cancelled');}
 cancelRun.addEventListener('click',cancelCurrent);sheetRun.addEventListener('click',runTool);
 
@@ -431,8 +505,110 @@ window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;setInstal
 window.matchMedia('(display-mode: standalone)').addEventListener?.('change',setInstallState);
 setInstallGuide();setInstallState();
 
+const verifyDialog=$('#verifyDialog'),verifyOpen=$('#verifyOpen'),verifyClose=$('#verifyClose'),verifyRun=$('#verifyRun'),verifyCancel=$('#verifyCancel'),verifyCopy=$('#verifyCopy'),verifyList=$('#verifyList'),verifyStatus=$('#verifyStatus'),verifyBar=$('#verifyBar');
+let verifyRunning=false,verifyCancelled=false,verifyRecords=[];
+function verifyLine(job,status,detail){
+  const row=document.createElement('div');row.className='verifyEntry';
+  const symbol=document.createElement('strong');symbol.className=status==='PASS'?'pass':'fail';symbol.textContent=status==='PASS'?'✓':'!';
+  const name=document.createElement('span');name.textContent=job.title;
+  const flag=document.createElement('span');flag.className=symbol.className;flag.textContent=status;
+  row.append(symbol,name,flag);row.title=detail||'';verifyList.append(row);row.scrollIntoView({block:'nearest'});
+}
+async function decodeCheck(bytes,filename){
+  const mime=mimeFor(filename),blob=new Blob([bytes],{type:mime});
+  const el=document.createElement(mime.startsWith('image/')?'img':mime.startsWith('audio/')?'audio':'video');
+  const url=URL.createObjectURL(blob);
+  el.style.cssText='position:fixed;width:1px;height:1px;opacity:0;pointer-events:none';
+  document.body.appendChild(el);
+  try{
+    return await new Promise((resolve,reject)=>{
+      const timeout=setTimeout(()=>{cleanup();reject(new Error('Playback metadata timed out'));},7000);
+      const ok=()=>{cleanup();resolve(true)};
+      const fail=()=>{cleanup();reject(new Error('This browser cannot decode the result'))};
+      const cleanup=()=>{clearTimeout(timeout);el.removeEventListener('loadedmetadata',ok);el.removeEventListener('load',ok);el.removeEventListener('error',fail)};
+      el.addEventListener(mime.startsWith('image/')?'load':'loadedmetadata',ok);
+      el.addEventListener('error',fail);
+      el.src=url;
+      if(typeof el.load==='function')el.load();
+    });
+  }finally{if(typeof el.pause==='function')el.pause();el.removeAttribute('src');if(typeof el.load==='function')el.load();el.remove();URL.revokeObjectURL(url)}
+}
+function assertDeviceResult(job,info,outInfo,byteLength,sourceLength){
+  if(!outInfo.recognized)throw new Error('Output has no recognized audio or video streams');
+  if(job.id==='smaller'&&byteLength>=sourceLength)throw new Error('Compression did not reduce size');
+  if(job.id==='pixelate'&&(outInfo.width!==info.width||outInfo.height!==info.height))throw new Error('Pixelation changed dimensions');
+  if((job.id==='ending'||job.id==='clip')&&(!outInfo.duration||Math.abs(outInfo.duration-1)>.4))throw new Error('Cut duration differs from requested 1 second');
+  if(['mute','reverse','boomerang'].includes(job.id)&&outInfo.audio)throw new Error('Muted output unexpectedly contains audio');
+  if(['audio','mp3','wav'].includes(job.id)&&(!outInfo.audio||outInfo.video))throw new Error('Audio extraction produced the wrong streams');
+  if(job.id==='metadata'&&!outInfo.video)throw new Error('Metadata stripping dropped video');
+}
+async function runDeviceTests(){
+  if(verifyRunning)return;
+  verifyRunning=true;verifyCancelled=false;verifyRecords=[];verifyList.replaceChildren();
+  verifyRun.disabled=true;verifyCancel.disabled=false;verifyCopy.disabled=true;verifyBar.style.width='0%';
+  const oldSource=sourceFile,oldInfo=sourceMediaInfo;
+  const oldEnd=values.ending.seconds,oldClipStart=values.clip.start,oldClipLength=values.clip.length;
+  const input='device_check.mp4';let f=null;
+  try{
+    verifyStatus.textContent='Loading sample media and starting FFmpeg…';
+    const response=await fetch('./qa-sample.mp4',{cache:'force-cache'});
+    if(!response.ok)throw new Error('Sample media is unavailable (HTTP '+response.status+')');
+    const data=await response.arrayBuffer();
+    sourceFile=new File([data],'qa-sample.mp4',{type:'video/mp4'});
+    f=await ensureEngine();
+    await f.del(input).catch(()=>{});
+    await f.write(input,new Uint8Array(data));
+    const info=await probeMedia(f,input);
+    if(!info.video||!info.audio)throw new Error('QA sample is missing an audio or video stream');
+    values.ending.seconds=1;values.clip.start=.5;values.clip.length=1;
+    for(let i=0;i<JOBS.length;i++){
+      if(verifyCancelled)break;
+      const job=JOBS[i],output='device_'+job.id+'.'+extOf(outputName(job));
+      verifyStatus.textContent=`${i+1} / ${JOBS.length}: ${job.title}`;
+      let status='PASS',detail='Output created and played in this browser';
+      try{
+        await f.del(output).catch(()=>{});
+        const code=await f.exec(build(job,input,output));
+        if(code!==0)throw new Error('FFmpeg exit code '+code);
+        const bytes=await f.read(output);
+        if(!bytes?.byteLength)throw new Error('FFmpeg produced no file');
+        const outputInfo=await inspectMedia(f,output);
+        assertDeviceResult(job,info,outputInfo,bytes.byteLength,data.byteLength);
+        await decodeCheck(bytes,output);
+      }catch(err){
+        if(verifyCancelled)break;
+        status='FAIL';detail=String(err?.message||err);
+      }finally{await f.del(output).catch(()=>{})}
+      verifyRecords.push({tool:job.id,status,detail});verifyLine(job,status,detail);
+      verifyBar.style.width=Math.round((i+1)/JOBS.length*100)+'%';
+      await new Promise(resolve=>setTimeout(resolve,0));
+    }
+    const passes=verifyRecords.filter(x=>x.status==='PASS').length;
+    verifyStatus.textContent=verifyCancelled?'Device test cancelled.':`${passes} / ${JOBS.length} passed on this device. ${JOBS.length-passes} failed.`;
+  }catch(err){verifyStatus.textContent='Device test stopped: '+String(err?.message||err)}
+  finally{
+    try{await f?.del(input)}catch(_){}
+    sourceFile=oldSource;sourceMediaInfo=oldInfo;
+    values.ending.seconds=oldEnd;values.clip.start=oldClipStart;values.clip.length=oldClipLength;
+    verifyRunning=false;verifyRun.disabled=false;verifyCancel.disabled=true;
+    verifyCopy.disabled=verifyRecords.length===0;
+    renderJobs();updateSheetRun();
+  }
+}
+verifyOpen.addEventListener('click',()=>verifyDialog.showModal());
+verifyRun.addEventListener('click',runDeviceTests);
+verifyCancel.addEventListener('click',()=>{verifyCancelled=true;if(engine){engine.terminate('device check cancelled');engine=null;}engineLoading=null;verifyStatus.textContent='Stopping the device test…'});
+verifyClose.addEventListener('click',()=>{if(verifyRunning)return;verifyDialog.close()});
+verifyDialog.addEventListener('cancel',e=>{if(verifyRunning)e.preventDefault()});
+verifyCopy.addEventListener('click',async()=>{
+  const report={product:'FFmpeg Pocket',testedAt:new Date().toISOString(),userAgent:navigator.userAgent,tests:verifyRecords};
+  try{await navigator.clipboard.writeText(JSON.stringify(report,null,2));toast('Device test report copied')}
+  catch(_){toast('Copy unavailable. Take a screenshot of the test results.')}
+});
+if(new URLSearchParams(location.search).has('verify'))verifyDialog.showModal();
+
 renderChips();renderJobs();
-if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
 window.addEventListener('pagehide',()=>{try{engine?.terminate('page closed')}catch(_){}if(sourceURL)URL.revokeObjectURL(sourceURL);if(resultURL)URL.revokeObjectURL(resultURL);},{once:true});
 document.addEventListener('visibilitychange',()=>document.body.classList.toggle('reduceAmbient',document.hidden));
 })();
