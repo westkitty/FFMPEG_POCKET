@@ -555,6 +555,7 @@ async function runDeviceTests(){
     if(!response.ok)throw new Error('Sample media is unavailable (HTTP '+response.status+')');
     const data=await response.arrayBuffer();
     sourceFile=new File([data],'qa-sample.mp4',{type:'video/mp4'});
+    const sampleSize=sourceFile.size;
     f=await ensureEngine();
     await f.del(input).catch(()=>{});
     await f.write(input,new Uint8Array(data));
@@ -573,7 +574,7 @@ async function runDeviceTests(){
         const bytes=await f.read(output);
         if(!bytes?.byteLength)throw new Error('FFmpeg produced no file');
         const outputInfo=await inspectMedia(f,output);
-        assertDeviceResult(job,info,outputInfo,bytes.byteLength,data.byteLength);
+        assertDeviceResult(job,info,outputInfo,bytes.byteLength,sampleSize);
         await decodeCheck(bytes,output);
       }catch(err){
         if(verifyCancelled)break;
