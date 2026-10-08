@@ -378,7 +378,7 @@ async function probeMedia(f,input){
 }
 
 function num(v,d){const n=Number(v);return Number.isFinite(n)?n:d}
-function videoAudioFilter(af,output){return inputLooksVideo()?['-i',safeInputName(),'-map','0:v:0','-map','0:a:0','-c:v','copy','-af',af,'-c:a','aac','-b:a','192k',output]:['-i',safeInputName(),'-af',af,'-c:a','aac','-b:a','192k',output]}
+function videoAudioFilter(af,input,output){return inputLooksVideo()?['-i',input,'-map','0:v:0','-map','0:a:0','-c:v','copy','-af',af,'-c:a','aac','-b:a','192k',output]:['-i',input,'-af',af,'-c:a','aac','-b:a','192k',output]}
 function atempoChain(speed){const parts=[];let s=speed;while(s>2){parts.push('atempo=2');s/=2}while(s<.5){parts.push('atempo=0.5');s*=2}parts.push('atempo='+s.toFixed(4));return parts.join(',')}
 function build(job,input,output){const v=values[job.id];switch(job.id){
 case'ending':return ['-sseof','-'+Math.max(1,num(v.seconds,10)),'-i',input,'-t',String(Math.max(1,num(v.seconds,10))),'-map','0:v:0?','-map','0:a:0?','-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-c:a','aac','-b:a','128k','-movflags','+faststart',output];
@@ -412,9 +412,9 @@ case'compat':return ['-i',input,'-c:v','libx264','-preset','ultrafast','-crf','2
 case'webm':return ['-i',input,'-c:v','libvpx','-deadline','realtime','-cpu-used','8','-b:v','1M','-c:a','libopus','-b:a','96k',output];
 case'mp3':return ['-i',input,'-vn','-c:a','libmp3lame','-q:a','2',output];
 case'wav':return ['-i',input,'-vn','-c:a','pcm_s16le',output];
-case'normalize':return videoAudioFilter('loudnorm=I=-16:LRA=11:TP=-1.5',output);
-case'volume':return videoAudioFilter('volume='+num(v.amount,1.5),output);
-case'silence':return videoAudioFilter('silenceremove=start_periods=1:start_duration=0.1:start_threshold=-50dB:stop_periods=-1:stop_duration=0.5:stop_threshold=-50dB',output);
+case'normalize':return videoAudioFilter('loudnorm=I=-16:LRA=11:TP=-1.5',input,output);
+case'volume':return videoAudioFilter('volume='+num(v.amount,1.5),input,output);
+case'silence':return videoAudioFilter('silenceremove=start_periods=1:start_duration=0.1:start_threshold=-50dB:stop_periods=-1:stop_duration=0.5:stop_threshold=-50dB',input,output);
 case'mono':return inputLooksVideo()?['-i',input,'-map','0:v:0','-map','0:a:0','-c:v','copy','-ac','1','-c:a','aac','-b:a','160k',output]:['-i',input,'-ac','1','-c:a','aac','-b:a','160k',output];
 case'color':{const filter=`eq=brightness=${num(v.brightness,0)}:contrast=${num(v.contrast,1)}:saturation=${num(v.saturation,1)}`;return ['-i',input,'-vf',filter,'-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-b:a','128k',output]}
 case'blur':{const sigma=v.strength==='soft'?3:v.strength==='strong'?12:7;return ['-i',input,'-vf','gblur=sigma='+sigma,'-c:v','libx264','-preset','ultrafast','-crf','23','-c:a','aac','-b:a','128k',output]}
