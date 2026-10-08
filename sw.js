@@ -1,6 +1,6 @@
-const APP='ffmpeg-pocket-app-v3';
+const APP='ffmpeg-pocket-app-v4';
 const CORE='ffmpeg-pocket-core-v1';
-const SHELL=['./','./index.html','./manifest.json','./icon.svg'];
+const SHELL=['./','./index.html','./manifest.json','./icon.svg','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./apple-touch-icon.png'];
 const CORE_PATH='/npm/@ffmpeg/core@0.12.10/dist/umd/';
 
 self.addEventListener('install',event=>{
