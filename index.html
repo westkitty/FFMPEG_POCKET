@@ -11,6 +11,9 @@
 <meta name="description" content="Thirty private video and audio tools that run locally in your browser.">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
+<meta name="mobile-web-app-capable" content="yes">
 <title>FFmpeg Pocket</title>
 <style>
 :root{
@@ -58,6 +61,9 @@ body.processing .coreRing{animation-duration:3s}body.processing .corePulse{anima
 .toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(18px);background:#f2f2f4;color:#111;padding:10px 14px;border-radius:999px;font-weight:850;font-size:13px;opacity:0;pointer-events:none;transition:.18s;z-index:1000;box-shadow:0 8px 34px rgba(0,0,0,.3)}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:760px){.hero{grid-template-columns:1fr}.coreVisual{display:none}.jobs{grid-template-columns:1fr 1fr}.libraryHead h2{font-size:27px}.resultActions{grid-template-columns:1fr 1fr}.resultActions .actionPrimary{grid-column:1/-1}.toolDialog{width:calc(100vw - 10px)}}
 @media(max-width:480px){.app{padding-left:max(11px,env(safe-area-inset-left));padding-right:max(11px,env(safe-area-inset-right))}.hero{padding-top:10px}.hero h1{font-size:clamp(38px,12vw,58px)}.jobs{gap:8px}.job{min-height:138px;padding:12px}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.filecard{grid-template-columns:72px minmax(0,1fr)}.thumb{width:72px;height:72px}.change{grid-column:1/-1}.resultActions,.sheetResultActions{grid-template-columns:1fr}.resultActions .actionPrimary{grid-column:auto}.localchip{font-size:10px;padding:7px 8px}.toolSheet{padding:16px 14px calc(14px + env(safe-area-inset-bottom))}.sheetActions{margin-left:-14px;margin-right:-14px;margin-bottom:-14px;padding-left:14px;padding-right:14px}}
+.topActions{display:flex;align-items:center;gap:8px}.installBtn{min-height:38px;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,59,48,.34);background:rgba(255,59,48,.10);color:#ff938d;font-size:11px;font-weight:900;display:inline-flex;align-items:center;gap:7px;transition:transform .18s var(--ease),background .18s,border-color .18s}.installBtn:hover{background:rgba(255,59,48,.16);border-color:rgba(255,59,48,.55)}.installBtn:active{transform:scale(.96)}.installBtn.installed{color:#92f0b7;background:rgba(61,220,132,.08);border-color:rgba(61,220,132,.24)}.installBtn:disabled{opacity:.82}.installGlyph{font-size:15px;line-height:1}
+.installDialog{border:0;padding:0;background:transparent;color:var(--ink);width:min(540px,calc(100% - 24px));max-height:calc(100dvh - 24px)}.installDialog::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(9px)}.installSheet{position:relative;background:linear-gradient(180deg,#1b1b21,#111115);border:1px solid #383842;border-radius:26px;padding:22px;box-shadow:var(--shadow);overflow:hidden}.installSheet::before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent)}.installAppIcon{width:72px;height:72px;border-radius:20px;box-shadow:0 14px 34px rgba(0,0,0,.36);margin-bottom:16px}.installClose{position:absolute;right:14px;top:14px;width:40px;height:40px;border-radius:50%;background:#25252c;color:#d6d6db;font-size:24px;display:grid;place-items:center}.installSheet h2{font-size:30px;line-height:1;margin:0 44px 10px 0;letter-spacing:-.045em}.installSheet>p{color:var(--muted);margin:0 0 18px}.installSteps{display:grid;gap:10px;counter-reset:install;margin:0 0 18px;padding:0;list-style:none}.installSteps li{counter-increment:install;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:14px;background:#15151a;color:#d9d9de}.installSteps li::before{content:counter(install);width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--redSoft);color:#ff8f88;font-weight:950}.installActions{display:grid;grid-template-columns:1fr;gap:9px}.installActions button{min-height:50px;border-radius:14px;font-weight:900}.installPrimary{background:var(--red);color:white}.installSecondary{background:#25252c;border:1px solid var(--line)}.installHint{font-size:11px;color:var(--faint);margin-top:12px;text-align:center}
+@media(max-width:520px){.topActions .localchip{display:none}.installBtn{padding:8px 10px}.installSheet{padding:20px 16px calc(18px + env(safe-area-inset-bottom));border-radius:24px 24px 0 0}.installDialog{width:100%;max-width:none;margin:auto 0 0 0;max-height:92dvh}.installDialog[open]{position:fixed;inset:auto 0 0 0}.installSheet h2{font-size:27px}}
 @media(max-width:360px){.jobs{grid-template-columns:1fr}.localchip{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.coreRing,.corePulse,.processCard::before,.processIcon,.audioViz i{animation:none!important}.job{opacity:1;transform:none}.toolSheet,.job,.chip,.toast,.progressBar{transition-duration:.01ms!important}}
 body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:paused}
@@ -67,7 +73,10 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
 <main class="app">
   <header class="topbar">
     <div class="brand"><span class="brandmark" aria-hidden="true"></span><span>FFmpeg Pocket</span></div>
-    <div class="localchip">Runs on this phone</div>
+    <div class="topActions">
+      <button class="installBtn" id="installBtn" type="button" aria-haspopup="dialog"><span class="installGlyph" aria-hidden="true">↓</span><span id="installLabel">Install app</span></button>
+      <div class="localchip">Runs on this phone</div>
+    </div>
   </header>
 
   <section class="hero">
@@ -175,6 +184,22 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
   </div>
 </dialog>
 
+<dialog class="installDialog" id="installDialog" aria-labelledby="installTitle">
+  <div class="installSheet">
+    <button class="installClose" id="installClose" type="button" aria-label="Close install instructions">×</button>
+    <img class="installAppIcon" src="icon-192.png" alt="">
+    <p class="eyebrow">FFmpeg Pocket app</p>
+    <h2 id="installTitle">Install on this device</h2>
+    <p id="installCopy">Add FFmpeg Pocket like an app for one-tap launch and an app-style standalone window.</p>
+    <ol class="installSteps" id="installSteps"></ol>
+    <div class="installActions">
+      <button class="installPrimary hidden" id="installNative" type="button">Install now</button>
+      <button class="installSecondary" id="installDone" type="button">Got it</button>
+    </div>
+    <div class="installHint" id="installHint">Your media still stays on this device after installation.</div>
+  </div>
+</dialog>
+
 <div class="toast" id="toast"></div>
 <script>
 (() => {
@@ -188,6 +213,8 @@ const processPane=$('#processPane'),processTitle=$('#processTitle'),processText=
 const sheetResult=$('#sheetResult'),resultCheck=$('#resultCheck'),sheetResultTitle=$('#sheetResultTitle'),sheetResultText=$('#sheetResultText'),sheetPreview=$('#sheetPreview'),sheetMeta=$('#sheetMeta'),errorBox=$('#errorBox'),errorDetails=$('#errorDetails'),logText=$('#logText');
 const resultHub=$('#resultHub'),hubTitle=$('#hubTitle'),hubPreview=$('#hubPreview'),hubMeta=$('#hubMeta'),continueRow=$('#continueRow'),toastEl=$('#toast');
 const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const installBtn=$('#installBtn'),installLabel=$('#installLabel'),installDialog=$('#installDialog'),installClose=$('#installClose'),installDone=$('#installDone'),installNative=$('#installNative'),installTitle=$('#installTitle'),installCopy=$('#installCopy'),installSteps=$('#installSteps'),installHint=$('#installHint');
+let deferredInstallPrompt=null;
 let sourceFile=null,sourceURL='',selectedJob=null,resultFile=null,resultURL='',engine=null,engineLoading=null,lastLogs=[],activeCategory='all',searchTerm='',lastCard=null,runSerial=0,cancelled=false;
 
 const CATEGORIES=[
@@ -348,6 +375,61 @@ async function shareResult(){if(!resultFile)return;try{if(navigator.canShare&&na
 function saveResult(){if(!resultFile||!resultURL)return;const a=document.createElement('a');a.href=resultURL;a.download=resultFile.name;document.body.appendChild(a);a.click();a.remove();toast('Saved through Chrome downloads')}
 function useResult(){if(!resultFile)return;handleFile(resultFile);resultHub.classList.add('hidden');closeTool();setTimeout(()=>$('#library').scrollIntoView({behavior:reduceMotion.matches?'auto':'smooth',block:'start'}),80);toast('Result is now your source file')}
 document.addEventListener('click',e=>{const a=e.target.closest('[data-action]');if(!a)return;const action=a.dataset.action;if(action==='share')shareResult();else if(action==='save')saveResult();else if(action==='use-result')useResult();else if(action==='close-result')closeTool();});
+
+function isInstalledPWA(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
+function setInstallState(){
+  const installed=isInstalledPWA();
+  installBtn.classList.toggle('installed',installed);
+  installBtn.disabled=installed;
+  installLabel.textContent=installed?'Installed':'Install app';
+  installBtn.querySelector('.installGlyph').textContent=installed?'✓':'↓';
+}
+function setInstallGuide(){
+  const ios=/iPad|iPhone|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const chromeIOS=/CriOS/i.test(navigator.userAgent);
+  installNative.classList.toggle('hidden',!deferredInstallPrompt);
+  if(deferredInstallPrompt){
+    installTitle.textContent='Install FFmpeg Pocket';
+    installCopy.textContent='Chrome can install this as an app on this device.';
+    installSteps.innerHTML='<li>Tap Install now below.</li><li>Confirm the browser installation.</li><li>Open FFmpeg Pocket from your apps or Home Screen.</li>';
+    installHint.textContent='It launches in its own app-style window.';
+  }else if(ios){
+    installTitle.textContent='Add FFmpeg Pocket to Home Screen';
+    installCopy.textContent=(chromeIOS?'In Chrome on iPhone or iPad, ':'On iPhone or iPad, ')+'use the Share menu to install this web app.';
+    installSteps.innerHTML='<li>Tap Share beside the Chrome address bar.</li><li>Tap Add to Home Screen.</li><li>Tap Add. Then launch FFmpeg Pocket from the new icon.</li>';
+    installHint.textContent='The Home Screen version opens as the web app when iOS recognizes the PWA.';
+  }else{
+    installTitle.textContent='Install FFmpeg Pocket';
+    installCopy.textContent='Your browser can add this site as an app. If no install prompt appears, use the browser menu.';
+    installSteps.innerHTML='<li>Open the browser menu.</li><li>Choose Install app, Install page as app, or Add to Home Screen.</li><li>Confirm installation and launch from your apps.</li>';
+    installHint.textContent='No App Store account is required for the PWA.';
+  }
+}
+async function requestInstall(){
+  if(isInstalledPWA())return;
+  if(deferredInstallPrompt){
+    const promptEvent=deferredInstallPrompt;
+    deferredInstallPrompt=null;
+    try{
+      await promptEvent.prompt();
+      const choice=await promptEvent.userChoice;
+      if(choice?.outcome==='accepted')toast('FFmpeg Pocket installed');
+    }catch(_){}
+    setInstallState();
+    return;
+  }
+  setInstallGuide();
+  if(typeof installDialog.showModal==='function')installDialog.showModal();
+}
+installBtn.addEventListener('click',requestInstall);
+installNative.addEventListener('click',requestInstall);
+installClose.addEventListener('click',()=>installDialog.close());
+installDone.addEventListener('click',()=>installDialog.close());
+installDialog.addEventListener('click',e=>{if(e.target===installDialog)installDialog.close()});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;setInstallGuide();setInstallState()});
+window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;setInstallState();if(installDialog.open)installDialog.close();toast('FFmpeg Pocket installed')});
+window.matchMedia('(display-mode: standalone)').addEventListener?.('change',setInstallState);
+setInstallGuide();setInstallState();
 
 renderChips();renderJobs();
 if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('./sw.js').catch(()=>{});
