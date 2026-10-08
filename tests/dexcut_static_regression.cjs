@@ -30,6 +30,6 @@ assert(html.includes('THE FULL ARSENAL.'));assert(html.includes('PROVE IT ON THI
 assert(html.includes('MEDIA PROCESSING. UNDER PROTEST.'));assert(!html.includes('FFmpeg Pocket'));
 assert(source.includes("if(new URLSearchParams(location.search).has('verify'))verifyDialog.showModal();"));
 const shell=fs.readFileSync(path.join(root,'sw.js'),'utf8');
-for(const f of ['./dexcut.css','./assets/dexcut-atlas.avif','./assets/dexcut-poster.webp'])assert(shell.includes(f),'Cache asset '+f);
-for(const f of ['assets/dexcut-atlas.avif','assets/dexcut-poster.webp','dexcut.css','icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png','icon.svg'])assert(fs.statSync(path.join(root,f)).size>100,'Missing asset '+f);
+for(const f of ['./dexcut.css','./assets/dexcut-atlas-v2.webp','./assets/dexcut-poster-v2.webp','./assets/dexcut-wordmark-v2.webp'])assert(shell.includes(f),'Cache asset '+f);
+for(const f of ['assets/dexcut-atlas-v2.webp','assets/dexcut-poster-v2.webp','dexcut.css','icon-192-v2.png','icon-512-v2.png','icon-maskable-512-v2.png','apple-touch-icon-v2.png','favicon-64-v2.png'])assert(fs.statSync(path.join(root,f)).size>100,'Missing asset '+f);
 console.log(JSON.stringify({result:'PASS',protectedSections:protectedSections.length,toolDefinitions:jobs.length,domSelectors:'verified',manifest:'valid',serviceWorker:'valid',runtimeSyntax:'valid',icons:'present'},null,2));

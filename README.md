@@ -1,6 +1,6 @@
 # DEX//CUT
 
-![DEX//CUT — Your files. My judgment.](assets/dexcut-poster.webp)
+![DEX//CUT — Your files. My judgment.](assets/dexcut-poster-v2.webp)
 
 **YOUR FILES. MY JUDGMENT.**
 
@@ -49,6 +49,7 @@ For browser and real-WebAssembly tests, install Playwright and axe-core in a dev
 
 ```sh
 npm install --prefix /tmp/dexcut-playwright --no-audit --no-fund playwright@1.64.0 @axe-core/playwright
+DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexcut_artwork_qa.cjs
 DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexcut_browser_qa.cjs
 DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexcut_real_flow.cjs
 DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexcut_cancellation_qa.cjs
@@ -59,7 +60,7 @@ DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright DEXCUT_AXE=/tmp
 
 Tests default to installed macOS Brave; set `DEXCUT_BROWSER` to a different Chromium-compatible executable path if needed. These development-only packages are **not used by the deployed site**.
 
-See [DEX//CUT QA report](QA_REPORT_DEXCUT.md) for the evidence scope and performance comparison. The historical [FFmpeg Pocket QA report](QA_REPORT.md) remains intact.
+Production art uses four untouched PNG masters under [assets/source](assets/source/) and versioned high-resolution browser exports. See [artwork integrity requirements](assets/README.md) and the [DEX//CUT QA report](QA_REPORT_DEXCUT.md) for the evidence scope and performance comparison. The historical [FFmpeg Pocket QA report](QA_REPORT.md) remains intact.
 
 ---
 

@@ -44,7 +44,7 @@ const p95=a=>{const n=[...a].sort((x,y)=>x-y);return +(n[Math.min(n.length-1,Mat
    stats[k]={runs:rows.length};
    for(const m of metrics){const values=rows.map(r=>r[m]).filter(Number.isFinite);stats[k][m]={median:median(values),p95:p95(values)}}
   }
-  const files=['index.html','dexcut.css','assets/dexcut-atlas.avif','assets/dexcut-poster.webp','icon-192.png','icon-512.png','icon-maskable-512.png'];
+  const files=['index.html','dexcut.css','assets/dexcut-atlas-v2.webp','assets/dexcut-poster-v2.webp','icon-192-v2.png','icon-512-v2.png','icon-maskable-512-v2.png'];
   stats.staticBytes=Object.fromEntries(files.map(f=>[f,fs.statSync(path.join(newRoot,f)).size]));
   stats.baselineStaticBytes=fs.statSync(path.join(oldRoot,'index.html')).size;
   fs.writeFileSync('/tmp/dexcut-performance.json',JSON.stringify({stats,raw:data},null,2));

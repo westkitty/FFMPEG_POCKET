@@ -32,7 +32,7 @@ const root=path.resolve(__dirname,'..');
   const report=JSON.parse(await page.evaluate(()=>navigator.clipboard.readText()));
   assert.equal(report.product,'DEX//CUT');assert.equal(report.tests.length,30);
   const cacheInfo=await page.evaluate(async()=>{
-   const shell=await caches.open('dexcut-app-v1');
+   const shell=await caches.open('dexcut-app-v2');
    const core=await caches.open('ffmpeg-pocket-core-v1');
    const coreKeys=(await core.keys()).map(x=>x.url);
    return {cacheNames:await caches.keys(),shellCount:(await shell.keys()).length,coreKeys};

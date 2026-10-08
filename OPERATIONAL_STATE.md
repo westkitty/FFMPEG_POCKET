@@ -2,7 +2,7 @@
 
 project_id: ffmpeg-pocket
 project_name: DEX//CUT (formerly FFmpeg Pocket)
-revision: 7
+revision: 8
 
 ## Current baseline
 - Repository: westkitty/FFMPEG_POCKET
@@ -63,3 +63,12 @@ Historical custom GitHub Actions Pages enablement failed; branch-based Pages pub
 - Post-rebrand desktop Brave/macOS ARM64: 30/30 real FFmpeg.wasm device diagnostic, normal mute/playback/save/continue/JPEG workflow, 4 responsive viewports, cancelled-startup and immediate-retry scenarios all PASS.
 - Performance is measured against original commit 0cc2943; a secondary-resource/page-load cost is documented rather than concealed.
 - Physical iPhone installed-PWA verification remains pending. See QA_REPORT_DEXCUT.md; no desktop result is iPhone certification.
+
+## 2026-10-08 high-resolution artwork correction
+- The screenshot-confirmed pixelation arose from a 3.7 KB, 480 × 572 atlas with individual 160px artwork cells. That source is now superseded.
+- Master source-of-truth PNGs are preserved under `assets/source/`: expression 1254², poster 1731×909, wordmark 2172×724, PWA icon 1254².
+- Active web assets are versioned `-v2`: 1254² WebP expression atlas (627px per sprite cell), 1731×909 WebP poster, 2172×724 WebP wordmark, native-resolution PWA/touch icons and favicon.
+- CSS sprite state mapping is 2×2 via 200% background-size. Desktop maximum displayed mascot is 310px, retaining >2 source pixels per CSS pixel.
+- `dexcut-app-v2` cache revision is required so previous installed PWAs refresh their cached shell and images. Never promote a low-resolution social thumbnail into canonical master artwork.
+- A persistent `tests/dexcut_artwork_qa.cjs` guard verifies 12 source/export SHA hashes, dimensions, browser decoding and 4 responsive DPR-3 viewports. See `assets/README.md`.
+- Protected 30 tools and device verification logic remain unchanged. Full candidate browser and FFmpeg.wasm tests passed on Big Mac; **actual physical phone verification remains unknown** until run on-device.

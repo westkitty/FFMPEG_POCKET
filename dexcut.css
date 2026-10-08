@@ -25,7 +25,7 @@ button:not(:disabled){cursor:pointer}
 .installBtn{border-color:#82433e;background:#35201f;color:#f7e8dc;min-height:44px;border-radius:10px}
 .installBtn:hover{background:#4e2926}
 .hero{position:relative;isolation:isolate;min-height:342px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(210px,.85fr);align-items:end;gap:8px;padding:clamp(20px,3.5vw,38px);margin:0 0 15px;border:1px solid #715148;border-radius:17px;overflow:hidden;background:#141214}
-.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:url("./assets/dexcut-poster.webp") center/cover no-repeat;opacity:.19}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:url("./assets/dexcut-poster-v2.webp") center/cover no-repeat;opacity:.19}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#171314 0%,rgba(23,19,20,.96) 34%,rgba(23,19,20,.45) 100%),radial-gradient(ellipse at 90% 85%,rgba(226,52,52,.23),transparent 56%)}
 .heroCopy{min-width:0;align-self:center;z-index:2}
 .eyebrow,.heroEyebrow{color:#eaa6a0;font-size:10px;font-weight:900;letter-spacing:.17em;margin-bottom:11px;text-transform:uppercase}
@@ -41,11 +41,11 @@ button:not(:disabled){cursor:pointer}
 .coreVisual .coreRing,.coreVisual .coreCenter,.coreVisual .corePulse{display:none}
 .dexHalo{position:absolute;inset:17% 0 6%;background:radial-gradient(ellipse at center,rgba(227,52,52,.34),transparent 70%);filter:blur(12px)}
 .dexCaption{position:absolute;bottom:0;z-index:3;text-align:center;font-size:9px;letter-spacing:.12em;color:#dfb1a4;font-weight:900;text-shadow:0 3px 6px #000}
-.dexAsset{display:block;aspect-ratio:1;background-image:url("./assets/dexcut-atlas.avif");background-repeat:no-repeat;background-size:300% 357.5%;background-position:0 0;flex:none}
+.dexAsset{display:block;aspect-ratio:1;background-image:url("./assets/dexcut-atlas-v2.webp");background-repeat:no-repeat;background-size:200% 200%;background-position:0 0;flex:none}
 .dexAsset.dexIdle{background-position:0 0}
-.dexAsset.dexProcessing{background-position:50% 0}
-.dexAsset.dexError{background-position:0 38.835%}
-.dexAsset.dexExhausted{background-position:50% 38.835%}
+.dexAsset.dexProcessing{background-position:100% 0}
+.dexAsset.dexError{background-position:0 100%}
+.dexAsset.dexExhausted{background-position:100% 100%}
 .brandIcon.dexAsset{background-color:#241e20}
 .coreVisual #dexMascot{width:min(100%,310px);height:auto;max-height:none;aspect-ratio:1;position:relative;z-index:2;filter:drop-shadow(0 16px 28px rgba(0,0,0,.5))}
 .deviceGate{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:15px;border:1px solid #74413d;border-radius:13px;padding:18px;margin-bottom:25px;background:linear-gradient(115deg,#2a1d1e,#181618 83%)}
@@ -161,3 +161,12 @@ button:not(:disabled){cursor:pointer}
 .deviceGateAction,.chip.active,.actionPrimary,.sheetRun,.sheetResultActions .primary,.verifyRun,.installPrimary{background:var(--action-red);color:#fff}
 .deviceGateAction{border-color:#e33434}
 .deviceGateAction:hover,.installPrimary:hover{background:#b92428}
+
+/* High-resolution artwork: four 627px cells at 1:1, not upscaled 160px sprites. */
+.brandIcon.dexAsset{background-image:url("./icon-192-v2.png");background-size:cover;background-position:center;background-repeat:no-repeat}
+.footerWordmark{display:block;width:min(100%,300px);height:auto;aspect-ratio:3/1;object-fit:contain;margin:0 0 10px}
+@media(max-width:580px){.hero::before{background-image:none}}
+
+/* Keep the full-resolution Dexter silhouette clear of the verdict bar on phones. */
+@media(max-width:580px){.coreVisual{bottom:58px}}
+@media(max-width:385px){.coreVisual{bottom:66px}}

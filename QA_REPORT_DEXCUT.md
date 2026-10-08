@@ -86,3 +86,32 @@ The live HTTPS site served the updated DEX//CUT HTML, stylesheet, atlas, poster 
 - No runtime faults were reported in this live Pages test.
 
 Reproduction: `tests/dexcut_pages_qa.cjs` (optional Playwright test). **The physical installed iPhone remains unverified**; desktop Brave is not iOS WebKit.
+
+## High-resolution art restoration — 2026-10-08
+
+An Android browser screenshot exposed a real regression: the prior atlas was only 480 × 572 pixels (3.7 KB), leaving individual Dexter images approximately 160px square. These small images were enlarged and were visibly blurred. This was not a browser rendering defect.
+
+**Repaired in the candidate:**
+
+- Recovered the original lossless PNG masters for expressions (1254 × 1254), wordmark (2172 × 724), promotional banner (1731 × 909) and app icon (1254 × 1254). The masters are committed under `assets/source/` and preserved unchanged.
+- Produced loss-optimized, native-dimension WebP exports. The 2×2 expression atlas is 1254 × 1254 with 627px cells. Fixed CSS mapping to `background-size:200% 200%` and four corner positions.
+- Replaced the mobile/desktop mascot and header icon with high-resolution art, fixed the mascot's overlap with the verdict strip, and added the genuine wordmark to the footer.
+- Updated the app icon, maskable icon, Apple touch icon, favicon, Open Graph poster and source-image references. Versioned URLs as `-v2` and app-shell cache as `dexcut-app-v2` to invalidate previous cached art.
+- `tests/dexcut_artwork_qa.cjs`: **12/12 original/export binary Git hashes confirmed**, native browser decode dimensions checked, 4 viewport layouts at DPR 3 passed, with 0 browser errors.
+- At 390px mobile width, the 627px expression source is displayed at 178 CSS pixels (3.52 source pixels per displayed CSS pixel); at the widest display (310px), it still provides a 2.02× density ratio.
+- The lower-resolution v1 PNG/AVIF artwork is no longer referenced by the current page. Primary image quality is assessed in the production UI, not simply assumed from image-file size.
+
+**Browser tests completed on Big Mac / headless Brave, not a physical Android or iOS device.** Device-specific checks remain pending until the user runs the installed app's actual 30-tool verifier and reports the result.
+
+The artwork repair increases downloaded image bytes. This is deliberate: full-quality source detail is retained instead of hiding its loss behind an artificially small asset size. Mobile styling avoids loading the full atmospheric poster as a CSS background, although the PWA may cache it for offline and social preview consistency.
+
+### Artwork-release performance comparison (local 10-run medians)
+
+| Metric | Original FFmpeg Pocket | High-resolution DEX//CUT |
+|---|---:|---:|
+| Page load | 101.6 ms | 125.4 ms |
+| DOMContentLoaded | 33.6 ms | 123.6 ms |
+| 100 tool-search updates | 22.5 ms | 20.3 ms |
+| Secondary resource transfer | 1.7 KB | 439.3 KB |
+
+Measured on the same Big Mac in headless Brave at 390 × 844, cold isolated browser contexts, alternating original and current project. This is a deliberate image-quality tradeoff, not a claim of performance superiority or mobile-network benchmarking. The poster is omitted as a CSS background on phone widths; the PWA still precaches versioned visuals for its offline shell.
