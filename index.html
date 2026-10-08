@@ -188,10 +188,10 @@ const processPane=$('#processPane'),processTitle=$('#processTitle'),processText=
 const sheetResult=$('#sheetResult'),resultCheck=$('#resultCheck'),sheetResultTitle=$('#sheetResultTitle'),sheetResultText=$('#sheetResultText'),sheetPreview=$('#sheetPreview'),sheetMeta=$('#sheetMeta'),errorBox=$('#errorBox'),errorDetails=$('#errorDetails'),logText=$('#logText');
 const resultHub=$('#resultHub'),hubTitle=$('#hubTitle'),hubPreview=$('#hubPreview'),hubMeta=$('#hubMeta'),continueRow=$('#continueRow'),toastEl=$('#toast');
 const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
-let sourceFile=null,sourceURL='',selectedJob=null,resultFile=null,resultURL='',engine=null,engineLoading=null,lastLogs=[],activeCategory='quick',searchTerm='',lastCard=null,runSerial=0,cancelled=false;
+let sourceFile=null,sourceURL='',selectedJob=null,resultFile=null,resultURL='',engine=null,engineLoading=null,lastLogs=[],activeCategory='all',searchTerm='',lastCard=null,runSerial=0,cancelled=false;
 
 const CATEGORIES=[
-  ['quick','Quick'],['time','Cut + time'],['size','Size + format'],['audio','Audio'],['look','Look'],['fun','Fun'],['all','All 30']
+  ['all','All 30'],['quick','Quick'],['time','Cut + time'],['size','Size + format'],['audio','Audio'],['look','Look'],['fun','Fun']
 ];
 
 const JOBS=[
