@@ -73,3 +73,16 @@ These localhost measurements exclude real network latency, browser-cache history
 A GitHub Pages deployment is a separate gate from local verification. After pushing, check that the live HTML, CSS, mascot atlas, poster, manifest, icons and service worker reflect the new revision, that the device diagnostic still opens at `?verify=1`, and that a browser conversion works from the live URL.
 
 **iPhone certification remains pending until an actual installed-iPhone report and representative real-file checks are observed.** Do not turn desktop results into a device-specific claim.
+
+## Live GitHub Pages acceptance — independently verified
+
+**Published commit:** `ef6465009c6180861a9faae57e963bee410c31be` (Git tree `5f2583b377c10305bb037c3fa4230696f4e3e988`, identical to the locally tested tree).
+
+The live HTTPS site served the updated DEX//CUT HTML, stylesheet, atlas, poster and manifest. From a fresh desktop Brave browser session on macOS ARM64:
+
+- `?verify=1` opened the diagnostic, **30/30 actual FFmpeg.wasm operations passed**, and the complete JSON report was copied successfully.
+- The service worker controlled the page, with **12 cached app-shell resources** and both FFmpeg core artifacts (JavaScript and WebAssembly) cached.
+- With the browser explicitly offline, the app reloaded from cache and completed an offline Mute conversion. The output decoded as a **160×90, 2.5-second video**; that small conversion took about **877 ms**.
+- No runtime faults were reported in this live Pages test.
+
+Reproduction: `tests/dexcut_pages_qa.cjs` (optional Playwright test). **The physical installed iPhone remains unverified**; desktop Brave is not iOS WebKit.

@@ -53,6 +53,7 @@ DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexc
 DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexcut_real_flow.cjs
 DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexcut_cancellation_qa.cjs
 DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexcut_wasm_qa.cjs
+DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright node tests/dexcut_pages_qa.cjs
 DEXCUT_PLAYWRIGHT=/tmp/dexcut-playwright/node_modules/playwright DEXCUT_AXE=/tmp/dexcut-playwright/node_modules/@axe-core/playwright node tests/dexcut_accessibility_qa.cjs
 ```
 
