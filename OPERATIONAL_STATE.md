@@ -2,7 +2,7 @@
 
 project_id: ffmpeg-pocket
 project_name: DEX//CUT (formerly FFmpeg Pocket)
-revision: 8
+revision: 9
 
 ## Current baseline
 - Repository: westkitty/FFMPEG_POCKET
@@ -72,3 +72,15 @@ Historical custom GitHub Actions Pages enablement failed; branch-based Pages pub
 - `dexcut-app-v2` cache revision is required so previous installed PWAs refresh their cached shell and images. Never promote a low-resolution social thumbnail into canonical master artwork.
 - A persistent `tests/dexcut_artwork_qa.cjs` guard verifies 12 source/export SHA hashes, dimensions, browser decoding and 4 responsive DPR-3 viewports. See `assets/README.md`.
 - Protected 30 tools and device verification logic remain unchanged. Full candidate browser and FFmpeg.wasm tests passed on Big Mac; **actual physical phone verification remains unknown** until run on-device.
+
+## 2026-10-08 visual waveform editor
+
+- Four additive waveform mounts in `index.html` support source, tool selection, and both result preview locations. No original FFmpeg tool definition or command-builder branch was modified.
+- `dexcut-waveform.js` draws actual locally decoded audio peaks for supported small files; unavailable pre-decoding is visibly identified, with live audio-signal sampling attempted during playback. Large sources (>24 MiB or >240 seconds) are not predecoded; manual time selection still works if media duration is known.
+- The four time-selection tools are `ending`, `clip`, `gif`, and `picture`. Draggable range handles, tap-to-seek, keyboard adjustments, set-in/out, preview, tenth-second fields, and playback playhead all use shared tool value objects.
+- Numeric inputs are not overwritten by late metadata: each new timeline normalizes defaults at most once before user edits. The tool sheet scrolls the editor above sticky action buttons on narrow viewports.
+- Source/result changes dispose listeners, animation frames, analysis contexts, canvas observers, and stale editor nodes. No new third-party runtime package or media network upload.
+- PWA cache advanced to `dexcut-app-v3` to include the new waveform JS/CSS. The existing FFmpeg core cache stays intact.
+- Regression gate: `tests/dexcut_waveform_qa.cjs`, `tests/dexcut_waveform_browser.cjs`, existing `tests/dexcut_static_regression.cjs`, `tests/dexcut_browser_qa.cjs`, and `tests/dexcut_real_flow.cjs` are wired through `.github/workflows/waveform-qa.yml`.
+- Verified before expanded suite: protected command/build sections and 30/30 tool inventory, browser audio waveform rendering, range drag, keyboard adjustments, numeric synchronization, and no overflow at 320/390/768px. Expanded video/editor and real-WASM re-verification must report their own CI result.
+- **Unverified:** actual physical Android and iPhone pointer behavior, device audio/video codec combinations, installed-PWA lifecycle and large-device-file memory limits. Never call browser viewport emulation a device certification.
