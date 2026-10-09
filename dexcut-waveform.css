@@ -1,0 +1,41 @@
+/* Browser-native waveform surfaces. Existing DEX//CUT layout remains authoritative. */
+.dc-wave-mount:empty{display:none}
+.dc-timeline{margin-top:14px;padding:13px;border:1px solid #363641;border-radius:17px;background:linear-gradient(180deg,#16161c,#0b0b10);min-width:0;overflow:hidden}
+.dc-timeline--tool{margin-top:16px}
+.dc-timeline--result{margin:12px 0 0;border-color:#34343c}
+.dc-wave-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.dc-wave-title{font-size:11px;letter-spacing:.1em;font-weight:900;color:#ff8d86}
+.dc-wave-status{font-size:11px;color:#bbc2cd;line-height:1.35}
+.dc-media-slot{display:grid;place-items:center;background:#09090d;border-radius:11px;overflow:hidden;margin-bottom:12px}
+.dc-media-slot video{display:block;width:100%;max-height:245px;object-fit:contain}
+.dc-media-slot audio{width:100%;min-height:54px}
+.dc-wave-track{height:98px;position:relative;width:100%;border:1px solid #444450;border-radius:10px;background:linear-gradient(180deg,#0f1016,#15151a 50%,#0f1016);touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:crosshair;overflow:hidden}
+.dc-wave-track:not(.dc-ready){cursor:default}
+.dc-wave-canvas{display:block;width:100%;height:98px;pointer-events:none}
+.dc-wave-selection{position:absolute;top:0;bottom:0;left:0;width:0;background:rgba(255,59,48,.16);border-left:1px solid #ff786e;border-right:1px solid #ff786e;pointer-events:none}
+.dc-wave-playhead{position:absolute;top:0;bottom:0;left:0;width:2px;background:#fff;box-shadow:0 0 0 1px #15151b,0 0 10px rgba(255,255,255,.65);pointer-events:none;z-index:3}
+.dc-handle{position:absolute;top:25px;left:0;transform:translateX(-50%);min-width:44px;min-height:46px;border:1px solid #ff665c;border-radius:11px;background:#521e1a;color:#fff;font-weight:950;font-size:13px;box-shadow:0 4px 14px rgba(0,0,0,.45);cursor:ew-resize;touch-action:none;z-index:4}
+.dc-handle--end{background:#39232a;border-color:#cf96a0}
+.dc-handle:focus-visible{outline:3px solid #82aeff;outline-offset:2px}
+.dc-wave-readout{display:flex;justify-content:space-between;color:#a7adb9;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;margin-top:6px;font-variant-numeric:tabular-nums}
+.dc-wave-selection-info{margin-top:8px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px 9px;font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:#ffaaa4;font-variant-numeric:tabular-nums}
+.dc-wave-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.dc-wave-actions button{min-height:44px;padding:9px 11px;border:1px solid #444450;background:#24242b;border-radius:10px;color:#f0f0f4;font-size:12px;font-weight:800;flex:1 1 auto;cursor:pointer;transition:background .12s}
+.dc-wave-actions button:active{background:#38383e}
+.dc-wave-actions .dc-wave-preview{border-color:#a63931;background:#732823;flex-grow:1.4}
+.dc-wave-actions button:focus-visible{outline:3px solid #82aeff;outline-offset:2px}
+.dc-timeline--result .dc-wave-actions{margin-top:8px}
+.dc-timeline--result .dc-wave-track{height:80px}
+.dc-timeline--result .dc-wave-canvas{height:80px}
+.dc-timeline--result .dc-handle{top:16px}
+@media(max-width:520px){
+ .dc-timeline{padding:11px;margin-top:12px;border-radius:14px}
+ .dc-media-slot video{max-height:180px}
+ .dc-wave-actions button{flex-basis:calc(50% - 4px)}
+ .dc-wave-actions .dc-wave-preview{flex-basis:100%}
+ .dc-wave-head{align-items:flex-start}
+ .dc-wave-status{max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ .dc-wave-actions button{transition:none}
+}
