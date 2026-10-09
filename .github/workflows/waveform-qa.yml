@@ -47,3 +47,13 @@ jobs:
         env:
           DEXCUT_PLAYWRIGHT: /tmp/dexcut-uiqa/node_modules/playwright
         run: node tests/dexcut_waveform_browser.cjs
+      - name: Existing responsive UI regression
+        env:
+          DEXCUT_PLAYWRIGHT: /tmp/dexcut-uiqa/node_modules/playwright
+        run: |
+          DEXCUT_BROWSER="$(node -p "require('/tmp/dexcut-uiqa/node_modules/playwright').chromium.executablePath()")" node tests/dexcut_browser_qa.cjs
+      - name: FFmpeg result playback, download, and chained editing
+        env:
+          DEXCUT_PLAYWRIGHT: /tmp/dexcut-uiqa/node_modules/playwright
+        run: |
+          DEXCUT_BROWSER="$(node -p "require('/tmp/dexcut-uiqa/node_modules/playwright').chromium.executablePath()")" node tests/dexcut_real_flow.cjs
