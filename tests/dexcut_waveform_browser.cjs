@@ -92,6 +92,13 @@ function toneWav(duration=4, hz=320) {
       assert.equal(await page.locator('#toolTimeline .dc-handle').count(),1);
       await page.locator('#fields [data-key="seconds"]').fill('2');
       const inPoint=await page.locator('#toolTimeline .dc-wave-start').innerText();
+      if (!inPoint.includes('0:02.0')) console.error('WAVEFORM_ENDING_DEBUG', JSON.stringify(await page.evaluate(() => {
+        const track=document.querySelector('#toolTimeline .dc-wave-track');
+        const p=document.querySelector('#toolTimeline .dc-wave-start');
+        const seconds=document.querySelector('#fields [data-key="seconds"]');
+        const media=document.querySelector('#toolTimeline video, #toolTimeline audio');
+        return {seconds:seconds?.value, start:p?.textContent, duration:document.querySelector('#toolTimeline .dc-wave-total')?.textContent, trackReady:track?.className, selection:document.querySelector('#toolTimeline .dc-wave-selection')?.getAttribute('style'), mediaDuration:media?.duration, readyState:media?.readyState, sourceDuration:document.querySelector('#sourceTimeline .dc-wave-total')?.textContent};
+      })));
       assert(inPoint.includes('0:02.0'),'Keep-ending did not move IN point: '+inPoint);
       await page.locator('#sheetClose').click();
       const overflow=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,body:document.body.scrollWidth}));
