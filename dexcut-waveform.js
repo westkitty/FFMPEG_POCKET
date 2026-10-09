@@ -7,6 +7,7 @@
   const MAX_DECODE_SECONDS = 240;
   const MODES = { ending: 'ending', clip: 'range', gif: 'range', picture: 'point' };
   const cache = new WeakMap();
+  const durations = new WeakMap();
   const surfaces = new Set();
   let source = null;
   let editor = null;
@@ -227,7 +228,7 @@
       }
       const bucket = Math.min(COUNT - 1, Math.floor(s.media.currentTime / s.duration * COUNT));
       if (bucket >= 0) s.live[bucket] = Math.max(s.live[bucket], Math.min(1, Math.sqrt(sum / s.sample.length) * 3.4));
-      if (!s.peaks) s.status.textContent = 'Live signal · builds during playback';
+      if (!s.peaks && s.status.textContent !== 'Live signal · builds during playback') s.status.textContent = 'Live signal · builds during playback';
     }
     updateVisual(s);
     s.frame = requestAnimationFrame(() => paintFrame(s));
@@ -300,6 +301,7 @@
     };
     const wrap = document.createElement('section');
     wrap.className = 'dc-timeline dc-timeline--' + (options.kind || 'source');
+    wrap.setAttribute('aria-live', 'off');
     wrap.innerHTML =
       '<div class="dc-wave-head"><span class="dc-wave-title"></span><span class="dc-wave-status" role="status"></span></div>' +
       '<div class="dc-media-slot"></div>' +
@@ -329,6 +331,7 @@
     title.textContent = options.kind === 'tool' ? 'VISUAL EDITOR / ' + (options.job || '').toUpperCase() :
       options.kind === 'result' ? 'RESULT / AUDIO MAP' : 'SOURCE / AUDIO MAP';
     s.status.textContent = 'Reading media duration';
+    s.duration = durations.get(options.file) || 0;
     s.media = options.media || document.createElement(/^(video)\//.test(options.file.type) || /\.(mp4|mov|m4v|mkv|webm|avi)$/i.test(options.file.name) ? 'video' : 'audio');
     if (!options.media) {
       s.media.controls = true;
@@ -362,6 +365,7 @@
       const d = s.media.duration;
       if (Number.isFinite(d) && d > 0) {
         s.duration = d;
+        durations.set(s.file, d);
         if (s.values) {
           const b = bounds(s);
           if (s.mode === 'point') notify(s, { time: b.start });
