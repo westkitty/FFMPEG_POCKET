@@ -1,0 +1,48 @@
+name: DEX//CUT waveform regression
+
+on:
+  push:
+    branches:
+      - feature/visual-waveform-editor
+  pull_request:
+    paths:
+      - "index.html"
+      - "dexcut-waveform.js"
+      - "dexcut-waveform.css"
+      - "sw.js"
+      - "tests/**"
+      - ".github/workflows/waveform-qa.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Protected implementation and syntax
+        run: node tests/dexcut_static_regression.cjs
+      - name: Waveform integration invariants
+        run: node tests/dexcut_waveform_qa.cjs
+
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install development-only Chromium test dependencies
+        run: |
+          npm install --prefix /tmp/dexcut-uiqa --no-audit --no-fund playwright@1.64.0
+          /tmp/dexcut-uiqa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Waveform/mobile interaction regression
+        env:
+          DEXCUT_PLAYWRIGHT: /tmp/dexcut-uiqa/node_modules/playwright
+        run: node tests/dexcut_waveform_browser.cjs
