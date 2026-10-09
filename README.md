@@ -16,6 +16,21 @@ Thirty practical media tools retain the original FFmpeg Pocket workflow: choose 
 
 Media processing runs in the browser using the pinned single-thread **`@ffmpeg/core@0.12.10` WebAssembly engine**. The app does **not** upload selected media to a server, require an account, or require an App Store installation. The FFmpeg runtime is downloaded on first use; offline processing depends on it already being cached.
 
+## Visual waveform and timeline editing
+
+A playback timeline now appears when you load playable audio or video. Supported audio files display a decoded waveform; for audio streams that the browser cannot decode ahead of time, the timeline can collect **live signal levels while playback runs**. DEX//CUT never paints fake waveform data. Long or complex media may show a timeline without precomputed peaks.
+
+Time-sensitive tools provide a graphical editor alongside the original number fields:
+
+- **Cut a clip / Make a GIF:** drag a range or the **I** and **O** handles to set start and end.
+- **Keep the ending:** move the **I** marker to choose how much of the ending to retain.
+- **Save a picture:** tap a point on the timeline to choose the frame's time.
+- **Other media tools:** seek and preview using the source timeline without changing their processing settings.
+
+Use native playback, tap to seek, move handles with touch or keyboard arrow keys (Shift+arrow for one-second steps), or enter precise tenth-second values. Waveform selection and timing inputs share state, including on chained edits. Processed audio and video outputs also receive a playable timeline.
+
+Waveform analysis is performed on-device with Web Audio, without a new third-party runtime. Advance decoding is limited to smaller files (up to 24 MiB and four minutes) to avoid wasteful phone-memory pressure; codec support varies. The FFmpeg processing engine, file handling, cancellation, and export operations are unchanged. New waveform behavior has automated desktop Chromium tests; physical iPhone and Android device-specific behavior remains unverified until tested on those devices.
+
 ## Device verification — a protected feature
 
 Tap **VERIFY ALL 30 TOOLS**, or open the [diagnostic deep link](https://westkitty.github.io/FFMPEG_POCKET/?verify=1).
