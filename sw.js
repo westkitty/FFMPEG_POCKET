@@ -1,4 +1,4 @@
-const APP='dexcut-app-v3';
+const APP='dexcut-app-v4';
 const CORE='ffmpeg-pocket-core-v1';
 const SHELL=["./","./index.html","./manifest.json","./favicon-64-v2.png","./icon-192-v2.png","./icon-512-v2.png","./icon-maskable-512-v2.png","./apple-touch-icon-v2.png","./qa-sample.mp4","./dexcut.css","./dexcut-waveform.css","./dexcut-waveform.js","./assets/dexcut-atlas-v2.webp","./assets/dexcut-poster-v2.webp","./assets/dexcut-wordmark-v2.webp"];
 const CORE_PATH='/npm/@ffmpeg/core@0.12.10/dist/umd/';
