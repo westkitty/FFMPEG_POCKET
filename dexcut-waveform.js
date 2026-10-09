@@ -149,8 +149,8 @@
     s.playhead.style.left = px(s.media.currentTime || 0);
     s.selection.style.left = px(b.start);
     s.selection.style.width = s.mode === 'point' ? '0%' : positive ? Math.max(0, (b.end - b.start) / d * 100) + '%' : '0%';
-    if (s.startHandle) s.startHandle.style.left = px(b.start);
-    if (s.endHandle) s.endHandle.style.left = px(b.end);
+    if (s.startHandle) s.startHandle.style.left = 'clamp(23px,' + px(b.start) + ',calc(100% - 23px))';
+    if (s.endHandle) s.endHandle.style.left = 'clamp(23px,' + px(b.end) + ',calc(100% - 23px))';
     s.previewButton.textContent = s.media.paused ? (s.mode === 'none' ? 'Play / pause' : 'Preview selection') : 'Pause playback';
     draw(s);
   }
@@ -196,6 +196,9 @@
     if (!AC) return;
     try {
       const ctx = new AC();
+      if (ctx.state !== 'running') await ctx.resume();
+      if (ctx.state !== 'running') { await ctx.close(); return; }
+      if (s.destroyed) { await ctx.close(); return; }
       const source = ctx.createMediaElementSource(s.media);
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 1024;
@@ -326,7 +329,7 @@
     title.textContent = options.kind === 'tool' ? 'VISUAL EDITOR / ' + (options.job || '').toUpperCase() :
       options.kind === 'result' ? 'RESULT / AUDIO MAP' : 'SOURCE / AUDIO MAP';
     s.status.textContent = 'Reading media duration';
-    s.media = options.media || document.createElement(options.file.type.startsWith('video/') ? 'video' : 'audio');
+    s.media = options.media || document.createElement(/^(video)\//.test(options.file.type) || /\.(mp4|mov|m4v|mkv|webm|avi)$/i.test(options.file.name) ? 'video' : 'audio');
     if (!options.media) {
       s.media.controls = true;
       s.media.preload = 'metadata';
@@ -484,10 +487,11 @@
     hubResult = makeSurface(byId('hubResultTimeline'), { file, url, media: hubMedia, kind: 'result' });
   }
   function clearSheet() { destroy(sheetResult); sheetResult = null; }
+  function pauseAll() { for (const surface of surfaces) { surface.stopAt = null; surface.media.pause(); } }
   function shutdown() {
     clearTool();
     destroy(source); destroy(sheetResult); destroy(hubResult);
     source = sheetResult = hubResult = null; current = null;
   }
-  window.DexCutWaveform = { setSource, edit, clearTool, setResults, clearSheet, shutdown };
+  window.DexCutWaveform = { setSource, edit, clearTool, setResults, clearSheet, pauseAll, shutdown };
 })();
