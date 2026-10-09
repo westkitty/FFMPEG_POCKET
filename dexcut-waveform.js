@@ -466,6 +466,17 @@
     source = current ? makeSurface(byId('sourceTimeline'), { ...current, kind: 'source' }) : null;
     if (editorConfig) edit(editorConfig.job, editorConfig.values, editorConfig.fields);
   }
+  function revealEditor(s) {
+    if (!s || s.destroyed) return;
+    const sheet = byId('toolSheet');
+    const footer = sheet?.querySelector('.sheetActions');
+    if (!sheet || !footer || !sheet.contains(s.track)) return;
+    const sheetRect = sheet.getBoundingClientRect();
+    const footerTop = footer.getBoundingClientRect().top;
+    const clearance = Math.min(footerTop, sheetRect.bottom) - 14;
+    const overlap = s.track.getBoundingClientRect().bottom - clearance;
+    if (overlap > 0) sheet.scrollTop += overlap;
+  }
   function edit(job, values, fields) {
     destroy(editor);
     editorConfig = job && values ? { job, values, fields } : null;
@@ -476,6 +487,7 @@
       ...current, kind: 'tool', mode: MODES[job.id] || 'none',
       job: job.id, values, fields
     }) : null;
+    if (editor) requestAnimationFrame(() => { if (editor && !editor.destroyed) revealEditor(editor); });
   }
   function clearTool() {
     editorConfig = null;
