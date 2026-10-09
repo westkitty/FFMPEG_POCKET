@@ -116,6 +116,15 @@
     }
   }
 
+  function normalizeInitialSelection(s) {
+    if (s.normalized || s.userEdited || !s.values || !(s.duration > 0)) return;
+    s.normalized = true;
+    const b = bounds(s);
+    if (s.mode === 'point') notify(s, { time: b.start });
+    else if (s.mode === 'ending') notify(s, { seconds: b.end - b.start });
+    else if (s.mode === 'range') notify(s, { start: b.start, length: b.end - b.start });
+  }
+
   function timestampPosition(s, clientX) {
     const r = s.track.getBoundingClientRect();
     return r.width > 0 ? clamp((clientX - r.left) / r.width, 0, 1) * s.duration : 0;
@@ -297,6 +306,7 @@
       host, file: options.file, url: options.url, mode: options.mode || 'none',
       job: options.job || '', values: options.values || null, fields: options.fields || null,
       duration: 0, peaks: null, live: new Float32Array(COUNT), frame: 0,
+      normalized: false, userEdited: false,
       context: null, analyser: null, destroyed: false, stopAt: null, media: null
     };
     const wrap = document.createElement('section');
@@ -366,12 +376,7 @@
       if (Number.isFinite(d) && d > 0) {
         s.duration = d;
         durations.set(s.file, d);
-        if (s.values) {
-          const b = bounds(s);
-          if (s.mode === 'point') notify(s, { time: b.start });
-          if (s.mode === 'ending') notify(s, { seconds: b.end - b.start });
-          if (s.mode === 'range') notify(s, { start: b.start, length: b.end - b.start });
-        }
+        normalizeInitialSelection(s);
         if (s.file.size > MAX_DECODE_BYTES || d > MAX_DECODE_SECONDS) {
           s.status.textContent = 'Live signal only · large file';
         } else {
@@ -426,7 +431,7 @@
       else choose(s, 0, Math.min(s.duration, s.job === 'gif' ? 4 : 10));
     });
     attachPointer(s);
-    s.onFields = () => updateVisual(s);
+    s.onFields = e => { if (e.isTrusted) s.userEdited = true; updateVisual(s); };
     if (s.fields) s.fields.addEventListener('input', s.onFields);
     if ('ResizeObserver' in window) {
       s.observer = new ResizeObserver(() => updateVisual(s));
@@ -435,6 +440,7 @@
       s.onResize = () => updateVisual(s);
       window.addEventListener('resize', s.onResize);
     }
+    normalizeInitialSelection(s);
     if (s.media.readyState >= 1) s.onMetadata();
     updateVisual(s);
     return s;
