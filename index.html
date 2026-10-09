@@ -119,7 +119,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
       <button class="change" id="changeFile" type="button">Change file</button>
     </div>
     <div id="fileWarning" class="warning hidden"></div>
-    <div class="dc-wave-mount" id="sourceTimeline" aria-label="Source media waveform and playback"></div>
+    <div class="dc-wave-mount" role="region" id="sourceTimeline" aria-label="Source media waveform and playback"></div>
   </section>
 
   <section class="library" id="library">
@@ -135,7 +135,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
   <section class="panel resultHub hidden" id="resultHub" aria-live="polite">
     <div class="resultTop"><div><div class="step">03 / THE VERDICT</div><h2 id="hubTitle">Acceptable. Barely.</h2></div><span class="successPill">Ready</span></div>
     <div class="previewFrame" id="hubPreview"></div>
-    <div class="dc-wave-mount" id="hubResultTimeline" aria-label="Processed media waveform"></div>
+    <div class="dc-wave-mount" role="region" id="hubResultTimeline" aria-label="Processed media waveform"></div>
     <div class="resultMeta" id="hubMeta"></div>
     <div class="resultActions">
       <button class="actionPrimary" data-action="share" type="button">Share result</button>
@@ -168,7 +168,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
 
     <div class="configPane" id="configPane">
       <div class="fields" id="fields"></div>
-      <div class="dc-wave-mount hidden" id="toolTimeline" aria-label="Visual time selection editor"></div>
+      <div class="dc-wave-mount hidden" role="region" id="toolTimeline" aria-label="Visual time selection editor"></div>
       <div class="compatMessage hidden" id="compatMessage"></div>
       <div class="sheetActions">
         <button class="sheetRun" id="sheetRun" type="button" disabled>RUN TOOL</button>
@@ -192,7 +192,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
     <div class="sheetResult hidden" id="sheetResult" aria-live="polite">
       <div class="resultHeadline"><span class="dexAsset dexIdle moodSprite" aria-hidden="true"></span><div class="resultCheck" id="resultCheck">&#10003;</div><div><h3 id="sheetResultTitle">Done</h3><p id="sheetResultText"></p></div></div>
       <div class="previewFrame" id="sheetPreview"></div>
-      <div class="dc-wave-mount" id="sheetResultTimeline" aria-label="Processed media waveform"></div>
+      <div class="dc-wave-mount" role="region" id="sheetResultTimeline" aria-label="Processed media waveform"></div>
       <div class="resultMeta" id="sheetMeta"></div>
       <div class="sheetResultActions" id="sheetResultActions">
         <button class="primary" data-action="share" type="button">Share result</button>
