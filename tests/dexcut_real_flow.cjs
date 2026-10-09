@@ -29,6 +29,8 @@ const server=http.createServer((req,res)=>{
   assert(await page.locator('#errorBox').isHidden(),'Mute conversion showed error');
   const outputName=await page.locator('#sheetResultText').innerText();
   assert(outputName.includes('-muted.mp4'),'Unexpected mute output '+outputName);
+  assert.equal(await page.locator('#sheetResultTimeline .dc-wave-track').count(),1,'Processed result missing waveform in tool sheet');
+  assert.equal(await page.locator('#hubResultTimeline .dc-wave-track').count(),1,'Processed result missing waveform in result hub');
   const video=page.locator('#sheetPreview video');
   await video.waitFor({state:'visible'});
   const v=await video.evaluate(async el=>{
@@ -45,6 +47,7 @@ const server=http.createServer((req,res)=>{
   await page.locator('#sheetResultActions [data-action="use-result"]').click();
   await page.waitForFunction(()=>document.querySelector('#fileName').textContent.includes('-muted.mp4'),null,{timeout:10000});
   records.push({step:'keep-editing',sourceFile:await page.locator('#fileName').innerText()});
+  assert.equal(await page.locator('#sourceTimeline .dc-wave-track').count(),1,'Chained result did not restore source waveform');
   await page.locator('.job[data-job="picture"]').click();
   const pictureStart=Date.now();
   await page.locator('#sheetRun').click();
