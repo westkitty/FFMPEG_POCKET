@@ -170,3 +170,9 @@ button:not(:disabled){cursor:pointer}
 /* Keep the full-resolution Dexter silhouette clear of the verdict bar on phones. */
 @media(max-width:580px){.coreVisual{bottom:58px}}
 @media(max-width:385px){.coreVisual{bottom:66px}}
+
+/* Recoverable conversion failures are not successful outputs. */
+.resultCheck.failed{background:#36181b;border-color:#874246;color:#ffa9a0}
+.errorDiagnostics{width:100%;min-height:48px;margin-top:12px;padding:10px 14px;border:1px solid #675158;border-radius:13px;background:#272229;color:#f4e8e8;font-weight:800;cursor:pointer}
+.errorDiagnostics:focus-visible{outline:3px solid #82aeff;outline-offset:2px}
+.sheetResult .previewFrame.hidden{display:none}
