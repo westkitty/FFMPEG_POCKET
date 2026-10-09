@@ -1,9 +1,6 @@
 name: DEX//CUT waveform regression
 
 on:
-  push:
-    branches:
-      - feature/visual-waveform-editor
   pull_request:
     paths:
       - "index.html"
@@ -12,6 +9,10 @@ on:
       - "sw.js"
       - "tests/**"
       - ".github/workflows/waveform-qa.yml"
+
+concurrency:
+  group: waveform-qa-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
