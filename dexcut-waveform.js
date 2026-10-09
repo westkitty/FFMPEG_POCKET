@@ -468,8 +468,10 @@
 
   function setSource(file, url) {
     destroy(source); destroy(editor);
-    current = file && url ? { file, url } : null;
+    const media = file && (/^(audio|video)\//.test(file.type) || /\.(mp4|mov|m4v|mkv|webm|avi|mp3|m4a|aac|wav|flac|ogg|opus)$/i.test(file.name));
+    current = media && url ? { file, url } : null;
     source = current ? makeSurface(byId('sourceTimeline'), { ...current, kind: 'source' }) : null;
+    if (!current) byId('sourceTimeline')?.replaceChildren();
     if (editorConfig) edit(editorConfig.job, editorConfig.values, editorConfig.fields);
   }
   function revealEditor(s) {
