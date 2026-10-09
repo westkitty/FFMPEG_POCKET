@@ -69,12 +69,15 @@ function toneWav(duration=4, hz=320) {
       await track.scrollIntoViewIfNeeded();
       const rect=await track.boundingBox();
       assert(rect&&rect.width>=150);
+      await page.evaluate(() => { window.__dcWavePointer = []; ['pointerdown','pointermove','pointerup'].forEach(type => document.addEventListener(type,e => { if(window.__dcWavePointer.length<32) window.__dcWavePointer.push({type,target:e.target?.className?.toString()?.slice(0,100)||e.target?.tagName,x:e.clientX,y:e.clientY}); }, true)); });
+      const before = await page.evaluate(() => ({duration:document.querySelector('#toolTimeline .dc-wave-total')?.textContent,point:document.elementFromPoint(...(() => {const r=document.querySelector('#toolTimeline .dc-wave-track').getBoundingClientRect();return [r.left+r.width*.25,r.top+8]})())?.className?.toString(),track:getComputedStyle(document.querySelector('#toolTimeline .dc-wave-track')).pointerEvents}));
       await page.mouse.move(rect.x+rect.width*.25,rect.y+8);
       await page.mouse.down();
       await page.mouse.move(rect.x+rect.width*.75,rect.y+8,{steps:8});
       await page.mouse.up();
       const start=Number(await page.locator('#fields [data-key="start"]').inputValue());
       const length=Number(await page.locator('#fields [data-key="length"]').inputValue());
+      if(!(start>0.8&&start<1.2)) console.error('WAVEFORM_DRAG_DEBUG',JSON.stringify({before,rect,start,length,pointers:await page.evaluate(()=>window.__dcWavePointer)}));
       assert(start>0.8&&start<1.2,'Dragged IN did not update time field: '+start);
       assert(length>1.8&&length<2.2,'Dragged OUT did not update clip length: '+length);
       const inHandle=page.locator('#toolTimeline .dc-handle--start');
