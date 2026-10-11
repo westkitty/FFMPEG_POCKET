@@ -116,6 +116,25 @@
     }
   }
 
+  // Preserve the stationary endpoint when a single range handle changes.
+  function chooseAnchored(s, part, time) {
+    if (s.mode !== 'range') {
+      const b = bounds(s);
+      choose(s, part === 'start' ? time : b.start, part === 'end' ? time : b.end);
+      return;
+    }
+    const b = bounds(s);
+    const minimum = minLength(s.duration);
+    const maximum = Math.min(s.duration, modeLength(s.job));
+    if (part === 'start') {
+      const start = clamp(time, Math.max(0, b.end - maximum), b.end - minimum);
+      notify(s, { start, length: b.end - start });
+    } else {
+      const end = clamp(time, b.start + minimum, Math.min(s.duration, b.start + maximum));
+      notify(s, { start: b.start, length: end - b.start });
+    }
+  }
+
   function normalizeInitialSelection(s) {
     if (s.normalized || s.userEdited || !s.values || !(s.duration > 0)) return;
     s.normalized = true;
@@ -161,6 +180,18 @@
     s.selection.style.width = s.mode === 'point' ? '0%' : positive ? Math.max(0, (b.end - b.start) / d * 100) + '%' : '0%';
     if (s.startHandle) s.startHandle.style.left = 'clamp(23px,' + px(b.start) + ',calc(100% - 23px))';
     if (s.endHandle) s.endHandle.style.left = 'clamp(23px,' + px(b.end) + ',calc(100% - 23px))';
+    for (const [handle, part] of [[s.startHandle, 'start'], [s.endHandle, 'end']]) {
+      if (!handle || !positive) continue;
+      const at = part === 'start' ? b.start : b.end;
+      const minimum = minLength(d);
+      const maximum = Math.min(d, modeLength(s.job));
+      const low = s.mode === 'range' ? (part === 'start' ? Math.max(0, b.end - maximum) : b.start + minimum) : 0;
+      const high = s.mode === 'range' ? (part === 'start' ? b.end - minimum : Math.min(d, b.start + maximum)) : d;
+      handle.setAttribute('aria-valuemin', String(tenths(low)));
+      handle.setAttribute('aria-valuemax', String(tenths(high)));
+      handle.setAttribute('aria-valuenow', String(tenths(at)));
+      handle.setAttribute('aria-valuetext', clock(at));
+    }
     s.previewButton.textContent = s.media.paused ? (s.mode === 'none' ? 'Play / pause' : 'Preview selection') : 'Pause playback';
     draw(s);
   }
@@ -284,7 +315,7 @@
         if (!dragging) return;
         const b = bounds(s);
         const at = timestampPosition(s, e.clientX);
-        choose(s, part === 'start' ? at : b.start, part === 'end' ? at : b.end);
+        chooseAnchored(s, part, at);
       });
       const stop = () => { dragging = false; };
       handle.addEventListener('pointerup', stop);
@@ -295,7 +326,7 @@
         const b = bounds(s);
         const before = part === 'start' ? b.start : b.end;
         const next = e.key === 'Home' ? 0 : e.key === 'End' ? s.duration : before + (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 1 : .1);
-        choose(s, part === 'start' ? next : b.start, part === 'end' ? next : b.end);
+        chooseAnchored(s, part, next);
       });
     }
   }
@@ -352,6 +383,10 @@
       q('.dc-media-slot').appendChild(s.media);
     } else q('.dc-media-slot').remove();
     s.track.setAttribute('role', 'group');
+    for (const handle of [s.startHandle, s.endHandle]) {
+      handle.setAttribute('role', 'slider');
+      handle.setAttribute('aria-orientation', 'horizontal');
+    }
 
     if (s.mode === 'none') {
       s.selection.classList.add('hidden');
@@ -419,11 +454,11 @@
     const resetButton = q('.dc-wave-reset');
     if (inButton) inButton.addEventListener('click', () => {
       const b = bounds(s);
-      choose(s, s.media.currentTime, s.mode === 'range' ? b.end : s.media.currentTime);
+      chooseAnchored(s, 'start', s.media.currentTime);
     });
     if (outButton) outButton.addEventListener('click', () => {
       const b = bounds(s);
-      choose(s, b.start, s.media.currentTime);
+      chooseAnchored(s, 'end', s.media.currentTime);
     });
     if (resetButton) resetButton.addEventListener('click', () => {
       if (s.mode === 'point') choose(s, 0, 0);
