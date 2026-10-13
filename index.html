@@ -74,6 +74,7 @@ body.processing .coreRing{animation-duration:3s}body.processing .corePulse{anima
 @media(max-width:360px){.jobs{grid-template-columns:1fr}.localchip{display:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.coreRing,.corePulse,.processCard::before,.processIcon,.audioViz i{animation:none!important}.job{opacity:1;transform:none}.toolSheet,.job,.chip,.toast,.progressBar{transition-duration:.01ms!important}}
 body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:paused}
+.urlImport{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.urlImport summary{cursor:pointer;font-weight:800;color:var(--ink)}.urlImport form{display:grid;gap:10px;margin-top:12px}.urlImport label{font-size:.88rem}.urlImport input[type=url]{width:100%;min-height:44px;box-sizing:border-box;border:1px solid var(--line2);border-radius:9px;padding:10px;background:var(--bg);color:var(--ink)}.urlImport p{color:var(--muted);font-size:.84rem;overflow-wrap:anywhere}.urlImportActions{display:flex;gap:8px;flex-wrap:wrap}.urlImportActions button{min-height:44px;padding:8px 14px;border-radius:9px}.urlImport progress{width:100%}
 </style>
 <link rel="stylesheet" href="./dexcut.css">
 <link rel="stylesheet" href="./dexcut-waveform.css">
@@ -242,6 +243,7 @@ body.reduceAmbient .coreRing,body.reduceAmbient .corePulse{animation-play-state:
 
 <div class="toast" id="toast"></div>
 <script src="./dexcut-waveform.js"></script>
+<script defer src="./dexcut-url-import.js"></script>
 <script>
 (() => {
 'use strict';
@@ -356,6 +358,7 @@ sheetClose.addEventListener('click',closeTool);toolDialog.addEventListener('clic
 
 function clearSourcePreview(){if(sourceURL){URL.revokeObjectURL(sourceURL);sourceURL=''}thumb.innerHTML='&gt;'}
 function handleFile(file){window.DexCutWaveform?.shutdown();clearSourcePreview();sourceFile=file;sourceMediaInfo={audio:null,video:null,duration:null,width:null,height:null};filePanel.classList.add('hasFile');filePick.classList.add('hidden');fileCard.classList.remove('hidden');fileName.textContent=file.name;fileMeta.textContent=fmtBytes(file.size)+(file.type?' / '+file.type:'');fileWarning.classList.add('hidden');if(file.size>250*1024*1024){fileWarning.textContent=file.size>600*1024*1024?'This is very large for an iPhone browser and may run out of memory. A shorter or smaller file is safer.':'Large files can be slow and may exceed iPhone browser memory. Keep Chrome open while it works.';fileWarning.classList.remove('hidden');}sourceURL=URL.createObjectURL(file);if(file.type.startsWith('video/'))thumb.innerHTML=`<video src="${sourceURL}" muted playsinline preload="metadata"></video>`;else if(file.type.startsWith('image/'))thumb.innerHTML=`<img src="${sourceURL}" alt="">`;else thumb.textContent='AUDIO';window.DexCutWaveform?.setSource(file,sourceURL);if(toolDialog.open&&selectedJob)window.DexCutWaveform?.edit(selectedJob,values[selectedJob.id],fieldsEl);renderJobs();updateSheetRun();}
+document.addEventListener('dexcut:import-file',event=>{const file=event.detail?.file;if(file instanceof File)handleFile(file)});
 fileInput.addEventListener('change',()=>{const f=fileInput.files?.[0];if(f)handleFile(f);fileInput.value=''});$('#changeFile').addEventListener('click',()=>fileInput.click());sheetPickFile.addEventListener('click',()=>fileInput.click());
 
 class PocketFFmpeg{
