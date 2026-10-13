@@ -84,3 +84,9 @@ Historical custom GitHub Actions Pages enablement failed; branch-based Pages pub
 - Regression gate: `tests/dexcut_waveform_qa.cjs`, `tests/dexcut_waveform_browser.cjs`, existing `tests/dexcut_static_regression.cjs`, `tests/dexcut_browser_qa.cjs`, and `tests/dexcut_real_flow.cjs` are wired through `.github/workflows/waveform-qa.yml`.
 - Verified before expanded suite: protected command/build sections and 30/30 tool inventory, browser audio waveform rendering, range drag, keyboard adjustments, numeric synchronization, and no overflow at 320/390/768px. Expanded video/editor and real-WASM re-verification must report their own CI result.
 - **Unverified:** actual physical Android and iPhone pointer behavior, device audio/video codec combinations, installed-PWA lifecycle and large-device-file memory limits. Never call browser viewport emulation a device certification.
+
+## URL import feature branch (2026-10-13)
+- Branch: feature/optional-url-import; committed remotely, not merged or deployed.
+- Added browser direct URL import and explicitly opted-in external downloader service contract; media enters existing local File pipeline.
+- Added static contract test; execution of tests and physical iPhone verification remain pending.
+- Status: IPHONE UNVERIFIED / NOT RELEASE READY.
