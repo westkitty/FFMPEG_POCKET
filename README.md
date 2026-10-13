@@ -80,3 +80,6 @@ Production art uses four untouched PNG masters under [assets/source](assets/sour
 ---
 
 **DEX//CUT** — Stinky Weasel Productions. Dexter disapproves.
+## URL import (feature branch; iPhone unverified)
+
+Expand **IMPORT FROM URL** beneath file selection. A direct HTTPS media URL is downloaded into a browser File and enters the existing local editor. For social sites (YouTube, X/Twitter, ThisVid), configure your own HTTPS service and explicitly check the consent box. The browser sends only the submitted page URL to that endpoint as `POST` JSON `{ "url": "https://..." }`; the endpoint must respond with `Content-Type: application/json` and `{ "mediaUrl": "https://..." }`. The returned media URL must be browser-fetchable with CORS permission. No service is bundled, enabled by default, or stored between sessions. DEX//CUT does not bypass site authentication or DRM. Imports are limited to 250 MiB to reduce iPhone memory pressure; media processing stays in the browser after import. The optional service may receive the link and its own operator's logs apply. This is not an offline feature. Run `node tests/dexcut_url_import.cjs` and the existing regression suite before release; physical iPhone testing is still required.
