@@ -128,6 +128,7 @@
       const asset=p.assets.find(x=>x.id===clip.sourceId);
       el('selectedHint').textContent='Editing '+(asset?.name||'missing source');
       el('backgroundMode').value=clip.backgroundMode||'letterbox';
+      el('backgroundColor').value=/^#[0-9a-f]{6}$/i.test(clip.background||'')?clip.background:'#000000';
       const crop=clip.crop;el('cropShape').value=crop?Math.round(crop.x*200):0;
       el('cropPercent').value=el('cropShape').value+'%';
       state.activeRange=clamp(state.activeRange,0,clip.ranges.length-1);
@@ -369,6 +370,7 @@
   el('backgroundMode').addEventListener('change',()=>{
     const c=selectedClip();if(c)doEdit('UPDATE_CLIP',{id:c.id,backgroundMode:el('backgroundMode').value});
   });
+  el('backgroundColor').addEventListener('change',()=>{const c=selectedClip();if(c)doEdit('UPDATE_CLIP',{id:c.id,background:el('backgroundColor').value});});
   el('exportPreset').addEventListener('change',e=>doEdit('SET_EXPORT',{preset:e.target.value}));
   el('sizeTarget').addEventListener('change',e=>{
     const v=e.target.value.trim()?Math.round(Number(e.target.value)*1048576):null;
