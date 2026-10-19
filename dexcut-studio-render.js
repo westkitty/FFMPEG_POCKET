@@ -74,8 +74,8 @@ onmessage=async e=>{
     P.validate(project);
     if(!project.clips.length)throw Error('Add video clips before rendering');
     if(project.audio.length||project.titles.length||project.captions.length)throw Error('Additional audio and text layers are not supported by the simple renderer');
-    if(project.clips.some(c=>c.speed!==1||c.crop||c.backgroundMode==='blur'||c.backgroundMode==='solid'||c.transitionOut?.type==='fade'))
-      throw Error('This render path supports ordinary cuts and joins only; disable unsupported clip effects');
+    if(project.clips.some(c=>c.speed!==1||c.transitionOut?.type==='fade'))
+      throw Error('This render path does not yet support speed changes or transitions');
     if(!['portrait-720p','landscape-720p','square-720p','messaging'].includes(project.export.preset))
       throw Error('This renderer currently supports conservative output profiles only');
     const segments=P.flatten(project);
@@ -109,9 +109,20 @@ onmessage=async e=>{
         if(commonAudio===null)commonAudio=hasAudio;
         if(hasAudio!==commonAudio)throw Error('Mixed silent and audio clips need a future normalized audio renderer');
         const out='section-'+i+'.mp4';
-        const vf='scale='+w+':'+h+':force_original_aspect_ratio=decrease,pad='+w+':'+h+':(ow-iw)/2:(oh-ih)/2,setsar=1,fps='+rate;
+        const clip=project.clips.find(x=>x.id===s.clipId);
+        const crop=clip.crop;
+        const part=crop?'crop=iw*'+crop.w+':ih*'+crop.h+':iw*'+crop.x+':ih*'+crop.y+',':'';
+        const mode=clip.backgroundMode||'letterbox';
+        const base=part+'scale='+w+':'+h+':force_original_aspect_ratio=decrease,pad='+w+':'+h+':(ow-iw)/2:(oh-ih)/2';
+        const vf=base+',setsar=1,fps='+rate;
+        const blurgraph='[0:v]'+part+'split=2[bg][fg];'+
+          '[bg]scale='+w+':'+h+':force_original_aspect_ratio=increase,crop='+w+':'+h+',gblur=sigma=12[background];'+
+          '[fg]scale='+w+':'+h+':force_original_aspect_ratio=decrease[foreground];'+
+          '[background][foreground]overlay=(W-w)/2:(H-h)/2,setsar=1,fps='+rate+'[v]';
         const duration=(s.sourceEndUs-s.sourceStartUs)/1e6,offset=s.sourceStartUs/1e6;
-        const args=['-hide_banner','-ss',String(offset),'-i',input,'-t',String(duration),'-vf',vf,'-map','0:v:0'];
+        const args=['-hide_banner','-ss',String(offset),'-i',input,'-t',String(duration)];
+        if(mode==='blur')args.push('-filter_complex',blurgraph,'-map','[v]');
+        else args.push('-vf',mode==='solid'?vf.replace(/pad=([^,]+)/,'pad=$1:color=black'):vf,'-map','0:v:0');
         if(hasAudio)args.push('-map','0:a:0','-c:a','aac','-ar','44100','-ac','2','-b:a','96k');
         else args.push('-an');
         args.push('-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','27','-movflags','+faststart',out);
