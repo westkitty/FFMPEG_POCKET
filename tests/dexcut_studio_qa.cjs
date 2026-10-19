@@ -5,13 +5,13 @@ const html=fs.readFileSync(path.join(root,'studio.html'),'utf8');
 const code=fs.readFileSync(path.join(root,'dexcut-studio.js'),'utf8');
 new vm.Script(code,{filename:'dexcut-studio.js'});
 new vm.Script(fs.readFileSync(path.join(root,'dexcut-studio-render.js'),'utf8'),{filename:'dexcut-studio-render.js'});
-for(const module of ['dexcut-studio-readiness.js','dexcut-studio-gestures.js'])new vm.Script(fs.readFileSync(path.join(root,module),'utf8'),{filename:module});
-for(const file of ['dexcut-project.js','dexcut-export-plan.js','dexcut-studio-render.js','dexcut-studio-readiness.js','dexcut-studio.js','dexcut-studio-gestures.js']){
+for(const module of ['dexcut-studio-readiness.js','dexcut-studio-gestures.js','dexcut-studio-markers.js'])new vm.Script(fs.readFileSync(path.join(root,module),'utf8'),{filename:module});
+for(const file of ['dexcut-project.js','dexcut-export-plan.js','dexcut-studio-render.js','dexcut-studio-readiness.js','dexcut-studio.js','dexcut-studio-gestures.js','dexcut-studio-markers.js']){
   assert(html.includes('src="./'+file+'"'),'Missing module '+file);
 }
-const allCode=code+fs.readFileSync(path.join(root,'dexcut-studio-gestures.js'),'utf8')+fs.readFileSync(path.join(root,'dexcut-studio-readiness.js'),'utf8');
+const allCode=code+fs.readFileSync(path.join(root,'dexcut-studio-gestures.js'),'utf8')+fs.readFileSync(path.join(root,'dexcut-studio-readiness.js'),'utf8')+fs.readFileSync(path.join(root,'dexcut-studio-markers.js'),'utf8');
 for(const id of ['mediaInput','clipList','preview','timeline','undo','redo','rangeStart','rangeEnd','addRange','removeRange','invertRange',
-  'downloadProject','openProject','exportPreset','sizeTarget','checkExport','thumbs','backgroundMode','renderVideo','cancelRender','renderProgress','renderResult','audioInput','audioTracks','recordVoice','stopVoice','voiceStatus','textContent','addTitle','subtitleInput','textTracks','precisionTrack','cropWorkspace','timelineZoom','timelinePan','snapCuts','refreshReadiness','readiness']){
+  'downloadProject','openProject','exportPreset','sizeTarget','checkExport','thumbs','backgroundMode','renderVideo','cancelRender','renderProgress','renderResult','audioInput','audioTracks','recordVoice','stopVoice','voiceStatus','textContent','addTitle','subtitleInput','textTracks','precisionTrack','cropWorkspace','timelineZoom','timelinePan','snapCuts','refreshReadiness','readiness','analyzeScenes','analyzeSilence','cancelAnalyze','analyzeStatus','markerResults']){
   assert.equal((html.match(new RegExp('id="'+id+'"','g'))||[]).length,1,'Missing/duplicate '+id);
   assert(allCode.includes("el('"+id+"')")||allCode.includes("['"+id+"'")||allCode.includes("byId('"+id+"')")||allCode.includes("getElementById('"+id+"')"),'Missing UI usage '+id);
 }
