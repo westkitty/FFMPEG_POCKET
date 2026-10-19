@@ -377,7 +377,7 @@
   el('checkExport').addEventListener('click',showPreflight);
   window.addEventListener('pagehide',()=>{state.thumbnailTask++;releasePreview();
     for(const u of state.audioUrls.values())URL.revokeObjectURL(u);state.audioUrls.clear();});
-  let activeRender=null,completedURL=null;
+  let activeRender=null,completedURL=null,compareCleanup=null;
   el('renderVideo').addEventListener('click',async()=>{
     if(activeRender)return;
     const renderer=window.DexCutStudioRender;
@@ -388,6 +388,7 @@
       activeRender=controller;
       el('renderVideo').disabled=true;el('cancelRender').disabled=false;
       el('renderProgress').hidden=false;el('renderProgress').value=0;
+      compareCleanup?.();compareCleanup=null;
       el('renderResult').replaceChildren();
       say('Preparing local video composition. Keep the app in the foreground.');
       const file=await renderer.render(frozen,sourceFiles,{signal:controller.signal,
@@ -443,6 +444,8 @@
         compare.addEventListener('blur',restore);
         compare.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();reveal();}});
         compare.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();restore();}});
+        compareCleanup=()=>{restore();original.pause();original.removeAttribute('src');original.load();
+          if(comparisonURL)URL.revokeObjectURL(comparisonURL);comparisonURL=null;activeId='';};
         el('renderResult').append(compare,original);
         original.addEventListener('emptied',()=>{if(!pressed&&comparisonURL){URL.revokeObjectURL(comparisonURL);comparisonURL=null;activeId='';}});
       }
@@ -452,7 +455,7 @@
       el('cancelRender').disabled=true;el('renderProgress').hidden=true;}
   });
   el('cancelRender').addEventListener('click',()=>activeRender?.abort());
-  window.addEventListener('pagehide',()=>{activeRender?.abort();if(completedURL)URL.revokeObjectURL(completedURL);});
+  window.addEventListener('pagehide',()=>{activeRender?.abort();if(completedURL)URL.revokeObjectURL(completedURL);compareCleanup?.();});
   window.DexCutStudioControl={
     project,selectedClip,getAsset:()=>project().assets.find(a=>a.id===selectedClip()?.sourceId),
     media:()=>el('preview'),
