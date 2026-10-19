@@ -1,0 +1,26 @@
+name: DEXCUT studio model validation
+on:
+  push:
+    branches:
+      - feature/studio-20-enhancements-20261019
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  project-model:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Preserve legacy tool definitions and runtime
+        run: node tests/dexcut_static_regression.cjs
+      - name: Project edit model, ranges, undo and portable JSON
+        run: node tests/dexcut_project_qa.cjs
+      - name: Export plan validation and memory gates
+        run: node tests/dexcut_export_plan_qa.cjs
+      - name: Waveform module contracts
+        run: node tests/dexcut_waveform_qa.cjs
