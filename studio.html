@@ -45,7 +45,7 @@
 <div id="ranges" aria-live="polite"></div></fieldset>
 <fieldset><legend>Crop and framing</legend>
 <label for="cropShape">Crop amount (%) — symmetric inset</label><input id="cropShape" type="range" min="0" max="40" step="1" value="0"><output id="cropPercent">0%</output>
-<label for="backgroundMode">Background choice</label><select id="backgroundMode"><option value="letterbox">Letterbox</option><option value="blur">Blurred enlargement (future renderer)</option><option value="solid">Solid background (future renderer)</option></select>
+<label for="backgroundMode">Background choice</label><select id="backgroundMode"><option value="letterbox">Letterbox</option><option value="blur">Blurred enlargement</option><option value="solid">Solid black background</option></select>
 </fieldset>
 </div>
 <div id="thumbs" class="thumbs" aria-label="Real frame thumbnails"></div>
@@ -62,7 +62,7 @@
 <progress id="renderProgress" max="100" value="0" hidden style="width:100%" aria-label="Render progress"></progress>
 <div id="renderResult" aria-live="polite"></div>
 <div id="exportResult" role="status" class="muted"></div>
-<p class="state">Studio rendering currently supports only simple cuts and joins with matching audio layouts. Advanced effects remain unsupported and physical-iPhone validation is pending. For existing conversions, choose Quick Tools.</p>
+<p class="state">Studio rendering supports cuts, joins, symmetric crop and selected background modes with matching audio layouts. Advanced effects remain unsupported and physical-iPhone validation is pending. For existing conversions, choose Quick Tools.</p>
 </section>
 <section class="panel"><h2>Project status</h2><div id="status" role="status" aria-live="polite" class="muted">New project ready.</div><details><summary>Source bindings</summary><div id="bindings" class="muted">No media linked</div></details></section>
 </aside>
