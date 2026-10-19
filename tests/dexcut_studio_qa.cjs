@@ -15,7 +15,7 @@ for(const id of ['mediaInput','clipList','preview','timeline','undo','redo','ran
   assert.equal((html.match(new RegExp('id="'+id+'"','g'))||[]).length,1,'Missing/duplicate '+id);
   assert(allCode.includes("el('"+id+"')")||allCode.includes("['"+id+"'")||allCode.includes("byId('"+id+"')")||allCode.includes("getElementById('"+id+"')"),'Missing UI usage '+id);
 }
-assert(/Studio composition rendering is not enabled/.test(code),'Preflight must declare its limitations');
+assert(/Studio rendering supports tested simple compositions/.test(code),'Preflight must describe renderer limitations honestly');
 assert(html.includes('Advanced effects remain unsupported') || html.includes('advanced audio/caption effects'),'Renderer limitations must be visible');
 assert(!/navigator\.sendBeacon|XMLHttpRequest|localStorage|indexedDB/i.test(code),'Studio must not silently upload or store media');
 console.log('PASS: studio module syntax, interaction hooks, honest composition-export boundary');
