@@ -95,6 +95,74 @@
           doEdit('UPDATE_LAYER',{track:'audio',id:layer.id,patch:change(v)});
         });wrapper.append(input);field.append(wrapper);
       }
+      if((layer.role||'music')==='music'){
+        const duck=document.createElement('label');duck.textContent='Lower this music around narration';
+        const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=!!layer.autoDuck;
+        checkbox.style.width='auto';checkbox.style.minHeight='0';
+        checkbox.addEventListener('change',()=>doEdit('UPDATE_LAYER',{track:'audio',id:layer.id,patch:{autoDuck:checkbox.checked}}));
+        duck.append(checkbox);field.append(duck);
+      }
+      const keyLabel=document.createElement('p');keyLabel.className='muted';
+      keyLabel.textContent='Gain keyframes: tap to add, drag to change time and volume (0–200%).';
+      field.append(keyLabel);
+      const graph=document.createElement('canvas');graph.width=480;graph.height=100;
+      graph.className='editorCanvas';graph.style.height='100px';
+      graph.setAttribute('aria-label','Audio volume automation graph');
+      field.append(graph);
+      let draft=null,selectedPoint=-1;
+      const redraw=()=>{
+        const g=graph.getContext('2d');if(!g)return;
+        g.clearRect(0,0,480,100);g.fillStyle='#161116';g.fillRect(0,0,480,100);
+        g.strokeStyle='#645457';g.beginPath();g.moveTo(0,50);g.lineTo(480,50);g.stroke();
+        const pts=draft||layer.points||[],duration=Math.max(1,layer.endUs-layer.startUs);
+        g.strokeStyle='#e9797d';g.lineWidth=3;g.beginPath();
+        pts.forEach((p,index)=>{
+          const x=p[0]/duration*480,y=100-Math.min(2,p[1])/2*100;
+          if(index===0)g.moveTo(x,y);else g.lineTo(x,y);
+        });g.stroke();
+        pts.forEach(p=>{
+          const x=p[0]/duration*480,y=100-Math.min(2,p[1])/2*100;
+          g.fillStyle='#ffd3d3';g.beginPath();g.arc(x,y,7,0,Math.PI*2);g.fill();
+        });
+      };
+      const pointAt=e=>{
+        const rect=graph.getBoundingClientRect();
+        return {x:Math.max(0,Math.min(480,(e.clientX-rect.left)/rect.width*480)),
+          y:Math.max(0,Math.min(100,(e.clientY-rect.top)/rect.height*100))};
+      };
+      graph.addEventListener('pointerdown',e=>{
+        e.preventDefault();graph.setPointerCapture(e.pointerId);
+        const at=pointAt(e),duration=Math.max(1,layer.endUs-layer.startUs);
+        draft=(layer.points||[]).map(p=>p.slice());
+        selectedPoint=draft.findIndex(p=>Math.abs(p[0]/duration*480-at.x)<13&&
+          Math.abs(100-Math.min(2,p[1])/2*100-at.y)<15);
+        if(selectedPoint<0){
+          if(draft.length>=20){say('Maximum 20 volume points per track');draft=null;return;}
+          draft.push([Math.round(at.x/480*duration),Math.round((2-at.y/50)*100)/100]);
+          selectedPoint=draft.length-1;
+        }
+        redraw();
+      });
+      graph.addEventListener('pointermove',e=>{
+        if(!draft||selectedPoint<0)return;e.preventDefault();
+        const at=pointAt(e),duration=Math.max(1,layer.endUs-layer.startUs);
+        draft[selectedPoint]=[Math.round(at.x/480*duration),Math.round((2-at.y/50)*100)/100];
+        redraw();
+      });
+      const done=e=>{
+        if(!draft)return;
+        if(e.type==='pointerup'){
+          draft.sort((a,b)=>a[0]-b[0]);
+          const unique=draft.filter((p,i)=>!i||p[0]>draft[i-1][0]);
+          doEdit('UPDATE_LAYER',{track:'audio',id:layer.id,patch:{points:unique}});
+        }
+        draft=null;selectedPoint=-1;
+      };
+      graph.addEventListener('pointerup',done);graph.addEventListener('pointercancel',done);
+      const clearPoints=document.createElement('button');clearPoints.type='button';clearPoints.className='secondary';
+      clearPoints.textContent='Clear gain points';
+      clearPoints.addEventListener('click',()=>doEdit('UPDATE_LAYER',{track:'audio',id:layer.id,patch:{points:[]}}));
+      field.append(clearPoints);redraw();
       const actions=document.createElement('div');actions.className='actions';
       const remove=document.createElement('button');remove.textContent='Remove track';remove.type='button';remove.className='secondary';
       remove.addEventListener('click',()=>doEdit('REMOVE_LAYER',{track:'audio',id:layer.id}));actions.append(remove);
@@ -234,7 +302,7 @@
           if(doEdit('ADD_CLIP',{clip:c})){state.selected=c.id;selectClip(c.id);}
         }
         if(kind==='audio'){
-          const layer={id:P.uid(),sourceId:asset.id,startUs:0,endUs:asset.durationUs,gain:1,points:[],fadeInUs:0,fadeOutUs:0};
+          const layer={id:P.uid(),sourceId:asset.id,startUs:0,endUs:asset.durationUs,gain:1,points:[],fadeInUs:0,fadeOutUs:0,role:f.name.startsWith('narration-')?'narration':'music',autoDuck:false};
           doEdit('ADD_LAYER',{track:'audio',layer});
         }
         say('Imported '+f.name+' locally.');
