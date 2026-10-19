@@ -14,6 +14,7 @@
 <script defer src="./dexcut-studio-readiness.js"></script>
 <script defer src="./dexcut-studio.js"></script>
 <script defer src="./dexcut-studio-gestures.js"></script>
+<script defer src="./dexcut-studio-markers.js"></script>
 </head>
 <body>
 <header><div><div class="eyebrow">Stinky Weasel Productions</div><h1>DEX//CUT STUDIO</h1></div><a class="button secondary" href="./" style="text-decoration:none;font-size:.85rem">Quick Tools</a></header>
@@ -88,6 +89,13 @@
 </section>
 </main>
 <aside>
+<section class="panel">
+<h2>Smart scene and silence markers</h2>
+<p class="muted">Analysis is local and on demand. Suggestions may miss subtle cuts or speech. Nothing is removed automatically.</p>
+<div class="actions"><button id="analyzeScenes" type="button" class="secondary">Find scene changes</button><button id="analyzeSilence" type="button" class="secondary">Find quiet intervals</button><button id="cancelAnalyze" type="button" class="secondary" disabled>Cancel</button></div>
+<p id="analyzeStatus" role="status" class="muted">No analysis started.</p>
+<div id="markerResults" aria-label="Suggested cut points"></div>
+</section>
 <section class="panel"><h2>3. Timeline</h2><div id="timeline" class="timeline" aria-label="Clip timeline"></div><p id="duration" class="muted">0 seconds</p><p class="muted">Select a clip and use Move up/down for reliable touch and keyboard reordering.</p></section>
 <section class="panel">
 <h2>4. Export settings</h2>
