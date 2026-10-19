@@ -9,10 +9,11 @@ for(const module of ['dexcut-studio-readiness.js','dexcut-studio-gestures.js'])n
 for(const file of ['dexcut-project.js','dexcut-export-plan.js','dexcut-studio-render.js','dexcut-studio-readiness.js','dexcut-studio.js','dexcut-studio-gestures.js']){
   assert(html.includes('src="./'+file+'"'),'Missing module '+file);
 }
+const allCode=code+fs.readFileSync(path.join(root,'dexcut-studio-gestures.js'),'utf8')+fs.readFileSync(path.join(root,'dexcut-studio-readiness.js'),'utf8');
 for(const id of ['mediaInput','clipList','preview','timeline','undo','redo','rangeStart','rangeEnd','addRange','removeRange','invertRange',
   'downloadProject','openProject','exportPreset','sizeTarget','checkExport','thumbs','backgroundMode','renderVideo','cancelRender','renderProgress','renderResult','audioInput','audioTracks','recordVoice','stopVoice','voiceStatus','textContent','addTitle','subtitleInput','textTracks','precisionTrack','cropWorkspace','timelineZoom','timelinePan','snapCuts','refreshReadiness','readiness']){
   assert.equal((html.match(new RegExp('id="'+id+'"','g'))||[]).length,1,'Missing/duplicate '+id);
-  assert(code.includes("el('"+id+"')")||code.includes("['"+id+"'"),'Missing UI usage '+id);
+  assert(allCode.includes("el('"+id+"')")||allCode.includes("['"+id+"'")||allCode.includes("byId('"+id+"')")||allCode.includes("getElementById('"+id+"')"),'Missing UI usage '+id);
 }
 assert(/Studio composition rendering is not enabled/.test(code),'Preflight must declare its limitations');
 assert(html.includes('Advanced effects remain unsupported') || html.includes('advanced audio/caption effects'),'Renderer limitations must be visible');
