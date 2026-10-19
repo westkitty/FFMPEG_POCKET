@@ -71,7 +71,18 @@ const server=http.createServer((req,res)=>{
     await page.waitForFunction(()=>document.querySelector('#renderResult video:not([hidden])')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
     const titleStatus=await page.locator('#status').innerText();
     assert(await page.locator('#renderResult video:not([hidden])').count()===1,'Timed title overlay export failed: '+titleStatus);
+    await page.locator('#audioInput').setInputFiles({name:'narration-test.wav',mimeType:'audio/wav',buffer:toneWav()});
+    await page.waitForFunction(()=>document.querySelectorAll('#audioTracks fieldset').length===2);
+    await page.locator('#audioTracks fieldset').first().locator('input[type="checkbox"]').check();
+    const gainCanvas=page.locator('#audioTracks fieldset').first().locator('canvas');
+    await gainCanvas.scrollIntoViewIfNeeded();
+    await gainCanvas.click({position:{x:20,y:35}});
+    assert(await page.evaluate(()=>window.DexCutStudioControl.project().audio[0].points.length)>=1,'Gain point not recorded');
+    await page.locator('#renderVideo').click();
+    await page.waitForFunction(()=>document.querySelector('#renderResult video:not([hidden])')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
+    const duckStatus=await page.locator('#status').innerText();
+    assert(await page.locator('#renderResult video:not([hidden])').count()===1,'Gain/ducking FFmpeg render failed: '+duckStatus);
     assert.equal(errors.length,0,JSON.stringify(errors));
-    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,timedTitle:true,pageErrors:errors.length}));
+    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,timedTitle:true,audioDucking:true,pageErrors:errors.length}));
   }finally{await browser?.close();server.close();}
 })().catch(err=>{console.error('STUDIO_WASM_FAIL',err.stack||err);server.close();process.exitCode=1;});
