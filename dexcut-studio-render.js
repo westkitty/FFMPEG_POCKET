@@ -115,6 +115,10 @@ onmessage=async e=>{
     opts.signal?.addEventListener('abort',abort,{once:true});
     const done=[],pref={ 'portrait-720p':[720,1280], 'landscape-720p':[1280,720], 'square-720p':[720,720],messaging:[480,854]};
     const [w,h]=pref[project.export.preset],rate=project.export.preset==='messaging'?24:30;
+    const plannedDuration=P.projectDurationUs(project)/1e6;
+    const targetKbps=project.export.targetSizeBytes?
+      Math.floor(project.export.targetSizeBytes*8/plannedDuration/1000):null;
+    if(targetKbps && targetKbps<150)throw Error('Requested file-size budget is below the preliminary encoder minimum');
     try{
       if(isCancelled())throw Error('Cancelled');
       opts.onEvent?.({kind:'stage',message:'Starting the local FFmpeg engine'});
@@ -148,7 +152,12 @@ onmessage=async e=>{
           args.push('-vf',mode==='solid'?vf.replace(/pad=([^,]+)/,'pad=$1:color=0x'+hex):vf,'-map','0:v:0');}
         if(hasAudio)args.push('-map','0:a:0','-c:a','aac','-ar','44100','-ac','2','-b:a','96k');
         else args.push('-an');
-        args.push('-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','27','-movflags','+faststart',out);
+        args.push('-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p');
+        if(targetKbps){
+          const vKbps=Math.max(80,targetKbps-(hasAudio||project.audio.length?128:0)-24);
+          args.push('-b:v',vKbps+'k','-maxrate',vKbps+'k','-bufsize',(vKbps*2)+'k');
+        }else args.push('-crf','27');
+        args.push('-movflags','+faststart',out);
         const code=await e.exec(args);
         if(code!==0)throw Error('Encoding section '+(i+1)+' failed ('+code+')');
         await e.del(input);done.push(out);
