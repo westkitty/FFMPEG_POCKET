@@ -22,5 +22,7 @@ jobs:
         run: node tests/dexcut_project_qa.cjs
       - name: Export plan validation and memory gates
         run: node tests/dexcut_export_plan_qa.cjs
+      - name: Standalone Studio interaction and syntax contracts
+        run: node tests/dexcut_studio_qa.cjs
       - name: Waveform module contracts
         run: node tests/dexcut_waveform_qa.cjs
