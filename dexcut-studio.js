@@ -147,6 +147,7 @@
         picker.setAttribute('aria-label','Relink '+a.name);picker.addEventListener('change',()=>linkFile(a,picker.files?.[0]));row.append(picker);}
       binds.append(row);
     });
+    window.DexCutStudioGestures?.refresh();
   }
   function selectClip(id){
     state.selected=id;state.activeRange=0;releasePreview();
