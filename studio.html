@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111013">
+<title>DEX//CUT — Studio (Development Preview)</title>
+<style>
+:root{color-scheme:dark;font:16px system-ui,-apple-system,sans-serif;background:#110f13;color:#f5f0ee}*{box-sizing:border-box}body{margin:0;padding:env(safe-area-inset-top) max(14px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(14px,env(safe-area-inset-left));max-width:960px;margin-inline:auto}header{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:2;background:#110f13f5;padding:14px 0;border-bottom:1px solid #423637}h1{font-size:1.25rem;margin:0;letter-spacing:.08em}h2{font-size:1rem}h3{font-size:.96rem;margin:.4rem 0}.eyebrow{color:#caa3a3;font-size:.73rem;text-transform:uppercase;letter-spacing:.12em}.state{font-size:.75rem;color:#f7b8a5;line-height:1.45}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,360px);gap:14px}@media(max-width:760px){.grid{display:block}}.panel{border:1px solid #403638;border-radius:18px;background:#191519;padding:15px;margin:13px 0}.muted{color:#b7a5a3;font-size:.88rem}button,.button,input,select,textarea{font:inherit;border-radius:11px}button,.button{background:#922d30;color:#fff;border:1px solid #bf4a4d;padding:10px 13px;min-height:44px;cursor:pointer;font-weight:650}button.secondary,.button.secondary{background:#31292d;border-color:#5d474d}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #e8a0a0;outline-offset:2px}input,select,textarea{background:#251f23;color:white;border:1px solid #68565c;padding:9px;width:100%;min-height:42px}label{display:block;font-size:.86rem;color:#d9c5c3;margin:6px 0}input[type=file]{font-size:.82rem}input[type=range]{padding:0;accent-color:#d44b4e}input[type=color]{padding:2px;width:65px}.actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.actions>*{flex:0 0 auto}video{width:100%;background:black;border-radius:9px;max-height:310px;object-fit:contain}#previewEmpty{background:#110e10;padding:50px 12px;text-align:center;border-radius:9px}.clips{display:grid;gap:8px}article.clip{background:#241d22;border:1px solid #5b4249;padding:11px;border-radius:13px}article.clip.selected{border-color:#ed7778;box-shadow:inset 0 0 0 1px #ad4040}.clipbar{display:flex;gap:5px;align-items:center;justify-content:space-between}.clipname{font-weight:650;overflow-wrap:anywhere}fieldset{border:1px solid #4b3a41;border-radius:11px;margin:10px 0;padding:10px}legend{color:#f5caca}.controls{display:grid;grid-template-columns:1fr 1fr;gap:9px}.timeline{height:46px;display:flex;overflow:auto;gap:3px;background:#181216;border-radius:10px;padding:5px;touch-action:pan-x} .segment{min-width:22px;background:#773034;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:4px;font-size:.7rem;overflow:hidden}.segment:nth-child(even){background:#9a4040}.thumbs{display:flex;gap:4px;overflow-x:auto;padding:6px 0}.thumbs button{padding:2px;background:#302429;border-color:#64454a;min-height:0;min-width:80px}.thumbs canvas{width:90px;height:50px;object-fit:contain;display:block}#status{min-height:3em}pre{white-space:pre-wrap;word-break:break-word}details{margin-top:9px}summary{cursor:pointer;min-height:44px;display:flex;align-items:center} .sr{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}
+</style>
+<script defer src="./dexcut-project.js"></script>
+<script defer src="./dexcut-export-plan.js"></script>
+<script defer src="./dexcut-studio.js"></script>
+</head>
+<body>
+<header><div><div class="eyebrow">Stinky Weasel Productions</div><h1>DEX//CUT STUDIO</h1></div><a class="button secondary" href="./" style="text-decoration:none;font-size:.85rem">Quick Tools</a></header>
+<p class="state"><strong>FEATURE BRANCH PREVIEW:</strong> This editor saves non-destructive recipes and supports source preview. Composite video rendering, advanced audio/caption effects, and physical iPhone validation are not yet implemented. Quick Tools remain available separately.</p>
+<section class="panel" aria-label="Project">
+<div class="actions"><input id="title" aria-label="Project title" value="Untitled edit" style="flex:1 1 180px">
+<button id="undo" class="secondary" type="button" disabled>Undo</button><button id="redo" class="secondary" type="button" disabled>Redo</button></div>
+<div class="actions" style="margin-top:8px">
+<button id="downloadProject" type="button">Save project JSON</button><label class="button secondary" style="margin:0">Open project JSON<input id="openProject" class="sr" type="file" accept=".json,application/json"></label>
+</div>
+</section>
+<div class="grid">
+<main>
+<section class="panel">
+<h2>1. Add video clips</h2>
+<label for="mediaInput">Import media from Photos or Files</label><input id="mediaInput" type="file" accept="video/*,audio/*" multiple>
+<p class="muted">Video and audio stay on your device. Imported media is held only for this session; reopening a JSON project requires choosing the original files again.</p>
+<div id="clipList" class="clips" aria-live="polite"><p class="muted">No clips in this project.</p></div>
+</section>
+<section class="panel">
+<h2>2. Edit selected clip</h2>
+<p id="selectedHint" class="muted">Select a clip to edit its range.</p>
+<video id="preview" controls playsinline preload="metadata" hidden></video>
+<div id="previewEmpty" class="muted">Choose a video clip to preview.</div>
+<div class="actions" style="margin-top:8px"><button class="secondary" id="markIn" disabled>Set IN</button><button class="secondary" id="markOut" disabled>Set OUT</button><button class="secondary" id="seekBack" disabled>−1 frame step*</button><button class="secondary" id="seekNext" disabled>+1 frame step*</button></div>
+<p class="muted">*Frame stepping uses the project's nominal rate; exact variable-frame-rate stepping requires a separate verified decoder.</p>
+<div id="editControls" hidden>
+<fieldset><legend>Keep source ranges (seconds)</legend>
+<div class="controls"><div><label for="rangeStart">IN</label><input type="number" id="rangeStart" min="0" step=".001"></div><div><label for="rangeEnd">OUT</label><input type="number" id="rangeEnd" min="0" step=".001"></div></div>
+<div class="actions" style="margin-top:8px"><button id="addRange" type="button">Add keep range</button><button id="removeRange" class="secondary" type="button">Delete selected range</button><button id="invertRange" class="secondary" type="button">Invert ranges</button></div>
+<div id="ranges" aria-live="polite"></div></fieldset>
+<fieldset><legend>Crop and framing</legend>
+<label for="cropShape">Crop amount (%) — symmetric inset</label><input id="cropShape" type="range" min="0" max="40" step="1" value="0"><output id="cropPercent">0%</output>
+<label for="backgroundMode">Background choice</label><select id="backgroundMode"><option value="letterbox">Letterbox</option><option value="blur">Blurred enlargement (future renderer)</option><option value="solid">Solid background (future renderer)</option></select>
+</fieldset>
+</div>
+<div id="thumbs" class="thumbs" aria-label="Real frame thumbnails"></div>
+</section>
+</main>
+<aside>
+<section class="panel"><h2>3. Timeline</h2><div id="timeline" class="timeline" aria-label="Clip timeline"></div><p id="duration" class="muted">0 seconds</p><p class="muted">Select a clip and use Move up/down for reliable touch and keyboard reordering.</p></section>
+<section class="panel">
+<h2>4. Export settings</h2>
+<label for="exportPreset">Output profile</label><select id="exportPreset"><option value="portrait-720p">Vertical 720p</option><option value="landscape-720p">Landscape 720p</option><option value="square-720p">Square 720p</option><option value="portrait-1080p">Vertical 1080p</option><option value="messaging">Messaging</option></select>
+<label for="sizeTarget">Estimated size budget (MiB, optional)</label><input id="sizeTarget" type="number" min="1" step="1" placeholder="Automatic">
+<button type="button" id="checkExport" class="secondary">Check project readiness</button>
+<div id="exportResult" role="status" class="muted"></div>
+<p class="state">Studio composition export remains blocked until real FFmpeg.wasm and physical-iPhone validation. For existing conversions, choose Quick Tools.</p>
+</section>
+<section class="panel"><h2>Project status</h2><div id="status" role="status" aria-live="polite" class="muted">New project ready.</div><details><summary>Source bindings</summary><div id="bindings" class="muted">No media linked</div></details></section>
+</aside>
+</div>
+</body></html>
