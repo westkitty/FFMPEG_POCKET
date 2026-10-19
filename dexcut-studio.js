@@ -118,7 +118,7 @@
     const p=project();el('undo').disabled=!state.history.undoStack.length;
     el('redo').disabled=!state.history.redoStack.length;
     if(el('title').value!==p.title)el('title').value=p.title;
-    drawClips();drawAudio();drawTextLayers();
+    drawClips();drawAudio();drawTextLayers();el('exportSrt').disabled=!p.captions.length;
     el('exportPreset').value=p.export.preset;
     el('sizeTarget').value=p.export.targetSizeBytes==null?'':Math.max(1,Math.round(p.export.targetSizeBytes/1048576));
     const clip=selectedClip();
@@ -278,6 +278,21 @@
     }
     if(doEdit('ADD_LAYER',{track:'titles',layer:{id:P.uid(),startUs:start,endUs:end,text,position:el('textPosition').value}})){
       el('textContent').value='';say('Timed title added.');}
+  });
+  el('exportSrt').addEventListener('click',()=>{
+    const cues=project().captions.slice().sort((a,b)=>a.startUs-b.startUs);
+    if(!cues.length){say('No captions to export');return;}
+    const clock=us=>{
+      const ms=Math.round(us/1000),h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),
+        s=Math.floor(ms%60000/1000),part=ms%1000;
+      return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+
+        String(s).padStart(2,'0')+','+String(part).padStart(3,'0');
+    };
+    const text=cues.map((x,i)=>(i+1)+'\n'+clock(x.startUs)+' --> '+clock(x.endUs)+'\n'+x.text+'\n').join('\n');
+    const blob=new Blob([text],{type:'application/x-subrip'}),url=objectUrl(blob);
+    const a=document.createElement('a');a.href=url;a.download='dexcut-captions.srt';
+    document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    say('Exported '+cues.length+' subtitle cues as portable SRT.');
   });
   el('subtitleInput').addEventListener('change',async e=>{
     const file=e.target.files?.[0];e.target.value='';if(!file)return;
