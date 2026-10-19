@@ -61,6 +61,18 @@
 <p id="voiceStatus" role="status" aria-live="polite" class="muted">Recording is always user-initiated. Mic permissions and formats depend on the browser.</p>
 <div id="audioTracks" aria-label="Audio track controls"></div>
 </section>
+<section class="panel">
+<h2>Titles and subtitles</h2>
+<div class="controls">
+<div><label for="textStart">Start (seconds)</label><input id="textStart" type="number" min="0" step=".1" value="0"></div>
+<div><label for="textEnd">End (seconds)</label><input id="textEnd" type="number" min=".1" step=".1" value="2"></div>
+</div>
+<label for="textContent">Title text</label><textarea id="textContent" rows="2" maxlength="400" placeholder="Write a title or label"></textarea>
+<label for="textPosition">Position</label><select id="textPosition"><option value="bottom">Bottom</option><option value="center">Center</option><option value="top">Top</option></select>
+<div class="actions"><button id="addTitle" type="button">Add timed title</button></div>
+<label for="subtitleInput">Import SRT or VTT captions</label><input id="subtitleInput" type="file" accept=".srt,.vtt,text/plain,text/vtt">
+<div id="textTracks" aria-label="Title and subtitle cues"></div>
+</section>
 </main>
 <aside>
 <section class="panel"><h2>3. Timeline</h2><div id="timeline" class="timeline" aria-label="Clip timeline"></div><p id="duration" class="muted">0 seconds</p><p class="muted">Select a clip and use Move up/down for reliable touch and keyboard reordering.</p></section>
