@@ -82,7 +82,21 @@ const server=http.createServer((req,res)=>{
     await page.waitForFunction(()=>document.querySelector('#renderResult video:not([hidden])')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
     const duckStatus=await page.locator('#status').innerText();
     assert(await page.locator('#renderResult video:not([hidden])').count()===1,'Gain/ducking FFmpeg render failed: '+duckStatus);
+    await page.locator('#batchInput').setInputFiles(path.join(root,'qa-sample.mp4'));
+    await page.locator('#batchList article').waitFor({state:'visible'});
+    await page.locator('#runBatch').click();
+    await page.waitForFunction(()=>{
+      const t=document.querySelector('#batchList article .muted')?.textContent||'';
+      return t.includes('completed')||t.includes('failed');
+    },null,{timeout:240000});
+    const batchState=await page.locator('#batchList article .muted').innerText();
+    assert(batchState.includes('completed'),'Sequential batch encode failed: '+batchState);
+    const batchDownload=page.waitForEvent('download',{timeout:15000});
+    await page.locator('#batchList article a[download]').click();
+    const batchFile=await batchDownload;const batchBuf=fs.readFileSync(await batchFile.path());
+    assert(batchBuf.length>1000,'Batch output empty');
+    assert.equal(batchBuf.subarray(4,8).toString('ascii'),'ftyp','Batch output is not an MP4');
     assert.equal(errors.length,0,JSON.stringify(errors));
-    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,timedTitle:true,audioDucking:true,pageErrors:errors.length}));
+    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,timedTitle:true,audioDucking:true,batchOutput:true,pageErrors:errors.length}));
   }finally{await browser?.close();server.close();}
 })().catch(err=>{console.error('STUDIO_WASM_FAIL',err.stack||err);server.close();process.exitCode=1;});
