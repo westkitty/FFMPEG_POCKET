@@ -30,9 +30,9 @@ for (const mechanism of [
 assert(!/(?:\bfetch\s*\(|XMLHttpRequest|sendBeacon)/.test(script), 'Waveform module must not upload or fetch media.');
 assert(css.includes('touch-action:pan-y'));
 assert(css.includes('min-height:44px'));
-assert(sw.includes("const APP='dexcut-app-v5';"));
+assert(sw.includes("const APP='dexcut-app-v6';"));
 assert(sw.includes('"./dexcut-url-import.js"'), 'Offline shell missing URL importer');
-for(const name of ['./studio.html','./dexcut-project.js','./dexcut-export-plan.js','./dexcut-studio.js','./dexcut-studio-render.js'])assert(sw.includes('"'+name+'"'),'Offline shell missing studio asset '+name);
+for(const name of ['./studio.html','./dexcut-project.js','./dexcut-export-plan.js','./dexcut-studio.js','./dexcut-studio-render.js','./dexcut-studio-readiness.js'])assert(sw.includes('"'+name+'"'),'Offline shell missing studio asset '+name);
 for (const name of ['./dexcut-waveform.css', './dexcut-waveform.js']) assert(sw.includes(name), 'Offline shell missing ' + name);
 const tools = [...inline.matchAll(/\{id:'([^']+)',icon:/g)].map(m => m[1]);
 assert.equal(tools.length, 30, 'Lost an existing tool');
