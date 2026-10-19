@@ -50,6 +50,17 @@
 </div>
 <div id="thumbs" class="thumbs" aria-label="Real frame thumbnails"></div>
 </section>
+<section class="panel">
+<h2>Audio tracks and voiceovers</h2>
+<label for="audioInput">Import music or narration file</label>
+<input id="audioInput" type="file" accept="audio/*" multiple>
+<div class="actions" style="margin-top:9px">
+<button id="recordVoice" type="button">Record voiceover</button>
+<button id="stopVoice" type="button" class="secondary" disabled>Stop recording</button>
+</div>
+<p id="voiceStatus" role="status" aria-live="polite" class="muted">Recording is always user-initiated. Mic permissions and formats depend on the browser.</p>
+<div id="audioTracks" aria-label="Audio track controls"></div>
+</section>
 </main>
 <aside>
 <section class="panel"><h2>3. Timeline</h2><div id="timeline" class="timeline" aria-label="Clip timeline"></div><p id="duration" class="muted">0 seconds</p><p class="muted">Select a clip and use Move up/down for reliable touch and keyboard reordering.</p></section>
