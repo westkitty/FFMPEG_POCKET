@@ -25,13 +25,37 @@
     if(!project().clips.length){const p=document.createElement('p');p.className='muted';p.textContent='No clips in this project.';list.append(p);}
     project().clips.forEach((clip,i)=>{
       const asset=project().assets.find(x=>x.id===clip.sourceId);
-      const article=document.createElement('article');article.className='clip'+(clip.id===state.selected?' selected':'');
+      const article=document.createElement('article');article.className='clip'+(clip.id===state.selected?' selected':'');article.dataset.clipId=clip.id;
       const heading=document.createElement('div');heading.className='clipname';heading.textContent=(i+1)+'. '+(asset?.name||'Missing source')+' — '+fmt(seconds(P.clipDurationUs(clip)));
       const actions=document.createElement('div');actions.className='actions';
       const add=(name,act,disabled=false)=>{
         const b=document.createElement('button');b.type='button';b.textContent=name;b.className='secondary';b.disabled=disabled;
         b.addEventListener('click',act);actions.append(b);
       };
+      const drag=document.createElement('button');drag.type='button';drag.className='secondary';
+      drag.textContent='Drag to reorder';drag.style.touchAction='none';
+      drag.setAttribute('aria-label','Drag '+(asset?.name||'clip')+' to another position');
+      let dragState=null;
+      drag.addEventListener('pointerdown',e=>{
+        e.preventDefault();drag.setPointerCapture(e.pointerId);
+        dragState={id:e.pointerId,target:i};drag.textContent='Move clip…';
+      });
+      drag.addEventListener('pointermove',e=>{
+        if(!dragState||dragState.id!==e.pointerId)return;
+        e.preventDefault();
+        const cards=[...list.querySelectorAll('article.clip')];
+        let index=0;
+        for(const card of cards)if(e.clientY>card.getBoundingClientRect().top+card.getBoundingClientRect().height/2)index++;
+        dragState.target=Math.max(0,Math.min(cards.length-1,index));
+        drag.textContent='Place at position '+(dragState.target+1);
+      });
+      const finishDrag=e=>{
+        if(!dragState||dragState.id!==e.pointerId)return;
+        const target=dragState.target;dragState=null;drag.textContent='Drag to reorder';
+        if(e.type==='pointerup'&&target!==i)doEdit('MOVE_CLIP',{id:clip.id,to:target});
+      };
+      drag.addEventListener('pointerup',finishDrag);drag.addEventListener('pointercancel',finishDrag);
+      actions.append(drag);
       add('Select',()=>selectClip(clip.id));
       add('Move up',()=>doEdit('MOVE_CLIP',{id:clip.id,to:i-1}),i===0);
       add('Move down',()=>doEdit('MOVE_CLIP',{id:clip.id,to:i+1}),i===project().clips.length-1);
