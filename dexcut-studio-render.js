@@ -73,7 +73,8 @@ onmessage=async e=>{
     if(!P)throw Error('Project model unavailable');
     P.validate(project);
     if(!project.clips.length)throw Error('Add video clips before rendering');
-    if(project.audio.length||project.titles.length||project.captions.length)throw Error('Additional audio and text layers are not supported by the simple renderer');
+    if(project.titles.length||project.captions.length)throw Error('Timed text layers are not supported by this renderer yet');
+    if(project.audio.length>4)throw Error('This preliminary mixer supports at most four audio tracks');
     if(project.clips.some(c=>c.speed!==1||c.transitionOut?.type==='fade'))
       throw Error('This render path does not yet support speed changes or transitions');
     if(!['portrait-720p','landscape-720p','square-720p','messaging'].includes(project.export.preset))
@@ -136,7 +137,43 @@ onmessage=async e=>{
       await e.write('list.txt',new TextEncoder().encode(list));
       const code=await e.exec(['-hide_banner','-f','concat','-safe','0','-i','list.txt','-c','copy','-movflags','+faststart','result.mp4']);
       if(code!==0)throw Error('Final concatenation failed ('+code+')');
-      const out=await e.read('result.mp4');
+      let finalName='result.mp4';
+      if(project.audio.length){
+        opts.onEvent?.({kind:'stage',message:'Mixing music and narration'});
+        await e.exec(['-hide_banner','-i','result.mp4']);
+        const hasOriginalAudio=/Stream #\S+: Audio:/.test(e.logs.join('\n'));
+        const inputs=['-i','result.mp4'],chains=[],names=[];
+        if(hasOriginalAudio){chains.push('[0:a]aresample=44100[baseaudio]');names.push('[baseaudio]');}
+        const maxDuration=P.projectDurationUs(project)/1e6;
+        for(let i=0;i<project.audio.length;i++){
+          const layer=project.audio[i],file=files.get(layer.sourceId);
+          if(!file)throw Error('Relink audio source before export');
+          if(file.size>20*1024*1024)throw Error('Audio import is too large for this preliminary phone mixer');
+          const ext=String(file.name.split('.').pop()||'m4a').replace(/[^a-z0-9]/gi,'').slice(0,5);
+          const input='track-'+i+'.'+ext;
+          const bytes=new Uint8Array(await file.arrayBuffer());
+          await e.write(input,bytes);inputs.push('-i',input);
+          const length=(layer.endUs-layer.startUs)/1e6,at=layer.startUs/1e6;
+          let chain='['+(i+1)+':a]aresample=44100,atrim=0:'+length+
+            ',asetpts=PTS-STARTPTS,volume='+layer.gain;
+          if(layer.fadeInUs>0)chain+=',afade=t=in:st=0:d='+Math.min(length,layer.fadeInUs/1e6);
+          if(layer.fadeOutUs>0){const d=Math.min(length,layer.fadeOutUs/1e6);
+            chain+=',afade=t=out:st='+Math.max(0,length-d)+':d='+d;}
+          if(at>0)chain+=',adelay='+Math.round(at*1000)+'|'+Math.round(at*1000);
+          chain+='[layer'+i+']';chains.push(chain);names.push('[layer'+i+']');
+        }
+        if(!names.length)throw Error('No sound tracks available to mix');
+        const graph=chains.join(';')+';'+names.join('')+
+          'amix=inputs='+names.length+':duration=longest:dropout_transition=0,'+
+          'atrim=0:'+maxDuration+',asetpts=PTS-STARTPTS[mixed]';
+        const args=['-hide_banner',...inputs,'-filter_complex',graph,'-map','0:v:0','-map','[mixed]',
+          '-c:v','copy','-c:a','aac','-ar','44100','-ac','2','-b:a','128k','-t',String(maxDuration),
+          '-movflags','+faststart','result-mixed.mp4'];
+        const audioCode=await e.exec(args);
+        if(audioCode!==0)throw Error('Audio mix failed ('+audioCode+'). Review unsupported source audio codecs.');
+        finalName='result-mixed.mp4';
+      }
+      const out=await e.read(finalName);
       if(!out?.length)throw Error('Empty final output');
       if(isCancelled())throw Error('Cancelled');
       opts.onEvent?.({kind:'stage',message:'Output ready'});
