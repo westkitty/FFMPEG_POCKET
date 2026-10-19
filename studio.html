@@ -15,6 +15,7 @@
 <script defer src="./dexcut-studio.js"></script>
 <script defer src="./dexcut-studio-gestures.js"></script>
 <script defer src="./dexcut-studio-markers.js"></script>
+<script defer src="./dexcut-studio-batch.js"></script>
 </head>
 <body>
 <header><div><div class="eyebrow">Stinky Weasel Productions</div><h1>DEX//CUT STUDIO</h1></div><a class="button secondary" href="./" style="text-decoration:none;font-size:.85rem">Quick Tools</a></header>
@@ -113,6 +114,14 @@
 <button id="refreshReadiness" type="button" class="secondary">Check this device</button>
 <div id="readiness" class="muted" role="status" aria-live="polite">Not checked. Available storage is not available RAM.</div>
 <p class="muted">Never rely on browser caches as the only copy of your project. Export project JSON to a durable file.</p>
+</section>
+<section class="panel">
+<h2>Sequential batch queue</h2>
+<label for="batchInput">Queue up to 3 short videos</label>
+<input id="batchInput" type="file" accept="video/*" multiple>
+<div class="actions" style="margin-top:9px"><button id="runBatch" type="button" class="secondary">Run queued videos</button><button id="cancelBatch" type="button" class="secondary" disabled>Stop batch</button></div>
+<p id="batchStatus" class="muted" role="status" aria-live="polite">No queued jobs. Each source is rendered locally in sequence.</p>
+<div id="batchList"></div>
 </section>
 <section class="panel"><h2>Project status</h2><div id="status" role="status" aria-live="polite" class="muted">New project ready.</div><details><summary>Source bindings</summary><div id="bindings" class="muted">No media linked</div></details></section>
 </aside>
