@@ -458,7 +458,7 @@
   window.addEventListener('pagehide',()=>{activeRender?.abort();if(completedURL)URL.revokeObjectURL(completedURL);compareCleanup?.();});
   window.DexCutStudioControl={
     project,selectedClip,getAsset:()=>project().assets.find(a=>a.id===selectedClip()?.sourceId),
-    media:()=>el('preview'),
+    media:()=>el('preview'),getFile:()=>{const c=selectedClip();return c?bindingFor(c.sourceId):null;},
     seek:at=>{const video=el('preview');if(Number.isFinite(at)&&video.duration>0)video.currentTime=Math.max(0,Math.min(at,video.duration));},
     crop:rectangle=>{const clip=selectedClip();if(clip)doEdit('UPDATE_CLIP',{id:clip.id,crop:rectangle});}
   };
