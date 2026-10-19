@@ -247,5 +247,44 @@
   });
   el('checkExport').addEventListener('click',showPreflight);
   window.addEventListener('pagehide',()=>{state.thumbnailTask++;releasePreview();});
+  let activeRender=null,completedURL=null;
+  el('renderVideo').addEventListener('click',async()=>{
+    if(activeRender)return;
+    const renderer=window.DexCutStudioRender;
+    if(!renderer){say('Studio renderer is unavailable');return;}
+    const frozen=P.clone(project()),controller=new AbortController();
+    try{
+      renderer.verifySupported(frozen,state.bound);
+      activeRender=controller;
+      el('renderVideo').disabled=true;el('cancelRender').disabled=false;
+      el('renderProgress').hidden=false;el('renderProgress').value=0;
+      el('renderResult').replaceChildren();
+      say('Preparing local video composition. Keep the app in the foreground.');
+      const file=await renderer.render(frozen,new Map(state.bound),{signal:controller.signal,
+        onEvent:ev=>{
+          if(ev.kind==='stage')say(ev.message);
+          if(ev.kind==='progress' && Number.isFinite(ev.data?.progress)){
+            el('renderProgress').value=Math.max(0,Math.min(100,Math.round(ev.data.progress*100)));
+          }
+        }});
+      if(controller.signal.aborted)return;
+      if(completedURL)URL.revokeObjectURL(completedURL);
+      completedURL=URL.createObjectURL(file);
+      const video=document.createElement('video');video.controls=true;video.playsInline=true;video.src=completedURL;
+      const a=document.createElement('a');a.href=completedURL;a.download=file.name;a.textContent='Save '+file.name;
+      a.className='button';a.style.display='inline-block';a.style.marginTop='8px';
+      const share=document.createElement('button');share.type='button';share.className='secondary';share.textContent='Share result';
+      share.addEventListener('click',async()=>{
+        if(navigator.canShare?.({files:[file]}))try{await navigator.share({files:[file]});}catch(e){if(e.name!=='AbortError')say('Share failed: '+e.message);}
+        else say('This browser cannot share the output file. Use Save instead.');
+      });
+      el('renderResult').replaceChildren(video,a,share);
+      say('Output assembled locally. Verify playback and duration before sharing.');
+    }catch(err){say(controller.signal.aborted?'Render cancelled.':'Render failed: '+err.message);}
+    finally{if(activeRender===controller)activeRender=null;el('renderVideo').disabled=false;
+      el('cancelRender').disabled=true;el('renderProgress').hidden=true;}
+  });
+  el('cancelRender').addEventListener('click',()=>activeRender?.abort());
+  window.addEventListener('pagehide',()=>{activeRender?.abort();if(completedURL)URL.revokeObjectURL(completedURL);});
   render();
 })();
