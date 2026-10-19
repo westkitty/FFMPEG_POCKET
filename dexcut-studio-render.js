@@ -106,6 +106,40 @@ onmessage=async e=>{
     const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('Text image failed')),'image/png'));
     return new Uint8Array(await blob.arrayBuffer());
   }
+  function gainExpression(raw){
+    if(!raw?.length)return null;
+    const pts=raw.slice().sort((a,b)=>a[0]-b[0]).map(p=>[Number((p[0]/1e6).toFixed(3)),p[1]]);
+    if(pts.length===1)return String(pts[0][1]);
+    let expr=String(pts[pts.length-1][1]);
+    for(let i=pts.length-2;i>=0;i--){
+      const [t0,g0]=pts[i],[t1,g1]=pts[i+1];
+      if(t1<=t0)continue;
+      const lerp='('+g0+'+('+g1+'-'+g0+')*(t-'+t0+')/'+(t1-t0)+')';
+      expr='if(lt(t,'+t1+'),'+lerp+','+expr+')';
+    }
+    if(pts[0][0]>0)expr='if(lt(t,'+pts[0][0]+'),'+pts[0][1]+','+expr+')';
+    return "'"+expr+"'";
+  }
+  function duckKeyframes(layer,project){
+    const narration=project.audio.filter(x=>(x.role||'music')==='narration'),regions=[];
+    for(const n of narration){
+      const begin=Math.max(0,n.startUs-layer.startUs),end=Math.min(layer.endUs-layer.startUs,n.endUs-layer.startUs);
+      if(end>begin)regions.push([begin,end]);
+    }
+    regions.sort((a,b)=>a[0]-b[0]);
+    const merged=[];
+    for(const r of regions){
+      const last=merged[merged.length-1];
+      if(last&&r[0]<=last[1])last[1]=Math.max(last[1],r[1]);
+      else merged.push(r.slice());
+    }
+    const duration=layer.endUs-layer.startUs,pts=[];
+    for(const [start,end] of merged){
+      const before=Math.max(0,start-200000),after=Math.min(duration,end+200000);
+      pts.push([before,before===start?.25:1],[start,.25],[end,.25],[after,after===end?.25:1]);
+    }
+    return pts.sort((a,b)=>a[0]-b[0]).filter((p,i,a)=>!i||p[0]>a[i-1][0]);
+  }
   async function render(project,files,options){
     const P=root?.DexCutProject;
     const segments=verifySupported(project,files);
@@ -187,6 +221,12 @@ onmessage=async e=>{
           const length=(layer.endUs-layer.startUs)/1e6,at=layer.startUs/1e6;
           let chain='['+(i+1)+':a]aresample=44100,atrim=0:'+length+
             ',asetpts=PTS-STARTPTS,volume='+layer.gain;
+          const manual=gainExpression(layer.points);
+          if(manual)chain+=',volume='+manual+':eval=frame';
+          if(layer.autoDuck && (layer.role||'music')==='music'){
+            const automatic=gainExpression(duckKeyframes(layer,project));
+            if(automatic)chain+=',volume='+automatic+':eval=frame';
+          }
           if(layer.fadeInUs>0)chain+=',afade=t=in:st=0:d='+Math.min(length,layer.fadeInUs/1e6);
           if(layer.fadeOutUs>0){const d=Math.min(length,layer.fadeOutUs/1e6);
             chain+=',afade=t=out:st='+Math.max(0,length-d)+':d='+d;}
