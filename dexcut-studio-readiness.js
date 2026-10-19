@@ -9,8 +9,8 @@ async function inspect(){
   if(typeof caches!=='undefined'){
     try{
       const keys=await caches.keys();report.cacheNames=keys;
-      report.appShellCached=keys.includes('dexcut-app-v5') &&
-        await caches.open('dexcut-app-v5').then(cache=>cache.match('./studio.html')).then(Boolean);
+      report.appShellCached=keys.includes('dexcut-app-v9') &&
+        await caches.open('dexcut-app-v9').then(cache=>cache.match('./studio.html')).then(Boolean);
       if(keys.includes('ffmpeg-pocket-core-v1')){
         const cache=await caches.open('ffmpeg-pocket-core-v1');
         const reqs=await cache.keys();
