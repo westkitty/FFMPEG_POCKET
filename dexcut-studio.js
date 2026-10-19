@@ -90,7 +90,36 @@
         (track==='titles'?'Title: ':'Caption: ')+layer.text+' ('+fmt(layer.startUs/1e6)+'–'+fmt(layer.endUs/1e6)+')';
       const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Remove';
       remove.addEventListener('click',()=>doEdit('REMOVE_LAYER',{track,id:layer.id}));
-      row.append(info,remove);host.append(row);
+      const details=document.createElement('details'),summary=document.createElement('summary');
+      summary.textContent='Edit timing, position and text';details.append(summary);
+      const textLabel=document.createElement('label');textLabel.textContent='Text';
+      const textField=document.createElement('textarea');textField.maxLength=2000;textField.value=layer.text;textField.rows=2;
+      textLabel.append(textField);details.append(textLabel);
+      const values=[];
+      for(const [label,key,value] of [
+        ['Start in seconds','startUs',layer.startUs/1e6],['End in seconds','endUs',layer.endUs/1e6]]){
+        const wrapper=document.createElement('label');wrapper.textContent=label;
+        const input=document.createElement('input');input.type='number';input.min='0';input.step='.01';input.value=String(value);
+        wrapper.append(input);details.append(wrapper);values.push({key,input});
+      }
+      const position=document.createElement('select');
+      for(const opt of ['top','center','bottom']){
+        const option=document.createElement('option');option.value=opt;option.textContent=opt;
+        position.append(option);
+      }
+      position.value=layer.position||'bottom';
+      const posLabel=document.createElement('label');posLabel.textContent='Position';posLabel.append(position);
+      details.append(posLabel);
+      const save=document.createElement('button');save.type='button';save.textContent='Apply changes';
+      save.addEventListener('click',()=>{
+        const patch={text:textField.value.trim(),position:position.value};
+        for(const entry of values)patch[entry.key]=micro(Number(entry.input.value));
+        if(!patch.text||!Number.isSafeInteger(patch.startUs)||!Number.isSafeInteger(patch.endUs)||
+          patch.startUs<0||patch.endUs<=patch.startUs){say('Caption timing and text must be valid');return;}
+        doEdit('UPDATE_LAYER',{track,id:layer.id,patch});
+      });
+      details.append(save);
+      row.append(info,details,remove);host.append(row);
     }
   }
   function subtitleTime(raw){
