@@ -62,7 +62,16 @@ const server=http.createServer((req,res)=>{
     await page.waitForFunction(()=>document.querySelector('#renderResult video')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
     const mixStatus=await page.locator('#status').innerText();
     assert(await page.locator('#renderResult video').count()===1,'FFmpeg audio mixing failed: '+mixStatus);
+    await page.locator('#textContent').fill('DEXCUT Studio Test');
+    await page.locator('#textStart').fill('0');
+    await page.locator('#textEnd').fill('0.8');
+    await page.locator('#addTitle').click();
+    assert.equal(await page.locator('#textTracks .clip').count(),1,'Timed title missing');
+    await page.locator('#renderVideo').click();
+    await page.waitForFunction(()=>document.querySelector('#renderResult video')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
+    const titleStatus=await page.locator('#status').innerText();
+    assert(await page.locator('#renderResult video').count()===1,'Timed title overlay export failed: '+titleStatus);
     assert.equal(errors.length,0,JSON.stringify(errors));
-    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,pageErrors:errors.length}));
+    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,timedTitle:true,pageErrors:errors.length}));
   }finally{await browser?.close();server.close();}
 })().catch(err=>{console.error('STUDIO_WASM_FAIL',err.stack||err);server.close();process.exitCode=1;});
