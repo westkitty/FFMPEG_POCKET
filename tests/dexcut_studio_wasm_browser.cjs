@@ -3,6 +3,20 @@ const {chromium}=require(process.env.DEXCUT_PLAYWRIGHT||'playwright');
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..');
 const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.json':'application/json','.mp4':'video/mp4','.webp':'image/webp','.png':'image/png','.wasm':'application/wasm'};
+function toneWav(){
+ const rate=22050,duration=1.5,frames=Math.floor(rate*duration),bytes=new Uint8Array(44+frames*2);
+ const view=new DataView(bytes.buffer);
+ for(let i=0;i<4;i++)bytes[i]='RIFF'.charCodeAt(i);
+ view.setUint32(4,36+frames*2,true);
+ for(let i=0;i<4;i++)bytes[8+i]='WAVE'.charCodeAt(i);
+ for(let i=0;i<4;i++)bytes[12+i]='fmt '.charCodeAt(i);
+ view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);
+ view.setUint32(24,rate,true);view.setUint32(28,rate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);
+ for(let i=0;i<4;i++)bytes[36+i]='data'.charCodeAt(i);
+ view.setUint32(40,frames*2,true);
+ for(let i=0;i<frames;i++)view.setInt16(44+i*2,Math.floor(9000*Math.sin(2*Math.PI*440*i/rate)),true);
+ return Buffer.from(bytes);
+}
 const server=http.createServer((req,res)=>{
   const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
   const full=path.resolve(root,'.'+(pathname==='/'?'/studio.html':pathname));
@@ -41,7 +55,14 @@ const server=http.createServer((req,res)=>{
     await page.waitForFunction(()=>document.querySelector('#renderResult video')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
     const modeStatus=await page.locator('#status').innerText();
     assert(await page.locator('#renderResult video').count()===1,'Blurred crop FFmpeg render failed: '+modeStatus);
+    await page.locator('#backgroundMode').selectOption('letterbox');
+    await page.locator('#audioInput').setInputFiles({name:'tone.wav',mimeType:'audio/wav',buffer:toneWav()});
+    await page.locator('#audioTracks fieldset').waitFor({state:'visible'});
+    await page.locator('#renderVideo').click();
+    await page.waitForFunction(()=>document.querySelector('#renderResult video')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
+    const mixStatus=await page.locator('#status').innerText();
+    assert(await page.locator('#renderResult video').count()===1,'FFmpeg audio mixing failed: '+mixStatus);
     assert.equal(errors.length,0,JSON.stringify(errors));
-    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,pageErrors:errors.length}));
+    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,pageErrors:errors.length}));
   }finally{await browser?.close();server.close();}
 })().catch(err=>{console.error('STUDIO_WASM_FAIL',err.stack||err);server.close();process.exitCode=1;});
