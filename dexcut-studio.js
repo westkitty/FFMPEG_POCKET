@@ -47,11 +47,45 @@
     });
     el('duration').textContent='Timeline length: '+fmt(seconds(total));
   }
+
+  function drawAudio(){
+    const list=el('audioTracks');list.replaceChildren();
+    if(!project().audio.length){const p=document.createElement('p');p.className='muted';p.textContent='No audio tracks.';list.append(p);return;}
+    project().audio.forEach((layer,i)=>{
+      const asset=project().assets.find(a=>a.id===layer.sourceId);
+      const field=document.createElement('fieldset');
+      const leg=document.createElement('legend');leg.textContent=(i+1)+'. '+(asset?.name||'Unlinked audio');field.append(leg);
+      const controls=[
+        ['Starts at (seconds)',layer.startUs/1e6,0,100000,.01,n=>({startUs:micro(n),endUs:micro(n)+asset.durationUs})],
+        ['Volume (%)',Math.round(layer.gain*100),0,400,1,n=>({gain:n/100})],
+        ['Fade in (seconds)',(layer.fadeInUs||0)/1e6,0,60,.1,n=>({fadeInUs:micro(n)})],
+        ['Fade out (seconds)',(layer.fadeOutUs||0)/1e6,0,60,.1,n=>({fadeOutUs:micro(n)})]
+      ];
+      for(const [label,value,min,max,step,change] of controls){
+        const wrapper=document.createElement('label');wrapper.textContent=label;
+        const input=document.createElement('input');input.type='number';input.value=value;input.min=min;input.max=max;input.step=step;
+        input.setAttribute('aria-label',label+' for '+(asset?.name||'audio'));
+        input.addEventListener('change',()=>{
+          const v=Number(input.value);
+          if(!Number.isFinite(v)||v<min||v>max){say('Invalid '+label);return;}
+          doEdit('UPDATE_LAYER',{track:'audio',id:layer.id,patch:change(v)});
+        });wrapper.append(input);field.append(wrapper);
+      }
+      const actions=document.createElement('div');actions.className='actions';
+      const remove=document.createElement('button');remove.textContent='Remove track';remove.type='button';remove.className='secondary';
+      remove.addEventListener('click',()=>doEdit('REMOVE_LAYER',{track:'audio',id:layer.id}));actions.append(remove);
+      const file=bindingFor(layer.sourceId);if(file){
+        const audio=document.createElement('audio');audio.controls=true;audio.preload='none';audio.src=objectUrl(file);
+        audio.addEventListener('ended',()=>audio.pause());actions.append(audio);
+      }
+      field.append(actions);list.append(field);
+    });
+  }
   function render(){
     const p=project();el('undo').disabled=!state.history.undoStack.length;
     el('redo').disabled=!state.history.redoStack.length;
     if(el('title').value!==p.title)el('title').value=p.title;
-    drawClips();
+    drawClips();drawAudio();
     el('exportPreset').value=p.export.preset;
     el('sizeTarget').value=p.export.targetSizeBytes==null?'':Math.max(1,Math.round(p.export.targetSizeBytes/1048576));
     const clip=selectedClip();
@@ -110,6 +144,10 @@
         if(kind==='video'){
           const c=P.makeClip(asset,0,asset.durationUs);
           if(doEdit('ADD_CLIP',{clip:c})){state.selected=c.id;selectClip(c.id);}
+        }
+        if(kind==='audio'){
+          const layer={id:P.uid(),sourceId:asset.id,startUs:0,endUs:asset.durationUs,gain:1,points:[],fadeInUs:0,fadeOutUs:0};
+          doEdit('ADD_LAYER',{track:'audio',layer});
         }
         say('Imported '+f.name+' locally.');
       }catch(e){say(f.name+': '+e.message);}
@@ -196,6 +234,40 @@
     }catch(error){el('exportResult').textContent='Invalid project: '+error.message;}
   }
   el('mediaInput').addEventListener('change',e=>{importMedia(Array.from(e.target.files||[]));e.target.value='';});
+  el('audioInput').addEventListener('change',e=>{importMedia(Array.from(e.target.files||[]));e.target.value='';});
+  let recording=null;
+  el('recordVoice').addEventListener('click',async()=>{
+    if(recording)return;
+    if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){
+      el('voiceStatus').textContent='Microphone recording is unavailable in this browser';return;
+    }
+    let stream;
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+      const options=['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg'].find(m=>MediaRecorder.isTypeSupported(m));
+      const rec=new MediaRecorder(stream,options?{mimeType:options}:undefined),chunks=[];
+      rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data);};
+      rec.onerror=e=>{el('voiceStatus').textContent='Microphone error: '+(e.error?.message||'recording failed');};
+      rec.onstop=async()=>{
+        stream.getTracks().forEach(t=>t.stop());
+        recording=null;el('recordVoice').disabled=false;el('stopVoice').disabled=true;
+        if(!chunks.length){el('voiceStatus').textContent='No audio captured';return;}
+        const mime=rec.mimeType||chunks[0].type||'audio/mp4';
+        const ext=mime.includes('webm')?'webm':mime.includes('ogg')?'ogg':'m4a';
+        const file=new File(chunks,'narration-'+Date.now()+'.'+ext,{type:mime.split(';')[0]});
+        el('voiceStatus').textContent='Recording captured. Adding local narration track.';
+        await importMedia([file]);
+      };
+      recording=rec;rec.start(250);
+      el('recordVoice').disabled=true;el('stopVoice').disabled=false;
+      el('voiceStatus').textContent='Recording microphone… tap Stop to keep this take.';
+    }catch(error){
+      stream?.getTracks().forEach(t=>t.stop());
+      el('voiceStatus').textContent='Microphone unavailable or permission denied: '+error.message;
+    }
+  });
+  el('stopVoice').addEventListener('click',()=>{if(recording?.state==='recording')recording.stop();});
+
   el('undo').addEventListener('click',()=>{state.history.undo();if(!selectedClip())state.selected=project().clips[0]?.id||null;selectClip(state.selected);});
   el('redo').addEventListener('click',()=>{state.history.redo();if(!selectedClip())state.selected=project().clips[0]?.id||null;selectClip(state.selected);});
   el('title').addEventListener('change',e=>doEdit('RENAME',{title:e.target.value}));
