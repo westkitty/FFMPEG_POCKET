@@ -73,7 +73,7 @@ onmessage=async e=>{
     if(!P)throw Error('Project model unavailable');
     P.validate(project);
     if(!project.clips.length)throw Error('Add video clips before rendering');
-    if(project.titles.length||project.captions.length)throw Error('Timed text layers are not supported by this renderer yet');
+    if(project.titles.length+project.captions.length>12)throw Error('This preliminary renderer supports up to 12 timed text cues per export');
     if(project.audio.length>4)throw Error('This preliminary mixer supports at most four audio tracks');
     if(project.clips.some(c=>c.speed!==1||c.transitionOut?.type==='fade'))
       throw Error('This render path does not yet support speed changes or transitions');
@@ -84,6 +84,27 @@ onmessage=async e=>{
     if(segments.some(s=>s.sourceEndUs<=s.sourceStartUs))throw Error('Empty segment');
     for(const id of new Set(segments.map(s=>s.sourceId)))if(!files.has(id))throw Error('Relink missing source '+id);
     return segments;
+  }
+  async function textPng(layer,w){
+    if(typeof document==='undefined')throw Error('Timed text rendering requires a browser canvas');
+    const canvas=document.createElement('canvas'),font=Math.max(22,Math.min(48,Math.round(w/17)));
+    canvas.width=Math.min(1000,Math.max(220,w-36));canvas.height=Math.max(110,font*3+32);
+    const g=canvas.getContext('2d');if(!g)throw Error('Canvas typography unavailable');
+    g.clearRect(0,0,canvas.width,canvas.height);
+    g.fillStyle='rgba(0,0,0,0.75)';
+    g.fillRect(0,0,canvas.width,canvas.height);
+    g.fillStyle='#ffffff';g.font='700 '+font+'px system-ui, sans-serif';g.textAlign='center';g.textBaseline='middle';
+    const words=layer.text.trim().split(/\s+/),lines=[];let current='';
+    for(const word of words){
+      const candidate=current?current+' '+word:word;
+      if(current && g.measureText(candidate).width>canvas.width-38){lines.push(current);current=word;}
+      else current=candidate;
+    }
+    if(current)lines.push(current);
+    const visible=lines.slice(0,3),dy=font*1.08;
+    visible.forEach((line,i)=>g.fillText(line,canvas.width/2,canvas.height/2+(i-(visible.length-1)/2)*dy,canvas.width-26));
+    const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('Text image failed')),'image/png'));
+    return new Uint8Array(await blob.arrayBuffer());
   }
   async function render(project,files,options){
     const P=root?.DexCutProject;
@@ -172,6 +193,30 @@ onmessage=async e=>{
         const audioCode=await e.exec(args);
         if(audioCode!==0)throw Error('Audio mix failed ('+audioCode+'). Review unsupported source audio codecs.');
         finalName='result-mixed.mp4';
+      }
+      const layers=[...project.captions.map(x=>({...x,kind:'caption'})),...project.titles.map(x=>({...x,kind:'title'}))]
+        .sort((a,b)=>a.startUs-b.startUs);
+      if(layers.length){
+        opts.onEvent?.({kind:'stage',message:'Rendering timed titles and captions'});
+        const inputs=['-i',finalName],graph=[],duration=P.projectDurationUs(project)/1e6;
+        let last='[0:v]';
+        for(let i=0;i<layers.length;i++){
+          const l=layers[i],file='text-'+i+'.png';
+          await e.write(file,await textPng(l,w));
+          inputs.push('-loop','1','-framerate',String(rate),'-i',file);
+          const y=l.position==='top'?'36':l.position==='center'?'(H-h)/2':'H-h-36';
+          const enable='between(t\\,'+(l.startUs/1e6)+'\\,'+(l.endUs/1e6)+')';
+          const dest='[textv'+i+']';
+          graph.push(last+'['+(i+1)+':v]overlay=x=(W-w)/2:y='+y+
+            ':enable='+enable+':shortest=0:repeatlast=1'+dest);
+          last=dest;
+        }
+        const args=['-hide_banner',...inputs,'-filter_complex',graph.join(';'),'-map',last,
+          '-map','0:a:0?','-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','27',
+          '-c:a','copy','-t',String(duration),'-movflags','+faststart','result-text.mp4'];
+        const textCode=await e.exec(args);
+        if(textCode!==0)throw Error('Timed-text render failed ('+textCode+'). Review source format and overlay capabilities.');
+        finalName='result-text.mp4';
       }
       const out=await e.read(finalName);
       if(!out?.length)throw Error('Empty final output');
