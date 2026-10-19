@@ -4,7 +4,7 @@
   const P=window.DexCutProject,E=window.DexCutExportPlan;
   if(!P || !E)return;
   const el=id=>document.getElementById(id);
-  const state={history:new P.History(P.newProject()),bound:new Map(),selected:null,activeRange:0,url:'',thumbnailTask:0};
+  const state={history:new P.History(P.newProject()),bound:new Map(),selected:null,activeRange:0,url:'',thumbnailTask:0,audioUrls:new Map()};
   const project=()=>state.history.current;
   const fmt=s=>Number(s).toFixed(2)+'s';
   const say=msg=>{el('status').textContent=msg;};
@@ -75,7 +75,7 @@
       const remove=document.createElement('button');remove.textContent='Remove track';remove.type='button';remove.className='secondary';
       remove.addEventListener('click',()=>doEdit('REMOVE_LAYER',{track:'audio',id:layer.id}));actions.append(remove);
       const file=bindingFor(layer.sourceId);if(file){
-        const audio=document.createElement('audio');audio.controls=true;audio.preload='none';audio.src=objectUrl(file);
+        const audio=document.createElement('audio');audio.controls=true;audio.preload='none';let u=state.audioUrls.get(layer.sourceId);if(!u){u=objectUrl(file);state.audioUrls.set(layer.sourceId,u);}audio.src=u;
         audio.addEventListener('ended',()=>audio.pause());actions.append(audio);
       }
       field.append(actions);list.append(field);
@@ -212,7 +212,8 @@
   }
   async function openProject(file){
     if(!file)return;try{
-      const next=P.decode(await file.text());state.bound.clear();state.selected=null;state.thumbnailTask++;
+      const next=P.decode(await file.text());
+      for(const u of state.audioUrls.values())URL.revokeObjectURL(u);state.audioUrls.clear();state.bound.clear();state.selected=null;state.thumbnailTask++;
       state.history.replace(next);releasePreview();el('preview').pause();el('preview').removeAttribute('src');el('preview').load();
       el('preview').hidden=true;el('previewEmpty').hidden=false;el('thumbs').replaceChildren();
       render();say('Project opened. Relink original media before editing or export.');
@@ -318,7 +319,8 @@
     doEdit('SET_EXPORT',{targetSizeBytes:v});
   });
   el('checkExport').addEventListener('click',showPreflight);
-  window.addEventListener('pagehide',()=>{state.thumbnailTask++;releasePreview();});
+  window.addEventListener('pagehide',()=>{state.thumbnailTask++;releasePreview();
+    for(const u of state.audioUrls.values())URL.revokeObjectURL(u);state.audioUrls.clear();});
   let activeRender=null,completedURL=null;
   el('renderVideo').addEventListener('click',async()=>{
     if(activeRender)return;
