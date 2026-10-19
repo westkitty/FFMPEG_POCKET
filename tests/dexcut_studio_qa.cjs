@@ -4,14 +4,16 @@ const root=path.resolve(__dirname,'..');
 const html=fs.readFileSync(path.join(root,'studio.html'),'utf8');
 const code=fs.readFileSync(path.join(root,'dexcut-studio.js'),'utf8');
 new vm.Script(code,{filename:'dexcut-studio.js'});
-for(const file of ['dexcut-project.js','dexcut-export-plan.js','dexcut-studio.js']){
+new vm.Script(fs.readFileSync(path.join(root,'dexcut-studio-render.js'),'utf8'),{filename:'dexcut-studio-render.js'});
+for(const file of ['dexcut-project.js','dexcut-export-plan.js','dexcut-studio-render.js','dexcut-studio.js']){
   assert(html.includes('src="./'+file+'"'),'Missing module '+file);
 }
 for(const id of ['mediaInput','clipList','preview','timeline','undo','redo','rangeStart','rangeEnd','addRange','removeRange','invertRange',
-  'downloadProject','openProject','exportPreset','sizeTarget','checkExport','thumbs','backgroundMode']){
+  'downloadProject','openProject','exportPreset','sizeTarget','checkExport','thumbs','backgroundMode','renderVideo','cancelRender','renderProgress','renderResult']){
   assert.equal((html.match(new RegExp('id="'+id+'"','g'))||[]).length,1,'Missing/duplicate '+id);
   assert(code.includes("el('"+id+"')")||code.includes("['"+id+"'"),'Missing UI usage '+id);
 }
-assert(/Studio composition rendering is not enabled/.test(code),'Cannot falsely advertise completed export');
+assert(/Studio composition rendering is not enabled/.test(code),'Preflight must declare its limitations');
+assert(html.includes('Advanced effects remain unsupported') || html.includes('advanced audio/caption effects'),'Renderer limitations must be visible');
 assert(!/navigator\.sendBeacon|XMLHttpRequest|localStorage|indexedDB/i.test(code),'Studio must not silently upload or store media');
 console.log('PASS: studio module syntax, interaction hooks, honest composition-export boundary');
