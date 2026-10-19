@@ -34,7 +34,14 @@ const server=http.createServer((req,res)=>{
     const got=await download,buf=fs.readFileSync(await got.path());
     assert(buf.length>1000,'Export is empty');
     assert(buf.subarray(4,8).toString('ascii')==='ftyp','Export does not look like MP4');
+    await page.locator('#exportPreset').selectOption('messaging');
+    await page.locator('#cropShape').evaluate(el=>{el.value='10';el.dispatchEvent(new Event('change',{bubbles:true}));});
+    await page.locator('#backgroundMode').selectOption('blur');
+    await page.locator('#renderVideo').click();
+    await page.waitForFunction(()=>document.querySelector('#renderResult video')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
+    const modeStatus=await page.locator('#status').innerText();
+    assert(await page.locator('#renderResult video').count()===1,'Blurred crop FFmpeg render failed: '+modeStatus);
     assert.equal(errors.length,0,JSON.stringify(errors));
-    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,pageErrors:errors.length}));
+    console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,pageErrors:errors.length}));
   }finally{await browser?.close();server.close();}
 })().catch(err=>{console.error('STUDIO_WASM_FAIL',err.stack||err);server.close();process.exitCode=1;});
