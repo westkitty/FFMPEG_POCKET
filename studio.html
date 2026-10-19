@@ -10,11 +10,12 @@
 </style>
 <script defer src="./dexcut-project.js"></script>
 <script defer src="./dexcut-export-plan.js"></script>
+<script defer src="./dexcut-studio-render.js"></script>
 <script defer src="./dexcut-studio.js"></script>
 </head>
 <body>
 <header><div><div class="eyebrow">Stinky Weasel Productions</div><h1>DEX//CUT STUDIO</h1></div><a class="button secondary" href="./" style="text-decoration:none;font-size:.85rem">Quick Tools</a></header>
-<p class="state"><strong>FEATURE BRANCH PREVIEW:</strong> This editor saves non-destructive recipes and supports source preview. Composite video rendering, advanced audio/caption effects, and physical iPhone validation are not yet implemented. Quick Tools remain available separately.</p>
+<p class="state"><strong>FEATURE BRANCH PREVIEW:</strong> This editor saves non-destructive recipes and supports source preview. Simple cuts/joins have a preliminary renderer; advanced audio/caption effects and physical iPhone validation are not yet implemented. Quick Tools remain available separately.</p>
 <section class="panel" aria-label="Project">
 <div class="actions"><input id="title" aria-label="Project title" value="Untitled edit" style="flex:1 1 180px">
 <button id="undo" class="secondary" type="button" disabled>Undo</button><button id="redo" class="secondary" type="button" disabled>Redo</button></div>
@@ -57,8 +58,11 @@
 <label for="exportPreset">Output profile</label><select id="exportPreset"><option value="portrait-720p">Vertical 720p</option><option value="landscape-720p">Landscape 720p</option><option value="square-720p">Square 720p</option><option value="portrait-1080p">Vertical 1080p</option><option value="messaging">Messaging</option></select>
 <label for="sizeTarget">Estimated size budget (MiB, optional)</label><input id="sizeTarget" type="number" min="1" step="1" placeholder="Automatic">
 <button type="button" id="checkExport" class="secondary">Check project readiness</button>
+<div class="actions" style="margin-top:9px"><button type="button" id="renderVideo">Render simple cuts/join</button><button type="button" id="cancelRender" class="secondary" disabled>Cancel render</button></div>
+<progress id="renderProgress" max="100" value="0" hidden style="width:100%" aria-label="Render progress"></progress>
+<div id="renderResult" aria-live="polite"></div>
 <div id="exportResult" role="status" class="muted"></div>
-<p class="state">Studio composition export remains blocked until real FFmpeg.wasm and physical-iPhone validation. For existing conversions, choose Quick Tools.</p>
+<p class="state">Studio rendering currently supports only simple cuts and joins with matching audio layouts. Advanced effects remain unsupported and physical-iPhone validation is pending. For existing conversions, choose Quick Tools.</p>
 </section>
 <section class="panel"><h2>Project status</h2><div id="status" role="status" aria-live="polite" class="muted">New project ready.</div><details><summary>Source bindings</summary><div id="bindings" class="muted">No media linked</div></details></section>
 </aside>
