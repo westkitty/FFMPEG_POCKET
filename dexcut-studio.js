@@ -264,7 +264,7 @@
         const n=document.createElement('p');n.textContent='• '+line;container.append(n);
       }
       const n=document.createElement('p');
-      n.textContent='Estimated timeline: '+fmt(result.estimates.durationUs/1e6)+'. Studio composition rendering is not enabled.';
+      n.textContent='Estimated timeline: '+fmt(result.estimates.durationUs/1e6)+'. Studio rendering supports tested simple compositions; inspect individual blockers and verify results.';
       container.append(n);
     }catch(error){el('exportResult').textContent='Invalid project: '+error.message;}
   }
