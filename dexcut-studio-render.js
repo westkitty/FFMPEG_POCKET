@@ -144,7 +144,8 @@ onmessage=async e=>{
         const duration=(s.sourceEndUs-s.sourceStartUs)/1e6,offset=s.sourceStartUs/1e6;
         const args=['-hide_banner','-ss',String(offset),'-i',input,'-t',String(duration)];
         if(mode==='blur')args.push('-filter_complex',blurgraph,'-map','[v]');
-        else args.push('-vf',mode==='solid'?vf.replace(/pad=([^,]+)/,'pad=$1:color=black'):vf,'-map','0:v:0');
+        else {const hex=/^#[0-9a-f]{6}$/i.test(clip.background||'')?clip.background.slice(1):'000000';
+          args.push('-vf',mode==='solid'?vf.replace(/pad=([^,]+)/,'pad=$1:color=0x'+hex):vf,'-map','0:v:0');}
         if(hasAudio)args.push('-map','0:a:0','-c:a','aac','-ar','44100','-ac','2','-b:a','96k');
         else args.push('-an');
         args.push('-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-crf','27','-movflags','+faststart',out);
