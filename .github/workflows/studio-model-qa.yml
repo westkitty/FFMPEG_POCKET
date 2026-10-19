@@ -4,6 +4,9 @@ on:
     branches:
       - feature/studio-20-enhancements-20261019
   workflow_dispatch:
+concurrency:
+  group: studio-model-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
