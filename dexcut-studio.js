@@ -81,11 +81,44 @@
       field.append(actions);list.append(field);
     });
   }
+
+  function drawTextLayers(){
+    const host=el('textTracks');host.replaceChildren();
+    for(const track of ['titles','captions'])for(const layer of project()[track]){
+      const row=document.createElement('div');row.className='clip';
+      const info=document.createElement('p');info.textContent=
+        (track==='titles'?'Title: ':'Caption: ')+layer.text+' ('+fmt(layer.startUs/1e6)+'–'+fmt(layer.endUs/1e6)+')';
+      const remove=document.createElement('button');remove.type='button';remove.className='secondary';remove.textContent='Remove';
+      remove.addEventListener('click',()=>doEdit('REMOVE_LAYER',{track,id:layer.id}));
+      row.append(info,remove);host.append(row);
+    }
+  }
+  function subtitleTime(raw){
+    const parts=raw.trim().replace(',','.').split(':').map(Number);
+    if(parts.some(n=>!Number.isFinite(n))||parts.length<2||parts.length>3)return NaN;
+    return parts.reduce((n,v)=>n*60+v,0);
+  }
+  function parseCaptions(content){
+    const blocks=content.replace(/\r/g,'').replace(/^WEBVTT[^\n]*\n/,'').split(/\n\s*\n/),cues=[];
+    for(const block of blocks){
+      const lines=block.split('\n').map(s=>s.trim()).filter(Boolean);
+      const k=lines.findIndex(x=>x.includes('-->'));
+      if(k<0)continue;
+      const [a,b]=lines[k].split('-->');
+      const start=subtitleTime(a),end=subtitleTime((b||'').trim().split(/\s+/)[0]);
+      if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<=start)continue;
+      const text=lines.slice(k+1).join(' ').replace(/<[^>]*>/g,'').slice(0,500);
+      if(!text)continue;
+      cues.push({id:P.uid(),startUs:micro(start),endUs:micro(end),text,position:'bottom'});
+      if(cues.length>=200)break;
+    }
+    return cues;
+  }
   function render(){
     const p=project();el('undo').disabled=!state.history.undoStack.length;
     el('redo').disabled=!state.history.redoStack.length;
     if(el('title').value!==p.title)el('title').value=p.title;
-    drawClips();drawAudio();
+    drawClips();drawAudio();drawTextLayers();
     el('exportPreset').value=p.export.preset;
     el('sizeTarget').value=p.export.targetSizeBytes==null?'':Math.max(1,Math.round(p.export.targetSizeBytes/1048576));
     const clip=selectedClip();
@@ -235,6 +268,28 @@
     }catch(error){el('exportResult').textContent='Invalid project: '+error.message;}
   }
   el('mediaInput').addEventListener('change',e=>{importMedia(Array.from(e.target.files||[]));e.target.value='';});
+  el('addTitle').addEventListener('click',()=>{
+    const text=el('textContent').value.trim();
+    const start=micro(Number(el('textStart').value)),end=micro(Number(el('textEnd').value));
+    if(!text||!Number.isSafeInteger(start)||!Number.isSafeInteger(end)||start<0||end<=start){
+      say('Enter a title and a valid nonempty time interval.');return;
+    }
+    if(doEdit('ADD_LAYER',{track:'titles',layer:{id:P.uid(),startUs:start,endUs:end,text,position:el('textPosition').value}})){
+      el('textContent').value='';say('Timed title added.');}
+  });
+  el('subtitleInput').addEventListener('change',async e=>{
+    const file=e.target.files?.[0];e.target.value='';if(!file)return;
+    if(file.size>128*1024){say('Subtitle file exceeds 128 KiB limit');return;}
+    try{
+      const cues=parseCaptions(await file.text());
+      if(!cues.length)throw Error('No valid timed caption cues found');
+      if(cues.length>24)say('Imported captions; only 24 simultaneous overlay cues can be rendered per project in this preview.');
+      for(const layer of cues){
+        if(!doEdit('ADD_LAYER',{track:'captions',layer}))break;
+      }
+      say('Imported '+cues.length+' caption cues. Original file stays local.');
+    }catch(error){say('Caption import failed: '+error.message);}
+  });
   el('audioInput').addEventListener('change',e=>{importMedia(Array.from(e.target.files||[]));e.target.value='';});
   let recording=null;
   el('recordVoice').addEventListener('click',async()=>{
