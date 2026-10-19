@@ -30,7 +30,7 @@ const len=Number(response.headers.get('content-length')||0);
 if(len>MAX_BYTES)throw Error('File exceeds the 250 MiB import limit.');
 if(!response.body)throw Error('Streaming downloads are unavailable in this browser.');
 const reader=response.body.getReader(),chunks=[];let size=0;
-while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_BYTES){await reader.cancel();throw Error('File exceeds the 600 MiB import limit.');}chunks.push(value);if(len){progress.hidden=false;progress.value=Math.min(100,Math.round(size/len*100));}status.textContent='Downloading '+Math.round(size/1048576)+' MiB…';}
+while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_BYTES){await reader.cancel();throw Error('File exceeds the 250 MiB import limit.');}chunks.push(value);if(len){progress.hidden=false;progress.value=Math.min(100,Math.round(size/len*100));}status.textContent='Downloading '+Math.round(size/1048576)+' MiB…';}
 if(!size)throw Error('The download was empty.');
 return new File(chunks,filename(new URL(response.url),type),{type:/^(video|audio)\//.test(type)?type.split(';')[0]:'application/octet-stream'});
 }
