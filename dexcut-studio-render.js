@@ -136,7 +136,7 @@ onmessage=async e=>{
     const duration=layer.endUs-layer.startUs,pts=[];
     for(const [start,end] of merged){
       const before=Math.max(0,start-200000),after=Math.min(duration,end+200000);
-      pts.push([before,before===start?.25:1],[start,.25],[end,.25],[after,after===end?.25:1]);
+      pts.push([before,before===start ? 0.25 : 1],[start,.25],[end,.25],[after,after===end ? 0.25 : 1]);
     }
     return pts.sort((a,b)=>a[0]-b[0]).filter((p,i,a)=>!i||p[0]>a[i-1][0]);
   }
