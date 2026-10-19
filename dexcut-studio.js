@@ -382,15 +382,15 @@
     if(activeRender)return;
     const renderer=window.DexCutStudioRender;
     if(!renderer){say('Studio renderer is unavailable');return;}
-    const frozen=P.clone(project()),controller=new AbortController();
+    const frozen=P.clone(project()),sourceFiles=new Map(state.bound),controller=new AbortController();
     try{
-      renderer.verifySupported(frozen,state.bound);
+      renderer.verifySupported(frozen,sourceFiles);
       activeRender=controller;
       el('renderVideo').disabled=true;el('cancelRender').disabled=false;
       el('renderProgress').hidden=false;el('renderProgress').value=0;
       el('renderResult').replaceChildren();
       say('Preparing local video composition. Keep the app in the foreground.');
-      const file=await renderer.render(frozen,new Map(state.bound),{signal:controller.signal,
+      const file=await renderer.render(frozen,sourceFiles,{signal:controller.signal,
         onEvent:ev=>{
           if(ev.kind==='stage')say(ev.message);
           if(ev.kind==='progress' && Number.isFinite(ev.data?.progress)){
@@ -409,6 +409,43 @@
         else say('This browser cannot share the output file. Use Save instead.');
       });
       el('renderResult').replaceChildren(video,a,share);
+      const sequence=P.flatten(frozen);
+      if(sequence.length){
+        const compare=document.createElement('button'),original=document.createElement('video');
+        compare.textContent='Hold to compare original';compare.type='button';compare.className='secondary';
+        compare.setAttribute('aria-label','Hold to reveal corresponding original video frame');
+        original.controls=false;original.playsInline=true;original.muted=true;original.hidden=true;
+        let comparisonURL=null,activeId='',pressed=false,wasPlaying=false;
+        const reveal=async()=>{
+          if(pressed)return;pressed=true;wasPlaying=!video.paused;
+          const playUs=Math.round((video.currentTime||0)*1e6);
+          const section=sequence.find(s=>playUs>=s.projectStartUs && playUs<s.projectEndUs)||
+            sequence[sequence.length-1];
+          const originalFile=sourceFiles.get(section.sourceId);
+          if(!originalFile){pressed=false;return;}
+          if(activeId!==section.sourceId){
+            if(comparisonURL)URL.revokeObjectURL(comparisonURL);
+            comparisonURL=URL.createObjectURL(originalFile);original.src=comparisonURL;
+            activeId=section.sourceId;
+          }
+          const time=Math.max(0,(section.sourceStartUs+Math.max(0,playUs-section.projectStartUs))/1e6);
+          video.pause();original.currentTime=time;video.hidden=true;original.hidden=false;
+          try{await original.play();}catch(_){}
+        };
+        const restore=()=>{
+          if(!pressed)return;pressed=false;original.pause();original.hidden=true;video.hidden=false;
+          if(wasPlaying)video.play().catch(()=>{});
+        };
+        compare.addEventListener('pointerdown',e=>{e.preventDefault();compare.setPointerCapture(e.pointerId);reveal();});
+        compare.addEventListener('pointerup',restore);
+        compare.addEventListener('pointercancel',restore);
+        compare.addEventListener('lostpointercapture',restore);
+        compare.addEventListener('blur',restore);
+        compare.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();reveal();}});
+        compare.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();restore();}});
+        el('renderResult').append(compare,original);
+        original.addEventListener('emptied',()=>{if(!pressed&&comparisonURL){URL.revokeObjectURL(comparisonURL);comparisonURL=null;activeId='';}});
+      }
       say('Output assembled locally. Verify playback and duration before sharing.');
     }catch(err){say(controller.signal.aborted?'Render cancelled.':'Render failed: '+err.message);}
     finally{if(activeRender===controller)activeRender=null;el('renderVideo').disabled=false;
