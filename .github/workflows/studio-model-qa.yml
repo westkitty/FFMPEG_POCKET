@@ -28,3 +28,19 @@ jobs:
         run: node tests/dexcut_studio_qa.cjs
       - name: Waveform module contracts
         run: node tests/dexcut_waveform_qa.cjs
+
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test-only browser dependencies
+        run: |
+          npm install --prefix /tmp/dexcut-studio-qa --no-audit --no-fund playwright@1.64.0
+          /tmp/dexcut-studio-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Render real MP4 with ffmpeg.wasm using Studio interface
+        env:
+          DEXCUT_PLAYWRIGHT: /tmp/dexcut-studio-qa/node_modules/playwright
+        run: node tests/dexcut_studio_wasm_browser.cjs
