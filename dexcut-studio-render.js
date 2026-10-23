@@ -157,7 +157,8 @@ onmessage=async e=>{
       if(isCancelled())throw Error('Cancelled');
       opts.onEvent?.({kind:'stage',message:'Starting the local FFmpeg engine'});
       await e.init();
-      let commonAudio=null;
+      // Every encoded section uses AAC stereo. Supply silence when a source has no audio stream,
+      // so concatenation can safely combine ordinary, audio-bearing and silent clips.
       for(let i=0;i<segments.length;i++){
         if(isCancelled())throw Error('Cancelled');
         const s=segments[i],file=files.get(s.sourceId),input='source-'+i+'.'+String(file.name.split('.').pop()||'mp4').replace(/[^a-z0-9]/gi,'').slice(0,5);
@@ -166,8 +167,8 @@ onmessage=async e=>{
         const rcProbe=await e.exec(['-hide_banner','-i',input]);
         void rcProbe;
         const streams=e.logs.join('\n');const hasAudio=/Stream #\S+: Audio:/.test(streams);
-        if(commonAudio===null)commonAudio=hasAudio;
-        if(hasAudio!==commonAudio)throw Error('Mixed silent and audio clips need a future normalized audio renderer');
+        // An input without audio gets an explicit generated silent track of matching duration.
+        // Source audio is otherwise kept and normalized to the same AAC configuration.
         const out='section-'+i+'.mp4';
         const clip=project.clips.find(x=>x.id===s.clipId);
         const crop=clip.crop;
@@ -180,12 +181,13 @@ onmessage=async e=>{
           '[fg]scale='+w+':'+h+':force_original_aspect_ratio=decrease[foreground];'+
           '[background][foreground]overlay=(W-w)/2:(H-h)/2,setsar=1,fps='+rate+'[v]';
         const duration=(s.sourceEndUs-s.sourceStartUs)/1e6,offset=s.sourceStartUs/1e6;
-        const args=['-hide_banner','-ss',String(offset),'-i',input,'-t',String(duration)];
+        const args=['-hide_banner','-ss',String(offset),'-i',input];
+        if(!hasAudio)args.push('-f','lavfi','-i','anullsrc=r=44100:cl=stereo');
+        args.push('-t',String(duration));
         if(mode==='blur')args.push('-filter_complex',blurgraph,'-map','[v]');
         else {const hex=/^#[0-9a-f]{6}$/i.test(clip.background||'')?clip.background.slice(1):'000000';
           args.push('-vf',mode==='solid'?vf.replace(/pad=([^,]+)/,'pad=$1:color=0x'+hex):vf,'-map','0:v:0');}
-        if(hasAudio)args.push('-map','0:a:0','-c:a','aac','-ar','44100','-ac','2','-b:a','96k');
-        else args.push('-an');
+        args.push('-map',hasAudio?'0:a:0':'1:a:0','-c:a','aac','-ar','44100','-ac','2','-b:a','96k');
         args.push('-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p');
         if(targetKbps){
           const vKbps=Math.max(80,targetKbps-(hasAudio||project.audio.length?128:0)-24);
