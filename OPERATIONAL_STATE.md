@@ -2,7 +2,7 @@
 
 project_id: ffmpeg-pocket
 project_name: DEX//CUT (formerly FFmpeg Pocket)
-revision: 9
+revision: 10
 
 ## Current baseline
 - Repository: westkitty/FFMPEG_POCKET
@@ -84,3 +84,10 @@ Historical custom GitHub Actions Pages enablement failed; branch-based Pages pub
 - Regression gate: `tests/dexcut_waveform_qa.cjs`, `tests/dexcut_waveform_browser.cjs`, existing `tests/dexcut_static_regression.cjs`, `tests/dexcut_browser_qa.cjs`, and `tests/dexcut_real_flow.cjs` are wired through `.github/workflows/waveform-qa.yml`.
 - Verified before expanded suite: protected command/build sections and 30/30 tool inventory, browser audio waveform rendering, range drag, keyboard adjustments, numeric synchronization, and no overflow at 320/390/768px. Expanded video/editor and real-WASM re-verification must report their own CI result.
 - **Unverified:** actual physical Android and iPhone pointer behavior, device audio/video codec combinations, installed-PWA lifecycle and large-device-file memory limits. Never call browser viewport emulation a device certification.
+
+## 2026-10-23 Studio expansion (branch-only, unreleased)
+- Branch: `feature/studio-20-enhancements-20261019`; `main` and GitHub Pages remain untouched.
+- New isolated `studio.html` and Studio modules provide local project recipes, keep ranges, reordering, true frame thumbnails where decodable, crop/framing, overlay titles, subtitle import and SRT sidecar, source/output comparison, secondary audio/mic controls, volume automation, markers, export profiles, readiness and sequential batch queue. Capabilities vary by codec/device; several features remain partial and require targeted acceptance checks.
+- Studio FFmpeg.wasm browser tests previously passed ordinary trim/join, reframing, audio mix and text overlay, and batch output on desktop Chromium. Legacy 30-tool WASM and chained-edit regression checks passed in CI run 39267603146. None of this constitutes physical iPhone proof.
+- 2026-10-23: added mixed silent/audio segment normalization and a dedicated real-WASM mixed-input regression test; status pending current CI result.
+- Known limits: no verified real iPhone interaction, microphone/PWA lifecycle, or resource envelope; project persistence requires source-file relinking; project fade transitions remain explicitly unsupported by renderer; variable-frame-rate stepping is approximate; advanced batch stress unverified. No deployment authorization.
