@@ -1,6 +1,6 @@
 'use strict';
 const {chromium}=require(process.env.DEXCUT_PLAYWRIGHT||'playwright');
-const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),os=require('node:os'),cp=require('node:child_process'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..');
 const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.json':'application/json','.mp4':'video/mp4','.webp':'image/webp','.png':'image/png','.wasm':'application/wasm'};
 function toneWav(){
@@ -96,12 +96,22 @@ const server=http.createServer((req,res)=>{
     const batchFile=await batchDownload;const batchBuf=fs.readFileSync(await batchFile.path());
     assert(batchBuf.length>1000,'Batch output empty');
     assert.equal(batchBuf.subarray(4,8).toString('ascii'),'ftyp','Batch output is not an MP4');
-    // Mixed soundtrack compatibility: one source has audio, the second has none.
-    const silent=await page.evaluate(async()=> {
-      const original=window.DexCutStudioControl.project();
-      return {clipCount:original.clips.length};
-    });
-    assert(silent.clipCount>=1,'Studio fixture unavailable');
+    // Real mixed-media regression: source with audio, followed by silent video.
+    const silentPath=path.join(os.tmpdir(),'dexcut-studio-silent-fixture-'+process.pid+'.mp4');
+    try{
+      cp.execFileSync('ffmpeg',['-nostdin','-hide_banner','-loglevel','error','-f','lavfi','-i','color=c=blue:s=128x96:r=24','-t','0.8','-an','-c:v','libx264','-pix_fmt','yuv420p','-y',silentPath],{timeout:30000});
+      const mixed=await browser.newPage({viewport:{width:390,height:844}});
+      try{
+        await mixed.goto('http://127.0.0.1:'+server.address().port+'/studio.html');
+        await mixed.locator('#mediaInput').setInputFiles([path.join(root,'qa-sample.mp4'),silentPath]);
+        await mixed.waitForFunction(()=>document.querySelectorAll('#clipList article').length===2,null,{timeout:20000});
+        await mixed.locator('#exportPreset').selectOption('messaging');
+        await mixed.locator('#renderVideo').click();
+        await mixed.waitForFunction(()=>document.querySelector('#renderResult video:not([hidden])')||document.querySelector('#status')?.textContent.startsWith('Render failed:'),null,{timeout:240000});
+        const mixedStatus=await mixed.locator('#status').innerText();
+        assert.equal(await mixed.locator('#renderResult video:not([hidden])').count(),1,'Mixed audio/silent clip render failed: '+mixedStatus);
+      }finally{await mixed.close();}
+    }finally{if(fs.existsSync(silentPath))fs.unlinkSync(silentPath);}
     assert.equal(errors.length,0,JSON.stringify(errors));
     console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,timedTitle:true,audioDucking:true,batchOutput:true,pageErrors:errors.length}));
   }finally{await browser?.close();server.close();}
