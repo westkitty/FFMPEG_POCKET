@@ -43,6 +43,8 @@ jobs:
         run: |
           npm install --prefix /tmp/dexcut-studio-qa --no-audit --no-fund playwright@1.64.0
           /tmp/dexcut-studio-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Install native FFmpeg for synthetic test fixtures only
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
       - name: Render real MP4 with ffmpeg.wasm using Studio interface
         env:
           DEXCUT_PLAYWRIGHT: /tmp/dexcut-studio-qa/node_modules/playwright
