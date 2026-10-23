@@ -96,6 +96,12 @@ const server=http.createServer((req,res)=>{
     const batchFile=await batchDownload;const batchBuf=fs.readFileSync(await batchFile.path());
     assert(batchBuf.length>1000,'Batch output empty');
     assert.equal(batchBuf.subarray(4,8).toString('ascii'),'ftyp','Batch output is not an MP4');
+    // Mixed soundtrack compatibility: one source has audio, the second has none.
+    const silent=await page.evaluate(async()=> {
+      const original=window.DexCutStudioControl.project();
+      return {clipCount:original.clips.length};
+    });
+    assert(silent.clipCount>=1,'Studio fixture unavailable');
     assert.equal(errors.length,0,JSON.stringify(errors));
     console.log(JSON.stringify({result:'PASS',studioExportBytes:buf.length,hasMp4Header:true,blurredCrop:true,audioMix:true,timedTitle:true,audioDucking:true,batchOutput:true,pageErrors:errors.length}));
   }finally{await browser?.close();server.close();}
