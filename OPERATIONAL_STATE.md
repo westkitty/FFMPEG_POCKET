@@ -2,7 +2,7 @@
 
 project_id: ffmpeg-pocket
 project_name: DEX//CUT (formerly FFmpeg Pocket)
-revision: 10
+revision: 11
 
 ## Current baseline
 - Repository: westkitty/FFMPEG_POCKET
@@ -89,5 +89,5 @@ Historical custom GitHub Actions Pages enablement failed; branch-based Pages pub
 - Branch: `feature/studio-20-enhancements-20261019`; `main` and GitHub Pages remain untouched.
 - New isolated `studio.html` and Studio modules provide local project recipes, keep ranges, reordering, true frame thumbnails where decodable, crop/framing, overlay titles, subtitle import and SRT sidecar, source/output comparison, secondary audio/mic controls, volume automation, markers, export profiles, readiness and sequential batch queue. Capabilities vary by codec/device; several features remain partial and require targeted acceptance checks.
 - Studio FFmpeg.wasm browser tests previously passed ordinary trim/join, reframing, audio mix and text overlay, and batch output on desktop Chromium. Legacy 30-tool WASM and chained-edit regression checks passed in CI run 39267603146. None of this constitutes physical iPhone proof.
-- 2026-10-23: added mixed silent/audio segment normalization and a dedicated real-WASM mixed-input regression test; status pending current CI result.
+- 2026-10-23: mixed silent/audio segment normalization, with a real-WASM browser test that joins an audio-bearing source and silent source, PASSED in Studio CI run 39903024891. The same run passed the original 30-tool real WASM verifier and responsive/playback/chaining/cancellation checks. This proves desktop-browser execution only, NOT physical iPhone compatibility.
 - Known limits: no verified real iPhone interaction, microphone/PWA lifecycle, or resource envelope; project persistence requires source-file relinking; project fade transitions remain explicitly unsupported by renderer; variable-frame-rate stepping is approximate; advanced batch stress unverified. No deployment authorization.
