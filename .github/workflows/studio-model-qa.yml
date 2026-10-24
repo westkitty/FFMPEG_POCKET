@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - feature/studio-20-enhancements-20261019
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 concurrency:
   group: studio-model-${{ github.ref }}
