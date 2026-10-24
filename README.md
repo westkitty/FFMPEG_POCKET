@@ -43,6 +43,12 @@ A pass in desktop Brave is **not an iPhone pass**. For iPhone-specific claims, r
 
 DEX//CUT supports a Home Screen installation, maskable icons, offline app shell, and caching of the FFmpeg runtime after a successful online load. GitHub Pages deploys from `main` at `/(root)`; the project URL remains `/FFMPEG_POCKET/` to preserve bookmarks.
 
+## Experimental Studio on the feature branch (not deployed)
+
+The `feature/studio-20-enhancements-20261019` branch contains `studio.html`, an isolated non-destructive multi-clip project editor. It supports project JSON, clip ranges/reordering, local thumbnails, framing, video/audio overlays, titles/captions, local markers, and a bounded batch workflow. The preliminary export renderer targets conservative H.264/AAC MP4 profiles. Additional capabilities and browser-specific behavior may be unsupported or experimental. The renderer does **not** implement fade transitions yet, and the timeline's nominal frame stepping does not guarantee exact variable-frame-rate stepping.
+
+The feature branch is **not** the public Pages release. Never infer physical iPhone support from desktop CI. All 30 original Quick Tools remain protected on `main`. Project recipes require original media relinking; they do not contain the source video bytes. Run `.github/workflows/studio-model-qa.yml` for branch tests, then verify import, scrub, zoom, crop, render, cancellation, output playback, Save/Share, PWA/offline behavior and 30-tool diagnostic on a physical iPhone before declaring completion or merging.
+
 ## Technical invariants
 
 - All 30 original tool definitions and FFmpeg commands remain available.

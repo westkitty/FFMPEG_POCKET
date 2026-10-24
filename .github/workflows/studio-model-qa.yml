@@ -1,0 +1,67 @@
+name: DEXCUT studio model validation
+on:
+  push:
+    branches:
+      - feature/studio-20-enhancements-20261019
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+concurrency:
+  group: studio-model-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  project-model:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Preserve legacy tool definitions and runtime
+        run: node tests/dexcut_static_regression.cjs
+      - name: Project edit model, ranges, undo and portable JSON
+        run: node tests/dexcut_project_qa.cjs
+      - name: Export plan validation and memory gates
+        run: node tests/dexcut_export_plan_qa.cjs
+      - name: Optional URL import integration contract
+        run: node tests/dexcut_url_import.cjs
+      - name: Standalone Studio interaction and syntax contracts
+        run: node tests/dexcut_studio_qa.cjs
+      - name: Waveform module contracts
+        run: node tests/dexcut_waveform_qa.cjs
+
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test-only browser dependencies
+        run: |
+          npm install --prefix /tmp/dexcut-studio-qa --no-audit --no-fund playwright@1.64.0
+          /tmp/dexcut-studio-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Install native FFmpeg for synthetic test fixtures only
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Render real MP4 with ffmpeg.wasm using Studio interface
+        env:
+          DEXCUT_PLAYWRIGHT: /tmp/dexcut-studio-qa/node_modules/playwright
+        run: node tests/dexcut_studio_wasm_browser.cjs
+      - name: Recheck all 30 original tools with real FFmpeg.wasm
+        env:
+          DEXCUT_PLAYWRIGHT: /tmp/dexcut-studio-qa/node_modules/playwright
+        run: |
+          DEXCUT_BROWSER="$(node -p "require('/tmp/dexcut-studio-qa/node_modules/playwright').chromium.executablePath()")" node tests/dexcut_wasm_qa.cjs
+      - name: Preserve responsive UI, playback, chaining and cancellation
+        env:
+          DEXCUT_PLAYWRIGHT: /tmp/dexcut-studio-qa/node_modules/playwright
+        run: |
+          export DEXCUT_BROWSER="$(node -p "require('/tmp/dexcut-studio-qa/node_modules/playwright').chromium.executablePath()")"
+          node tests/dexcut_browser_qa.cjs
+          node tests/dexcut_real_flow.cjs
+          node tests/dexcut_cancellation_qa.cjs
